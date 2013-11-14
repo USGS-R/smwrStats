@@ -1,0 +1,59 @@
+\name{binaryReg}
+\alias{binaryReg}
+\title{
+Diagnostics for Logistic Regression
+}
+\description{
+Computes diagnostic statistics for logistic regression
+}
+\usage{
+binaryReg(object, lc.max = 1000))
+}
+\arguments{
+  \item{object}{
+the logistic regression model object.
+}
+  \item{lc.max}{
+the lmaximum number of observations for the le Cessie test.
+}
+}
+\details{
+Because the le Cessie test is very slow to compute for many observations,
+the test is not performed if there are more than \code{lc.max} observations.
+}
+\value{
+A list of class "binaryreg" containing these components:
+\item{regsum}{the output from \code{summary(object)}}
+\item{Warning}{any warnings relevant to the model}
+\item{Factors}{information about factor explanatory variables}
+\item{Profile}{summary information about the coding of the response variable}
+\item{Hosmer}{output from the Hosmer-Lemeshow test on \code{object}}
+\item{leCessie}{output from the le Cessie-van Houwelingen test on \code{object}}
+\item{PctCorrect}{the classification table}
+\item{Concordance}{the concordance table}
+\item{roc}{output from the receiver operating characteristics test on \code{object}}
+\item{diagstats}{a data frame containing the response variable, the predicted response probability,
+the response residual, the deviance residuals, the Pearson residuals, the leverage,
+the value of Cook's D, and the dfits value}
+\item{crit.val}{the critical values for leverage, Cook's D, and dfits}
+\item{flagobs}{a logical value indicating which observaitons exceeded any one of the critical values}
+\item{object}{the \code{object}}
+}
+\references{
+Harrell, F.E., Jr., 2001, Regression modeling strategies with applications to linear models, 
+logistic regression and survival analysis: New York, N.Y., Springer, 568 p.\cr
+
+Helsel, D.R., and Hirsch, R.M., 2002, Statistical methods in water resources: 
+U.S. Geological Survey Techniques of Water-Resources Investigations, book 4, chap. A3, 522 p.\cr
+
+McFadden, D., 1974, Conditional logit analysis of qualitative choice behavior: 
+p. 105-142 in Zarembka, P. (ed.), Frontiers in Econometrics.  London, Academic Press, 252 p.
+}
+\note{
+Logistic regression can be very useful alternative method for heavily censored water-quality data.
+}
+\seealso{
+\code{\link{roc}}, \code{\link{leCessie.test}}, \code{\link{hosmerLemeshow.test}}
+}
+\keyword{models }
+\keyword{regression}

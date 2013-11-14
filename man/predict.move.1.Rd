@@ -1,0 +1,48 @@
+\name{predict.move.1}
+\alias{predict.move.1}
+\title{
+Predict Maintenance of Variance Extension, Type 1
+}
+\description{
+Predict new values from a maintenance of variance extension, type 1 (MOVE.1) model fit.
+}
+\usage{
+\method{predict}{move.1}(object, newdata, type = c("response", "link"), ...)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{object}{
+an object of class "move.1" on which to base the predicted values.
+}
+  \item{newdata}{
+an optional data.frame in which to look for variables with which to predict. 
+If omitted, then the fitted values are used.
+}
+  \item{type}{
+the type of prediction ("response" or "link"). See \bold{Details}.
+}
+  \item{\dots}{
+not used, required for method function.
+}
+}
+\details{
+If \code{type} is "response," then the predicted values are back-transformed. Otherwise,
+the predicted values are computed directly from the model equation.
+}
+\value{
+A vector of predictions matching \code{newdata} or the model data.
+}
+\seealso{
+\code{\link{move.1}}
+}
+\examples{
+library(USGSwsData)
+data(IonBalance)
+# Build model for non missing Alkalinity
+IB.move <- move.1(Anion_sum ~ Cation_sum, data=IonBalance, subset=abs(Pct_Diff) < 10) 
+print(IB.move)
+# Predict Anion_sum for missing Alkalinity
+predict(IB.move, IonBalance[1, ])
+}
+\keyword{models}
+\keyword{regression}

@@ -1,0 +1,31 @@
+\name{print.senSlope}
+\alias{print.senSlope}
+\title{
+Print Objects
+}
+\description{
+Print the results of a Sen slope analysis (\code{senSlope}).
+}
+\usage{
+\method{print}{senSlope}(x, digits = 4, ...)
+}
+\arguments{
+  \item{x}{
+an object of class "senSlope" from \code{senSlope}.
+}
+  \item{digits}{
+the number of significant digits to print numeric data.
+}
+  \item{\dots}{
+additonal arguments for printing numeric values.
+}
+}
+\value{
+The object \code{x} is returned invisibly.
+}
+
+\note{
+The printed output contains the call, the smalles and largest residuals,
+the regression coefficients, and the confidence limits of the Sen slope.
+}
+

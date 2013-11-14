@@ -1,0 +1,97 @@
+\name{seaken}
+\alias{seaken}
+\title{
+Trend Test
+}
+\description{
+Computes the seasonal Kendall trend test.
+}
+\usage{
+seaken(series, nseas = 12)
+}
+\arguments{
+  \item{series}{
+a regularly spaced numeric vector to test for trend. Missing values are permitted.
+}
+  \item{nseas}{
+the number of seasons per year.
+}
+}
+\value{
+An object of class "htest" containing the following components: 
+  \item{method}{
+a description of the method. 
+}
+  \item{statistic}{
+the value of Kendall's tau.
+}
+  \item{p.value}{
+the p-value. See \bold{Note}.
+}
+  \item{p.value.raw}{
+the p-value computed without correction for serial correlation. See \bold{Note}.
+}
+  \item{p.value.corrected}{
+the p-value computed with correction for serial correlation. See \bold{Note}.
+}
+  \item{estimate}{
+a named vector containing the Sen estimate of the slope in units per year, 
+the median value of the data, and the median value of time.
+}
+  \item{data.name}{
+a string containing the actual name of the input series with the number of years and seasons.
+}
+  \item{alternative}{
+a character string describing alternative to the test ("two.sided").
+}
+  \item{null.value}{
+the value for the hypothesized slope (0). 
+}}
+\references{
+Hirsch, R.M., Alexander, R.B., and Smith, R.A., 1991, Selection of methods for the detection 
+and estimation of trends in water quality: Water Resources Research, v. 27, p. 803--813.\cr
+
+Hirsch, R.M., Slack, J.R., and Smith, R.A., 1982, Techniques of trend analysis for monthly water 
+quality data: Water Resources Research, v. 18, p. 107--121.\cr
+
+Hirsch, R.M., and Slack, J.R., 1984, A nonparametric trend test for seasonal data with serial 
+dependence: Water Resources Research, v. 20, p. 727--732.\cr
+
+Kendall, M.G., 1938, A new measure of rank correlation: Biometrika v. 30, p. 81--89.\cr
+
+Kendall, M.G., 1976, Rank correlation methods (4th ed.): London, Griffin, 202 p.\cr
+
+Sen, P.K., 1968, Estimates of regression coefficient based on Kendall's tau: Journal of the 
+American Statisical Association, v. 63, p. 1379--1389.\cr
+}
+
+\note{
+The value of \code{p.value} is \code{p.value.raw} if there are fewer than 10 years of data and
+is \code{p.value.corrected} otherwise.
+}
+
+\seealso{
+\code{\link{kensen.test}}, \code{\link{regularSeries}}
+}
+\examples{
+\dontrun{
+library(USGSwsData)
+data(KlamathTP)
+RegTP <- with(KlamathTP, regularSeries(TP_ss, sample_dt))
+# The warning generated is expected and acceptable for these data
+seaken(RegTP$Value, 12)
+# Manaus river data is in package boot
+library(boot)
+data(manaus)
+manaus.sk <- seaken(manaus, 12)
+print(manaus.sk)
+# Note for these data the large difference between the raw and corrected p-values.
+#  p-value (raw) is << 0.001
+manaus.sk$p.value.raw
+#  p-value (with correlation correction) is = 0.10
+manaus.sk$p.value.corrected
+#  Hence, it may be concluded that these particular data show substantial serial correlation
+#  as seen with see with acf(manaus).
+}
+}
+\keyword{htest}

@@ -1,0 +1,99 @@
+\name{move.1}
+\alias{move.1}
+\title{
+Maintenance of Variance Extension, Type 1
+}
+\description{
+Calculates the Maintenance Of Variance Extension, Type 1 (MOVE.1) for record extension 
+by fitting a Line of Organic Correlation (LOC) regression model. 
+}
+\usage{
+move.1(formula, data, subset, na.action, distribution = "normal")
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{formula}{
+a formula object with the response variable on the left of the ~ operator and a 
+single explantory variable on the right. 
+}
+  \item{data}{
+the data frame containing the variables named in \code{formula}. 
+}
+  \item{subset}{
+an optional vector specifying a subset of observations to be used in the fitting process.
+}
+  \item{na.action}{
+a function that indicates what should happen when the data contain missing values (NAs). 
+The default is set by the \code{na.action} setting of \code{options} and is \code{na.fail} if that is unset.
+Ohter possible options include \code{na.exclude} and \code{na.omit}.
+}
+  \item{distribution}{
+either "normal," "lognormal," or "commonlog" indicating nature of the bivariate distribution, See \bold{Details}.
+}
+}
+\details{
+If \code{distribution} is "normal," then the data in \code{x} and \code{y} are assumed to have a
+bivariate normal distribution. Otherwise, they are assumed to have a bivariate log-normal distribution
+and a logarithmic transform is applied to both \code{x} and \code{y} before analysis. The natural logarithm
+is used if \code{distribution} is "lognormal" and the commmon logarithm is used if \code{distribution} is "commonlog." 
+}
+\value{
+An object of class "move.1" having these components:
+  \item{coefficients}{
+  the intercept and slope of the line describing the fit.
+}
+  \item{na.action}{
+  a character string indicating the special handling of NAs.
+}
+  \item{R}{
+  Pearson's correlation coefficient.
+}
+  \item{call}{
+  the matched call to \code{move.1}.
+}
+  \item{fitted.values}{
+  the fitted LOC values for the response.
+}
+  \item{residuals}{
+  a 2-column matrix containing the signed distance from the predicted to to the corresponding
+  \code{y} and \code{x} values.
+}
+  \item{x}{
+  the (possibly transformed) values for \code{x}.
+}
+  \item{y}{
+  the (possibly transformed) values for \code{y}.
+}
+  \item{x.stats}{
+  the mean and standard deviation of the (possibly transformed) values for \code{x}.
+}
+  \item{y.stats}{
+  the mean and standard deviation of the (possibly transformed) values for \code{y}.
+}
+  \item{var.names}{
+  the names of  \code{y} and \code{x}.
+}
+  \item{model}{
+  the model frame.
+}
+}
+\references{
+Hirsch, R.M., 1982, A comparison of four streamflow record extension techniques: 
+Water Resources Research, v. 18, p. 1081--1088.
+}
+\note{
+Objects of class "move.1" have \code{print}, \code{predict}, and \code{plot} methods.
+}
+
+\seealso{
+\code{\link{predict.move.1}}, \code{\link{plot.move.1}}
+}
+\examples{
+library(USGSwsData)
+data(IonBalance)
+# Build model for non missing Alkalinity
+IB.move <- move.1(Anion_sum ~ Cation_sum, data=IonBalance, subset=abs(Pct_Diff) < 10) 
+print(IB.move)
+}
+\keyword{models}
+\keyword{regression}

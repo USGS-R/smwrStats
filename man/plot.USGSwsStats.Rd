@@ -1,0 +1,119 @@
+\name{plot.USGSwsStats}
+\alias{plot.ancovaReg}
+\alias{plot.binaryreg}
+\alias{plot.cor.all}
+\alias{plot.lecessie}
+\alias{plot.move.1}
+\alias{plot.multReg}
+\alias{plot.roc}
+\alias{plot.senSlope}
+\title{
+Diagnostic Plots
+}
+\description{
+Produce a series of diagnostic plots for statistical analyses.
+}
+\usage{
+\method{plot}{ancovaReg}(x, which = "All", set.up = TRUE, span = 0.8, ...)
+\method{plot}{binaryreg}(x, which = "All", set.up = TRUE, bandw = 0.3, ...)
+\method{plot}{cor.all}(x, which = "All", set.up = TRUE, ...)
+\method{plot}{lecessie}(x, which = "All", set.up = TRUE, ...)
+\method{plot}{move.1}(x, which = "All", set.up = TRUE, span = 0.8, ...)
+\method{plot}{multReg}(x, which = "All", set.up = TRUE, span = 1.0, ...)
+\method{plot}{roc}(x, which = "All", set.up = TRUE, ...)
+\method{plot}{senSlope}(x, which = "All", set.up = TRUE, span = 0.8, ...)
+}
+\arguments{
+  \item{x}{
+the object to be plotted.
+}
+  \item{which}{
+a character string or sequence of integers indicating which diagnostic plots to produce. See \bold{Details}.
+}
+  \item{set.up}{
+set up the graphics page? Set to \code{FALSE} if the graphics page has been set up with a call to \code{setPage}.
+}
+  \item{span}{
+the smoothing parameter for \code{loess.smooth}.
+}
+  \item{\dots}{
+not used, required for method function. These diagnostic plots have fixed graphics output.
+}
+  \item{bandw}{
+the bandwidth for kernel smoothing for the Hosmer-Lemeshow plot.
+}
+}
+\details{
+For objects of class "ancovaReg" and "multReg," the argument \code{which} can be a character string,
+"All" or any of a sequence of numbers from 1 to 8. If it is "All," then all plots are produced. For
+class "multReg," can also be the name of an explanatory variable so that a residual dependence
+plot is created for a single variable.\cr
+Numeric values for \code{which}:
+\enumerate{
+\item Fitted with separate factor levels vs. Observed
+\item Fitted vs. Residual
+\item S-L plot
+\item A correlogram if dates are available in the model or in the data set
+\item Q-normal and Tukey boxplots for each factor level
+\item Influence plot
+\item Outliers plot
+\item Residual dependence plots for each explanatory variable
+}
+
+For objects of class "binaryreg," the argument \code{which} can be a character string,
+"All" or any of a sequence of numbers from 1 to 5. If it is "All," then all plots are produced. 
+Numeric values for \code{which}:
+\enumerate{
+\item Le Cessie-van Houwelingen overall fit
+\item Overall fit
+\item Classification plot
+\item ROC plot
+\item Lin-Wei-Ying partial residual plots
+}
+
+For objects of class "cor.all," the argument \code{which} must be either "All," "Lower," or
+the name of one of the variables. If \code{which} is "All", then the full scatter plot matrix is shown
+if there are 4 or fewer variables, otherwise indivdual paired plots are shown. If \code{which} is "Lower", 
+then the lower part of the scatter plot matrix is shown if there are 5 or fewer variables, otherwise 
+indivdual paired plots are shown. If \code{which} is the name of a variable, then only the scatter plots
+of that variable and all others are shown.\cr
+
+For objects of class "lecessie," the argument \code{which} must be either "All," "First," 
+the name of one or more of the variables, or a number indicating which variable to plot. 
+If \code{which} is "All", then the fitted vs. Residual and all partial residual plots are created. If 
+\code{which} is "First", then only the fitted vs. Residual plot is created. If \code{which} is one
+or more of the variable names, then those partial residual plots are created. If \code{which} is 
+numeric, then the fitted vs. Residual (1) sequentially numbered partial residual plots are created.\cr
+
+For objects of class "move.1," the argument \code{which} can be a character string,
+"All" or any of a sequence of numbers from 1 to 3. If it is "All," then all plots are produced. 
+Numeric values for \code{which}:
+\enumerate{
+\item x on y and y on x
+\item The LOC regression line with ellipse
+\item Q-Q plot of x and y
+}
+
+For objects of class "roc," the argument \code{which} can be a character string,
+"All" or 1. The only graph is the receiver operating characteristics curve for a logistic regression.\cr
+
+For objects of class "senSlope," the argument \code{which} can be a character string,
+"All" or 1. The only graph avaialble is a scatter plot of the data with the regression
+line in green and a smoothed line in cyan.
+}
+\value{
+The object \code{x} is returned invisibly.
+}
+\references{
+le Cessie, S. and van Houwelingen, H.C., 1995, Testing the fit of a regression model via score 
+tests in random effects models: Biometrics, v. 51, p. 600--614.\cr
+Lin, D.Y., Wei, L.J., and Ying, Z., 2002, Model-checking techniques based on cumulative residuals:
+Biometrics, v. 58, p. 1--12.
+}
+\seealso{
+\code{\link{ancovaReg}}, \code{\link{binaryReg}}, \code{\link{cor.all}}, \code{\link{leCessie.test}},
+\code{\link{move.1}}, \code{\link{multReg}}, \code{\link{roc}}, \code{\link{senSlope}},
+\code{\link{loess.smooth}}, \code{\link{setPage}}
+}
+\keyword{hplot}
+

@@ -1,0 +1,33 @@
+\name{print.seasonalPeak}
+\alias{print.seasonalPeak}
+\title{
+Print Objects
+}
+\description{
+Print the results of a seasonal peak analysis (\code{seasonalPeak}).
+}
+\usage{
+\method{print}{seasonalPeak}(x, digits = 3, details = FALSE, ...)
+}
+\arguments{
+  \item{x}{
+an object of class "seasonalPeak" from \code{seasonalpeak}.
+}
+  \item{digits}{
+the number of significant digits to print numeric data.
+}
+  \item{details}{
+logical, print the model details?
+}
+  \item{\dots}{
+not used for method, required for other methods.
+}
+}
+\value{
+The object \code{x} is returned invisibly.
+}
+\note{
+The printed output contains the default time-of-peak value and potential alternate values 
+for unconfirmed peaks and the number of peaks, timing of the primary peak, and optionally
+the model information for confirmed peaks.
+}

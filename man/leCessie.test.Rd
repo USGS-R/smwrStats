@@ -1,0 +1,82 @@
+\name{leCessie.test}
+\alias{leCessie.test}
+\title{
+The le Cessie-van Houwelingen Test
+}
+\description{
+Perform the le Cressie-van Houwelingen test for goodness-of-fit for a logistic regression model.
+}
+\usage{
+leCessie.test(object, bandwidth, newterms)
+}
+\arguments{
+  \item{object}{
+an object of class "glm" on which to perform the test.
+}
+  \item{bandwidth}{
+the bandwidth for smoothing the residuals.
+}
+  \item{newterms}{
+any new variables to add to the model. Expressed as the right-hand side of a formula.
+}
+}
+\details{
+If \code{bandwidth} is missing, then the mean distance between observations is used.
+}
+\value{
+  An object of class "lecessie" having these components:
+  \item{method}{
+    a description of the method.
+  }
+  \item{statistic}{
+    the test statistic.
+  }
+  \item{parameters}{
+    the degrees of freedom of the chi-squared test.
+  }
+  \item{p.value}{
+    the attained p-level of the test statistic.
+  }
+  \item{data.name}{
+    the name of \code{object}.
+  }
+  \item{alternative}{
+    the alternate hypothesis--"some lack of fit."
+  }
+  \item{estimate}{
+    the estimated values for the test.
+  }
+  \item{object}{
+    the original \code{object}.
+  }
+  \item{target.object}{
+    the \code{object} with any added \code{newterms}.
+  }
+  \item{bandwidth}{
+    the bandwidth used for smoothing the residuals.
+  }
+  \item{max.distance}{
+    the maximum distance between observations.
+  }
+  \item{smoothed.residuals}{
+    the smoothed residuals.
+  }
+  \item{distance.matrix}{
+    a matrix of the distances between observations.
+  }
+  \item{hat}{
+    the hat matrix.
+  }
+}
+\references{
+le Cessie, S. and van Houwelingen, H.C., 1995, Testing the fit of a regression model
+via score tests in random effects models: Biometrics, v. 51, p 600-614.
+}
+\note{
+The null hypothesis is "no lack of fit." Rejection of the null hypothesis indicates "some lack of fit."
+}
+\seealso{
+\code{\link{binaryReg}}
+}
+\keyword{htest}
+

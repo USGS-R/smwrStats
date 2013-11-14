@@ -1,0 +1,43 @@
+\name{seasonalWave.fit}
+\alias{seasonalWave.fit}
+\title{
+Compute Seasonal Wave Model 
+}
+\description{
+This is a support function for seasonalWave model (Vecchia and others, 2008).
+}
+\usage{
+seasonalWave.fit(cmax, wtx, pkt, phi)
+}
+\arguments{
+  \item{cmax}{
+the time of the greatest peak value, expressed as a fraction of the year. 
+  }
+  \item{wtx}{
+a vector of 12 monthly application rates.
+  }
+  \item{pkt}{
+the numeric month of peak expected from the data in \code{wtx}, expressed as a fraction of the year.
+  }
+  \item{phi}{
+the recession rate, in 1/years. 
+  }
+}
+\value{
+A vector of 361 values describing the annual seasonal wave. 
+}
+\references{
+Vecchia, A.V., Martin, J.D., and Gilliom, R.J., 2008, Modeling variability and trends in 
+pesticide concentrations in streams: Journal of the American Water Resources Association, 
+v. 44, no. 5, p. 1308-1324.
+}
+\author{
+Dave Lorenz, original coding by Aldo Vecchia.
+}
+\note{
+This function is support for the seasonalWave function and is not intended to be called by the user.
+}
+\seealso{
+\code{\link{seasonalWave}}
+}
+\keyword{manip}

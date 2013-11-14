@@ -1,0 +1,14 @@
+Package: USGSwsStats
+Version: 0.6
+Date: 2013-08-15
+Title: General tools for hydrologic data and trend analysis.
+Author: Dave Lorenz <lorenz@usgs.gov>.
+Maintainer: Dave Lorenz <lorenz@usgs.gov>
+Depends: USGSwsBase (>= 0.5), stats, leaps, USGSwsGraphs (>= 0.6), boot
+Suggests: USGSwsData (>= 0.8)
+Imports: car
+Description: Useful tools for the analysis of hydrologic data,
+	not inlcuding censored water-quality data.
+License: file LICENSE
+LazyLoad: yes
+

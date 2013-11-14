@@ -1,0 +1,32 @@
+\name{print.cor.all}
+\alias{print.cor.all}
+\title{
+Print Objects
+}
+\description{
+Print the results of a correlation test (\code{cor.all}).
+}
+\usage{
+\method{print}{cor.all}(x, digits = 4, lower = TRUE, ...)
+}
+\arguments{
+  \item{x}{
+an object of class "cor.all" from \code{cor.all}.
+}
+  \item{digits}{
+the number of significant digits to print numeric data.
+}
+  \item{lower}{
+logical, print only the lower triangular matrix? Ohterwise, print the full, square matrix.
+}
+  \item{\dots}{
+not used for method, required for other methods.
+}
+}
+\value{
+The object \code{x} is returned invisibly.
+}
+\note{
+The printed output contains a description of the test; and 3 lines for each comparison that is printed: 
+the correlation statistics, the attained p-value, and the number of pairs.
+}

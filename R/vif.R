@@ -1,0 +1,44 @@
+# function to compute the variance inflation factors for a linear model
+#
+# Coding history:
+#    2005Jul11 DLLorenz Original documented version
+#    2007Apr02 DLLorenz Added option for weighted regression
+#    2007May11 DLLorenz Modified for single explanatory variable
+#    2007Jun05 DLLorenz Bug fix.
+#    2008Jan04 DLLorenz Added computation for GLS model
+#    2011Jul27 DLLorenz Conversion to R
+#    2011Oct25 DLLorenz Update for package
+#    2012Dec12 DLLorenz Split into methods
+#    2013May13 DLLorenz Prevent VIF failure for intercept only model
+#
+
+vif <- function(model, ...)
+    UseMethod("vif")
+
+## No default method
+
+vif.lm <- function(model, ...) {
+  ## Arguments:
+  ##  model, lm model
+  ##
+  ## beta needed for names only
+  beta <- model$coef
+  if(is.matrix(beta)) {
+    beta <- beta[, 1]
+  }
+  na <- is.na(beta)
+  beta <- beta[!na]
+  lm.x <- model.matrix(model)[,-1, drop=FALSE]
+  if(any(na))
+    lm.x <- lm.x[, !na, drop = FALSE]
+  if(ncol(lm.x) <= 1)
+    VIFs <- 1
+  else {
+    if(is.null(model$weights))
+      VIFs <- diag(solve(cor(lm.x)))
+    else
+      VIFs <- diag(solve(cov.wt(lm.x, wt=model$weights, cor=TRUE)$cor))
+  }
+  names(VIFs) <- names(beta)[-1]
+  return(VIFs)
+}

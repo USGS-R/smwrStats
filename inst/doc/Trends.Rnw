@@ -1,0 +1,164 @@
+\documentclass{article}
+\parskip 3pt
+\parindent 30pt
+\leftskip=-0.5in
+\rightskip=-0.5in
+%\VignetteIndexEntry{Trends Example}
+%\VignetteDepends{USGSwsStats}
+%\VignetteDepends{USGSwsData}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\title{Trends Example}
+
+\author{Dave Lorenz}
+
+\maketitle
+
+These examples demonstrate some functions in the \texttt{USGSwsStats} package that facilitate trend analysis. The first example uses the ConecuhFlows dataset from Appendix C2 in Helsel and Hirsch (2002) to illustrate trend analysis of annual series data. The second example uses the KlamathTP data set in the USGSwsData package to illustrate seasonally adjusted trend analysis. This example uses the data modified for censoring in uncensored techniques. All section references in these examples are from Helsel and Hirsch (2002). The critical alpha value for all tests is 0.05.
+
+<<echo=TRUE>>=
+# Load the stats, USGSwsData, and USGSwsStats packages
+library(stats)
+library(USGSwsData)
+library(USGSwsStats)
+# Get the datasets
+data(ConecuhFlows)
+data(KlamathTP)
+@
+
+\eject
+\section{Example 1.}
+
+Helsel and Hirsch (2002) stress plotting the data to help undserstand the data and find an appropriate statistical technique. For this analysis, a simple graph of the annual mean flow by year shows a downward trend. The \texttt{kensen.test} function is used to describe the trend.
+
+<<echo=TRUE>>=
+setSweave("trend01", 5, 5)
+with(ConecuhFlows, timePlot(Year, Flow, Plot=list(what="points")))
+# Required call to close PDF output graphics
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{trend01.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 1.} The time-series plot of annual mean flow in the Conecuh River at Brantley, AL.
+
+The \texttt{kensen.test} function has three arguments---\texttt{y}, the response variable to test for trend; \texttt{t}, the time corresponding to each value in \texttt{y}; and \texttt{n.min}, the minimum number of observations required for adjusting for serial correlation. The default value for \texttt{n.min} is set at 10, in keeping with the 10-year minimum requirement in the seasonal Kendall test (\texttt{seaken}), but a more practical limit seems to be 25.
+
+<<echo=TRUE>>=
+# The trend test
+with(ConecuhFlows, kensen.test(Flow, Year, 25))
+@
+
+The attained p-value is greater than 0.05, so the null hypothesis of no trend is not rejected. There is no evidence of a significant downward trend in the annual mean flows from 1941 through 1960 for these data.
+
+\eject
+\section{Example 2.}
+
+Helsel and Hirsch (2002) stress plotting the data to help undserstand the data and find an appropriate statistical technique. For these data, two graphs are created, one that displays the concentrations over time, and the second that displays the relation between flow and concentration.
+
+<<echo=TRUE>>=
+# setSweave is a specialized function that sets up the graphics page for
+# Sweave scripts. For interactive use, it should be removed and the
+# default setting for set.up can be used.
+setSweave("trend02", 5, 5)
+with(KlamathTP, timePlot(sample_dt, TP_ss, Plot=list(what="points")))
+# Required call to close PDF output graphics
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{trend02.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 2.} The time-series plot of total phosphorus concentration. Note the strong seasonal pattern.
+
+<<echo=TRUE>>=
+setSweave("trend03", 5, 5)
+with(KlamathTP, xyPlot(Flow, TP_ss))
+# Required call to close PDF output graphics
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{trend03.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 3.} The relation between flow and total phosphorus concentration.
+
+\eject
+\section{Nonparametric Trend Tests}
+
+The \texttt{seaken} function performs the seasonal Kendall test decribed in section 12.4.1. It requires a complete, regular set of data for each season, with a missing value (NA) if no sample was taken during a season. That regular set can be created using the \texttt{regularSeries} function.
+
+The first trend test is a simple test of the trend in concentration with no adjustment for flow. The first sample was taken in January 1972 and the last sample in the dataset was in October 1979. The analysis period will be from January 1, 1972 through December 31, 1979. Becuase of the way the computers store and interpret dates, the end date must be January 1, 1980.
+
+<<echo=TRUE>>=
+# Construct the regular series: 96 monthly observations
+KlamathTP.RS <- with(KlamathTP, regularSeries(TP_ss, sample_dt,
+										 begin="1972-01-01", end="1980-01-01"))
+# Do the analysis: Value is the name of the column in KlamathTP.RS
+# that contains the TP data
+with(KlamathTP.RS, seaken(Value, 12))
+@
+
+The attained p-value for the test is 0.005624, which is less than the critical alpha level set for the test, so we reject the null hypothesis of no trend and accept the alternate hypothesis of a trend, which is downward at a rate of about 0.005 mg/L/y. An estimate of the average trend in percent can be computed as 100 percent times the trend dividedby the median concentration (median.data in the report): 100 * -0.005 / 0.075 = -6.67 percent per year.
+
+Smith and others (1982) used linear regression to get the flow-adjusted concentrations. Helsel and Hirsch (2002) refer to this as a Mixed method for dealing with seasonality in table 12.3. The residuals from the regression analysis are used as the flow-adjusted concentrations.
+
+<<echo=TRUE>>=
+# Compute the flow-adjusted concentrations. Figure 2 serves as justification
+# for the linear fit for these data.
+KlamathTP$FAC <- residuals(lm(TP_ss ~ Flow, data=KlamathTP,
+	na.action=na.exclude)) # required to preserve any missing values
+# Construct the regular series: 96 monthly observations
+KlamathTP.RS2 <- with(KlamathTP, regularSeries(FAC, sample_dt,
+										 begin="1972-01-01", end="1980-01-01"))
+# Do the analysis: Value is the name of the column in KlamathTP.RS
+# that contains the FAC data
+KTP <- with(KlamathTP.RS2, seaken(Value, 12))
+print(KTP)
+@
+
+
+The attained p-value for the test is 0.4899, which is greater than the critical alpha level set for the test, so we do not reject the null hypothesis of no trend. For these data, there is also a fair trend in decreasing flow, which can result in a less significant trend in the FAC than in the raw concentrations. The trend is about -0.0019 mg/L/y and the rate in percent wouold use the median concentration from the simple trend test in (0.075) and would be -2.6 percent per year. 
+
+\eject
+\section{Parametric Trend Tests}
+
+Section 12.4.3 discusses the construction of a linear regression model with periodic functions. This example will demonstrate only the flow- and seasonally-adjusted trends. The regression for flow adjustment only requires a linear relation, but the parametric seasonal trend model requires that all assumptions of linear regression are met---linearity  and the homoscedasticity, independence and normality of the residuals.
+
+To maintain those assumptions of linear regression, the log transformation of concentration and flow are almost always required. The total phosphorus data are left censored, so tobit regression should be used. However, simple substitution and ordinary least squares have been historicly used for trend analyses for low rates of censoring. For example Schertz and others (1991) accepted about 5 percent censoring before using tobit regression. Modern user interfaces to censored data make those techniques easy to use, so there is little reason not to use them for any censored data, but for this example of a single censored value, simple substitution will be used.
+
+Smith and others (1982) used a value of 0 as the substitute value, but for a log transform, a different, positive, value must be used. This example will use one-half the detection limit. The first executable statement in the code below computes the substitute value and converts the sample date to decimal time format, which is easier to interpret as a annual rate. The linear regresion trend test uses the \texttt{fourier} function (USGSwsBase) to construct the sine and cosine variables. This example uses the natural log transform because it is easier to express the result as a trend in percent per year than the common logarithm.
+
+<<echo=TRUE>>=
+# Simple substitution
+KlamathTP <- transform(KlamathTP, TP_ss2 = ifelse(TP_rmk == "<", TP/2, TP),
+											 Dectime = dectime(sample_dt))
+# The trend analysis
+KTP.lm <- lm(log(TP_ss2) ~ Dectime + log(Flow) + fourier(Dectime),
+						 data=KlamathTP)
+summary(KTP.lm)
+@
+
+The attained p-value for the trend is about 0.0093, which is less than the critical alpha level set for the test. The value of the coefficient (-0.07646) can be used to estimate the trend in percent per year: 100 * (exp(-0.07646) - 1) = -7.36. That value, with the median concentration from the previous nonparamteric analysis can be used to estimate the trend in mg/L: (-7.36 / 100) * 0.075 = -0.0055, approximately.
+
+\begin{thebibliography}{9}
+
+\bibitem{HH2}
+Helsel, D.R. and Hirsch, R.M., 2002, Statistical methods in water resources: U.S. Geological Survey Techniques of Water-Resources Investigations, book 4, chap. A3, 522 p.
+
+\bibitem{Sch}
+Schertz, T.L., Alexander, R.B., and Ohe, D.J,., 1991, The computer program estimate trend (ESTREND), a system for the detection of trends in water-quality data: U.S. Geological Survey Water-Resources Investigations Report 91-4040, ? p.
+
+
+\bibitem{SHS}
+Smith, R.A., Hirsch, R.M, and Slack, J.R., 1982, A study of trends in total phosphorus measurements at NASQAN stations: U.S. Geological Circular 2190, 34 p. Available online at "pubs.usgs.gov/wsp/2190/report.pdf".
+
+\end{thebibliography}
+
+\end{document}

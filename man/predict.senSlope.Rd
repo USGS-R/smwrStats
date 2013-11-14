@@ -1,0 +1,31 @@
+\name{predict.senSlope}
+\alias{predict.senSlope}
+\title{
+Predict Values.
+}
+\description{
+Predict new values from Sen slope (senSlope) model fit.
+}
+\usage{
+\method{predict}{senSlope}(object, newdata, ...)
+}
+\arguments{
+  \item{object}{
+an object of class "senSlope" on which to base the predicted values.
+}
+  \item{newdata}{
+an optional data.frame in which to look for variables with which to predict. 
+If omitted, then the fitted values are used.
+}
+  \item{\dots}{
+not used, required for method function.
+}
+}
+\value{
+A vector of predictions matching \code{newdata} or the model data.
+}
+\seealso{
+\code{\link{senSlope}}
+}
+\keyword{models}
+\keyword{regression}
