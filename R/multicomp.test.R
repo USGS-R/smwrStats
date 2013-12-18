@@ -10,7 +10,7 @@
 #    2013May15 DLLorenz Fix tbl assoc for inconsistent results
 #
 
-multicomp.test <- function (x, g, method="parametric", critical.value="", alpha=0.05) {
+multicomp.test <- function(x, g, method="parametric", critical.value="", alpha=0.05) {
   ## Arguments:
   ##  x (numeric vector) The response data
   ##  g (grouplike vector) The groups for x

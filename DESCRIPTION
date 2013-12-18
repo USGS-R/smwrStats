@@ -4,11 +4,61 @@ Date: 2013-08-15
 Title: General tools for hydrologic data and trend analysis.
 Author: Dave Lorenz <lorenz@usgs.gov>.
 Maintainer: Dave Lorenz <lorenz@usgs.gov>
-Depends: USGSwsBase (>= 0.5), stats, leaps, USGSwsGraphs (>= 0.6), boot
-Suggests: USGSwsData (>= 0.8)
-Imports: car
+Depends:
+    USGSwsBase (>= 0.5),
+    stats,
+    leaps,
+    USGSwsGraphs (>= 0.6),
+    boot
+Suggests:
+    USGSwsData (>= 0.8)
+Imports:
+    car
 Description: Useful tools for the analysis of hydrologic data,
-	not inlcuding censored water-quality data.
+    not inlcuding censored water-quality data.
 License: file LICENSE
 LazyLoad: yes
-
+Collate:
+    'allreg.R'
+    'ancovareg.R'
+    'annualStats.R'
+    'binreg.R'
+    'confirm.R'
+    'confirm.seasonalPeak.R'
+    'cor_all.R'
+    'curvi.R'
+    'grubbs.R'
+    'hosmerlemeshow.R'
+    'kensen.test.R'
+    'lecessie.R'
+    'makepredictcall.R'
+    'move.1.R'
+    'multicomp.test.R'
+    'multreg.R'
+    'percentile.R'
+    'plot.senSlope.R'
+    'ppcc.test.R'
+    'predict.senSlope.R'
+    'predictDuan.R'
+    'predictFerguson.R'
+    'predictMVUE.R'
+    'press.R'
+    'print.seasonalPeak.R'
+    'print.senSlope.R'
+    'qtiles.CI.R'
+    'quantile.numeric.R'
+    'rmse.R'
+    'roc.R'
+    'seaken.R'
+    'seasonalPeak.R'
+    'seasonalWave.fit.R'
+    'seasonalWave.R'
+    'seasonalWave.wt.R'
+    'selBestWave.R'
+    'senSlope.R'
+    'serial.test.R'
+    'skew.R'
+    'sumStats.R'
+    'timeWeightedMean.R'
+    'trends.R'
+    'vif.R'
