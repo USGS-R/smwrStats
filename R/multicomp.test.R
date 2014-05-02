@@ -147,9 +147,11 @@ multicomp.test <- function(x, g, method="parametric", critical.value="", alpha=0
   dimnames(lMat) <- list(Levels , LETTERS[seq(ncol(lMat))])
   as.data.frame(lMat)
   ## Construct the return value
+  ## Fix the match for sizes
+  Order <- match(names(groupMean), names(groupNum))
   retval <- list(title=title, cv.method=critical.value, alpha=alpha, crit.value=crit.val,
-                 response=xname, groups=gname, means=groupMean, sizes=groupNum,
-                 table=tbl, assoc=lMat)
+                 response=xname, groups=gname, means=groupMean, 
+  							 sizes=groupNum[Order], table=tbl, assoc=lMat)
   oldClass(retval) <- "MCT"
   return(retval)
 }

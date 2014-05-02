@@ -18,6 +18,7 @@
 #    2013Jan08 DLLorenz Used Anova in car rather than anova for type II Sum Sq.
 #    2013Apr09 DLLorenz Added setGD to plot
 #    2013May10 DLLorenz Use na.omit to work with both na.omit and na.exclude in call
+#    2013Dec30 DLLorenz Added * to print of observations exceeding test criterion
 #    
 
 multReg <- function(object) {
@@ -163,7 +164,7 @@ plot.multReg <- function(x, which='All', set.up=TRUE, span=1.0, ...) {
           nl.p <- summary(lm(x$diagstats$resids ~ poly(xpred[,i], 2),
                              weights=wt.showCD, model=TRUE), FALSE)$coefficients[3,4]
           addTitle(Main=paste("Second order polynomial test for linearity: p=",
-                     round(nl.p, 4L), sep=""))
+                     round(nl.p, 4L), sep=""), Bold=FALSE)
         }
       }
     }
@@ -215,7 +216,7 @@ plot.multReg <- function(x, which='All', set.up=TRUE, span=1.0, ...) {
              margin=c(NA, NA, 2.4, NA))
     refLine(coefficients=c(0,1))
     PPCC <- ppcc.test(x$diagstats$stnd.res)$p.value
-    addTitle(Main=paste("PPCC test for normality: p=", round(PPCC,4), sep=""))
+    addTitle(Main=paste("PPCC test for normality: p=", round(PPCC,4), sep=""), Bold=FALSE)
   }
   ## for the next plots use Pearson residuals, which are weighted
   Res <- na.omit(residuals(x$object, type="pearson"))
@@ -236,8 +237,7 @@ plot.multReg <- function(x, which='All', set.up=TRUE, span=1.0, ...) {
   ## Add details of call on regression model to next plots
   Mod <- format(x$object$call$formula)
   ## 3rd plot, S-L
-  RSE <- x$aovtab # anova table
-  RSE <- sqrt(RSE[nrow(RSE), 1L] / RSE[nrow(RSE), 2L]) # now the resid std. error
+  RSE <- rmse(x$object)
   if(doPlot[3L]) {
     xyPlot(Fits, sqrt(abs(Res)),
            Plot=list(what="points", size=0.05),
@@ -254,7 +254,7 @@ plot.multReg <- function(x, which='All', set.up=TRUE, span=1.0, ...) {
     refLine(horizontal=0.82218*sqrt(RSE), Plot=list(what="lines", width="standard", type="dashed"))
     Woodings <- cor.test(Fits, abs(Res), method="s", exact=FALSE)
     addTitle(Main=paste("Woodings test for heteroscedasticity: p=",
-               round(Woodings$p.value,4), sep=""))
+               round(Woodings$p.value,4), sep=""), Bold=FALSE)
   } # end of S-L 
   ## 2nd plot response vs. fit
   if(doPlot[2L]) {
@@ -312,13 +312,27 @@ print.multReg <- function(x, digits=3, ...) {
   if(length(x$vif) > 1L) {
     print(x$aovtab, digits=digits, signif.stars=FALSE) # really only needed for MLR
     cat("\nVariance inflation factors\n")
-    print(x$vif)
+    namvif <- format(names(x$vif), justify="left")
+    valvif <- format(round(x$vif, 2), justify="right")
+    for(i in seq(along=x$vif))
+    	cat(namvif[i], " ", valvif[i], "\n", sep="")
   }
   cat("\nTest criteria\n")
   print(x$crit.val, digits=digits)
   if(any(x$flagobs)) {
     cat("\tObservations exceeding at least one test criterion\n")
-    print(x$diagstats[x$flagobs,], digits=digits)
+    dstats <- format(x$diagstats[x$flagobs,] , digits=digits)
+    ## Append * to each value that exceeds its criterion
+    dstats$leverage <- paste(dstats$leverage, 
+                             ifelse(x$diagstats[x$flagobs, "leverage"] > x$crit.val[1L],
+                                    "*", " "), sep="")
+    dstats$cooksD <- paste(dstats$cooksD, 
+                             ifelse(x$diagstats[x$flagobs, "cooksD"] > x$crit.val[2L],
+                                    "*", " "), sep="")
+    dstats$dfits <- paste(dstats$dfits, 
+                             ifelse(abs(x$diagstats[x$flagobs, "dfits"]) > x$crit.val[3L],
+                                    "*", " "), sep="")
+    print(dstats)
   }
   else
     cat("\tNo observations exceeded any test criteria\n")

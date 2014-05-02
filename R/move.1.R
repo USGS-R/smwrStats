@@ -55,7 +55,9 @@ move.1 <- function(formula, data, subset, na.action, distribution="normal") {
   yvar <- var(Y)
   xbar <- mean(X)
   xvar <- var(X)
-  fit$R <- cor(X, Y)
+  retcor <- cor.test(X, Y)
+  fit$R <- retcor$estimate
+  fit$p.value <- retcor$p.value
   fit$coefficients[2L] <- sqrt(yvar/xvar)
   if(fit$R < 0)
     fit$coefficients[2L] <-  - fit$coefficients[2L]
@@ -100,7 +102,8 @@ print.move.1 <- function(x, digits=4, ...) {
   print(x$ystats, digits=digits, ...)
   cat("Predictor (", x$var.names[2], "):\n", sep="")
   print(x$xstats, digits=digits, ...)
-  cat("Correlation coefficient:\n", round(x$R, digits), "\n", sep="")
+  cat("Correlation coefficient: ", round(x$R, digits), 
+      "\n                p-value: ", round(x$p.value, digits), "\n", sep="")
   if(!is.null(x$na.action)) {
     n.na <- length(x$na.action)
     if(n.na > 1)
@@ -108,6 +111,8 @@ print.move.1 <- function(x, digits=4, ...) {
     else
       cat("  (", n.na, " observation deleted due to missing values)\n", sep="")
   }
+  if(!is.null(x$cx) && !is.null(x$cy))
+    cat(sum(x$cx | x$cy), " observations were left-consored\n", sep="")
   invisible(x)
 }
 
@@ -119,27 +124,24 @@ plot.move.1 <- function(x, which="All", set.up=TRUE, span=0.8, ...) {
   ##  set.up and ... (dots) not used, required for method functions
   ##
   ## Identify which plots to do:
-  ## 1 x on y, y on x
-  ## 2 LOC with ellipses
-  ## 3 Q-Q plot
-  ##
+  ## 1 Q-Q plot
+  ## 2 x on y, y on x
+  ## 
   ## Set up graphics page
   if(set.up) 
     setGD("MOVE.1")
   ## Set up to do all plots
-  doPlot <- rep(TRUE, 3L) 
+  doPlot <- c(rep(TRUE, 2L) , FALSE)
   if(is.numeric(which)) {
     if(min(which) > 0) # select which to plot
-      doPlot[seq(3L)[-which]] <- FALSE
+      doPlot[seq(2L)[-which]] <- FALSE
     else # which not to plot
       doPlot[-which] <- FALSE
   }
   xname <- x$var.names[2L]
   yname <- x$var.names[1L]
   if(doPlot[3L]) {
-    qqPlot(x$x, x$y, xtitle=xname, ytitle=yname, Line1.1=list(what="none"))
-  }
-  if(doPlot[2L]) {
+    ## This is done only by special request
     AA <- scalePlot(x$x, x$y, scale=x$coef[2L], Plot=list(what="points"),
                     xtitle=xname, ytitle=yname)
     refLine(coefficients=x$coef, current=AA)
@@ -148,9 +150,9 @@ plot.move.1 <- function(x, which="All", set.up=TRUE, span=0.8, ...) {
     el <- cov2Ellipse(cov, c(x$xstats[1L], x$ystats[1L]))
     addXY(el$x, el$y, Plot=list(what="lines", color="blue"), current=AA)
     el <- cov2Ellipse(cov, c(x$xstats[1L], x$ystats[1L]), scale=2)
-    addXY(el$x, el$y, Plot=list(what="lines", color="blue"), current=AA)
+    addXY(el$x, el$y, Plot=list(what="lines", color="blue"), current=AA) 
   }
-  if(doPlot[1L]) {
+  if(doPlot[2L]) {
     ## Set up for 2 graphs
     AA.lo <- setLayout(width=6, height=c(3,3))
     AA.gr <- setGraph(1, AA.lo)
@@ -161,6 +163,9 @@ plot.move.1 <- function(x, which="All", set.up=TRUE, span=0.8, ...) {
     AA <- xyPlot(x$y, x$x, Plot=list(what="points"), xtitle=yname, ytitle=xname)
     refLine(coefficients=lsfit(x$y, x$x)$coef, Plot=list(color="green"), current=AA)
     addSmooth(x$y, x$x, span=span, Plot=list(color="cyan"), current=AA)
+  }
+  if(doPlot[1L]) {
+    qqPlot(x$x, x$y, xtitle=xname, ytitle=yname, Line1.1=list(what="none"))
   }
   invisible(x)
 }

@@ -85,6 +85,9 @@ kensen.test <- function(y, t, n.min=10) {
   retval$estimate <- est 
   retval$coef <- coef
   retval$data.name <- data.name
+  retval$y <- y
+  retval$t <- t
+  class(retval) <- c("htest", "kensen")
   return(retval)
 }
 

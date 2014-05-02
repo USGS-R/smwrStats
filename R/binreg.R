@@ -160,7 +160,7 @@ print.binaryreg <- function(x, digits=4, ...) {
   if(!is.null(x$leCessie))
     print(x$leCessie, digits=digits, ...)
   else
-    cat("Le Cressie-Van Houwlingen test not computed for matrix responses.\n")
+    cat("Le Cessie-Van Houwlingen test not computed.\n")
   if(!is.null(x$Hosmer))
     print(x$Hosmer, digits=digits, ...)
   else
@@ -168,8 +168,8 @@ print.binaryreg <- function(x, digits=4, ...) {
   ## Print the correct and concordant stats and the AUROC
   cat("\nPredictive power estimates:\n")
   ## Print the R2 and adjusted R2
-  R2 <- round(1 - object$deviance/object$null.deviance, digits)
-  adjR2 <- round(1 - (object$aic - 2)/object$null.deviance, digits) # need to correct for intercept term
+  R2 <- round(1 - x$object$deviance/x$object$null.deviance, digits)
+  adjR2 <- round(1 - (x$object$aic - 2)/x$object$null.deviance, digits) # need to correct for intercept term
   cat("McFadden R-squared: ", R2, "\nadjusted R-squared: ", adjR2, "\n\n", sep="")
   if(!is.null(x$PctCorrect)) {
     cat("\nClassification table.\nPercent correct: (1 is sensitivity, 0 is specificity)\n")
@@ -247,7 +247,7 @@ plot.binaryreg <- function(x, which='All', set.up=TRUE, bandw=0.3, ...) {
     addExplanation(AA, where='ur', title='')
     refLine(vertical=0.5)
     addTitle(paste("specificity:", round(x$PctCorrect[["0"]], 3),
-                "  sensitivity:", round(x$PctCorrect[["1"]], 3), sep=' '))
+                "  sensitivity:", round(x$PctCorrect[["1"]], 3), sep=' '), Bold=FALSE)
   }
   ## Second Plot, overall fit with H-L
   if(doPlot[2] && !is.null(x$Hosmer)) {
@@ -263,12 +263,13 @@ plot.binaryreg <- function(x, which='All', set.up=TRUE, bandw=0.3, ...) {
     HLx <- x$Hosmer$estimate[,2] / x$Hosmer$estimate[,1]
     HLy <- x$Hosmer$estimate[,3] / x$Hosmer$estimate[,1]
     addXY(HLx, HLy, Plot=list(what='points', filled=TRUE))
-    addTitle(paste("Hosmer-Lemeshow Test, p-value =", round(x$Hosmer$p.value,4)))
+    addTitle(paste("Hosmer-Lemeshow Test, p-value =", round(x$Hosmer$p.value,4)), Bold=FALSE)
   }
   ## First plot (last on page), leCessie
   if(!is.null(x$leCessie)) {
     plot(x$leCessie, which=1, set.up=FALSE)
-    addTitle(paste("le Cessie-van Houwelingen Test, p-value =", round(x$leCessie$p.value,4)))
+    addTitle(paste("le Cessie-van Houwelingen Test, p-value =", round(x$leCessie$p.value,4)),
+    				 Bold=FALSE)
   }
   invisible(x)
 }

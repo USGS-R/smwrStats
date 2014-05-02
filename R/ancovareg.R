@@ -148,40 +148,42 @@ plot.ancovaReg <- function(x, which='All', set.up=TRUE, span=0.8, ...) {
                         Plot=list(what='points', size=0.05),
                         xtitle=paste(i, colnames(xpred[, i])[j], sep=""), 
                         ytitle='Studentized Residual',
-                        margin=c(NA, NA, 1.5, .5))
+                        margin=c(NA, NA, 2.4, .5))
             if(span > 0) {
               smo <- loess.smooth(xtopl, x$diagstats$stud.res, family='sym', span=span)
               addXY(smo$x, smo$y)
             }
             refLine(horizontal=0, Plot=list(what='lines', width='standard',
                            type='dashed'))
-            addExplanation(AA, "ul", title="")
             ## The p-value of the second order fit on the residuals exactly matches
             ## the p-value of adding the second order term to the regression
             nl.p <- summary(lm(x$diagstats$resids ~ poly(xtopl, 2),
-                           weights=wt.showCD, model=TRUE), FALSE)$coefficients[3L,4L]
+            									 weights=wt.showCD, model=TRUE), FALSE)$coefficients[3L,4L]
             addTitle(Main=paste("Second order polynomial test for linearity: p=",
-                   round(nl.p,4), sep=''))
+            										round(nl.p,4), sep=''), Bold=FALSE)
+            ## Must be after Title
+            addExplanation(AA, "ul")
           }
         } else {
           AA <- colorPlot(xpred[,i], x$diagstats$stud.res,
                         color=xpred[[x$factor.var]],
                         Plot=list(what='points', size=0.05),
                         xtitle=i, ytitle='Studentized Residual',
-                        margin=c(NA, NA, 1.5, .5))
+                        margin=c(NA, NA, 2.4, .5))
           if(span > 0) {
             smo <- loess.smooth(xpred[,i], x$diagstats$stud.res, family='sym', span=span)
             addXY(smo$x, smo$y)
           }
           refLine(horizontal=0, Plot=list(what='lines', width='standard',
                              type='dashed'))
-          addExplanation(AA, "ul", title="")
           ## The p-value of the second order fit on the residuals exactly matches
           ## the p-value of adding the second order term to the regression
           nl.p <- summary(lm(x$diagstats$resids ~ poly(xpred[,i], 2),
-                           weights=wt.showCD, model=TRUE), FALSE)$coefficients[3L,4L]
+          									 weights=wt.showCD, model=TRUE), FALSE)$coefficients[3L,4L]
           addTitle(Main=paste("Second order polynomial test for linearity: p=",
-                   round(nl.p,4), sep=''))
+          										round(nl.p,4), sep=''), Bold=FALSE)
+          ## Must be after title
+          addExplanation(AA, "ul")
         }
       }
     }
@@ -234,7 +236,7 @@ plot.ancovaReg <- function(x, which='All', set.up=TRUE, span=0.8, ...) {
              ytitle='Standardized Residual',
              margin=c(NA, NA, 2.4, NA), mean=0, sd=1)
     PPCC <- ppcc.test(x$diagstats$stnd.res)$p.value
-    addTitle(Main=paste("PPCC test for normality: p=", round(PPCC,4), sep=''))
+    addTitle(Main=paste("PPCC test for normality: p=", round(PPCC,4), sep=''), Bold=FALSE)
   }
   ## for the next plots use Pearson residuals, which are weighted
   Res <- residuals(x$object, type="pearson")
@@ -274,7 +276,7 @@ plot.ancovaReg <- function(x, which='All', set.up=TRUE, span=0.8, ...) {
     refLine(horizontal=0.82218*sqrt(RSE), Plot=list(what='lines', width='standard', type='dashed'))
     Woodings <- cor.test(Fits, abs(Res), method='s', exact=FALSE)
     addTitle(Main=paste("Woodings test for heteroscedasticity: p=",
-               round(Woodings$p.value,4), sep=''))
+               round(Woodings$p.value,4), sep=''), Bold=FALSE)
   } # end of S-L 
   ## 2nd plot response vs. fit
   if(doPlot[2L]) {
@@ -331,7 +333,7 @@ plot.ancovaReg <- function(x, which='All', set.up=TRUE, span=0.8, ...) {
               Plot=list(what="lines", width="color", color=Colors[i]),
               xrange=range(Par.fits[xpred[[x$factor.var]] == Levels[i]]))
     }
-    addExplanation(AA, where="lr", title="")
+    addExplanation(AA, where="lr")
     ## Add some details, regression eqn and RSE
     Eqn <- x$object$coef
     names(Eqn)[1L] <- ""
@@ -361,8 +363,11 @@ print.ancovaReg <- function(x, digits=3, ...) {
   cat("\n\n\nFinal model\n")
   print(x$parmests, digits=digits, signif.stars=FALSE)
   if(length(x$vif) > 1) {
-    cat("\nVariance inflation factors\n")
-    print(x$vif)
+  	cat("\nVariance inflation factors\n")
+  	namvif <- format(names(x$vif), justify="left")
+  	valvif <- format(round(x$vif, 2), justify="right")
+  	for(i in seq(along=x$vif))
+  		cat(namvif[i], " ", valvif[i], "\n", sep="")	
   }
   cat("\nTest criteria\n")
   print(x$crit.val, digits=digits)

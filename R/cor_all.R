@@ -180,7 +180,7 @@ plot.cor.all <- function(x, which="All", set.up=TRUE, ...) {
       if(j != which) {
         AA.xy <- xyPlot(data[[j]], data[[which]], Plot=list(what="points"),
                         ylabels=5, xlabels=5,
-                        xtitle=j, ytitle=which, margin=c(NA, NA, 1.1, 0.5))
+                        xtitle=j, ytitle=which, margin=c(NA, NA, 1.6, 0.5))
         addTitle(paste(est, " = ", round(x$estimates[which,j], 3),
                        ", p.val = ", round(x$p.values[which,j], 3), sep=''))
         addSmooth(AA.xy$x, AA.xy$y, span=1.0, current=AA.xy)
@@ -209,7 +209,7 @@ plot.cor.all <- function(x, which="All", set.up=TRUE, ...) {
           plot.new() # Sets up a new page
         needpage <- TRUE
         AA.m <- setGraph(1, AA)
-        AA.m[3L] <- 1.1 # Need to allocate space for a title
+        AA.m[3L] <- 1.6 # Need to allocate space for a title
         AA.xy <- xyPlot(data[[i]], data[[j]], Plot=list(what="points"),
                         ylabels=5, xlabels=5,
                         xtitle=titles[i], ytitle=titles[j], margin=AA.m)

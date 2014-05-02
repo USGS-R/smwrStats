@@ -62,3 +62,4 @@ Collate:
     'timeWeightedMean.R'
     'trends.R'
     'vif.R'
+    'plot.htest.R'
