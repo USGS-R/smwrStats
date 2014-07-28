@@ -15,7 +15,7 @@ Produce a series of diagnostic plots for statistical analyses.
 }
 \usage{
 \method{plot}{ancovaReg}(x, which = "All", set.up = TRUE, span = 0.8, ...)
-\method{plot}{binaryreg}(x, which = "All", set.up = TRUE, bandw = 0.3, ...)
+\method{plot}{binaryreg}(x, which = 2:5, set.up = TRUE, bandw = 0.3, ...)
 \method{plot}{cor.all}(x, which = "All", set.up = TRUE, ...)
 \method{plot}{lecessie}(x, which = "All", set.up = TRUE, ...)
 \method{plot}{move.1}(x, which = "All", set.up = TRUE, span = 0.8, ...)
@@ -61,8 +61,9 @@ Numeric values for \code{which}:
 }
 
 For objects of class "binaryreg," the argument \code{which} can be a character string,
-"All" or any of a sequence of numbers from 1 to 5. If it is "All," then all plots are produced. 
-Numeric values for \code{which}:
+"All" or any of a sequence of numbers from 1 to 5. If it is "All," then all plots are produced.
+By default, the le Cessie-van Houwelingen diagnotic plot is not shown as it can be difficult to
+interpret. Numeric values for \code{which}:
 \enumerate{
 \item Le Cessie-van Houwelingen overall fit
 \item Overall fit

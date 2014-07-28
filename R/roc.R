@@ -7,7 +7,7 @@
 #    2011Oct25 DLLorenz Update for package
 #    2012Aug28 DLLorenz Change from diagPlot to plot
 #    2013Apr09 DLLorenz Added setGD to plot
-#    
+#    2014May19 DLLorenz fixed ranges
 
 roc <- function(object) {
   ## Argument:
@@ -65,12 +65,13 @@ plot.roc <- function(x, which="All", set.up=TRUE, ...) {
   if(doPlot[1L]) {
     sens <- x$table$sens
     spec<- 1-x$table$spec
-    fit <- x$table$fit
+    fit <- x$table$fits
     ## Need to start at origin
     xyPlot(c(1,spec,0), c(1,sens,0),
+    			 xaxis.range=c(0,1), yaxis.range=c(0,1),
            ytitle='True positive rate (Sensitivity)',
            xtitle='False positive rate (1-Specificity)',
-           margin=c(NA,NA, 2.2, NA))
+           margin=c(NA,NA, 1.6, NA))
     refLine(coefficients=c(0,1))
     ## Select labels along the length of the curve and plot the predicted value
     curve.dist <- cumsum(diff(c(0, 1 - spec))^2 + diff(c(0, 1 - sens))^2)
@@ -91,7 +92,7 @@ plot.roc <- function(x, which="All", set.up=TRUE, ...) {
         }
       }
     }
-    addTitle(Main=paste('ROC Analysis\nArea under curve =',
+    addTitle(Main=paste('ROC Analysis, Area under curve =',
                round(x$c.val,3), sep=' '))
   }
   invisible(x)

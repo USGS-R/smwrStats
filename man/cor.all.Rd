@@ -24,7 +24,7 @@ of "fail," "omit," "pairwise," can be abbreviated.
 }
   \item{distribution}{
 a character string indicating the assumed distribution of the data. One
-of "normal" or "lognormal," can be abbreviated.
+of "normal," "lognormal," or "log1p", which can be abbreviated.
 }
 }
 \details{
@@ -49,11 +49,15 @@ definite. If \code{na.method} is "pairwise," then missing values are
 removed from each pairwise correlation.
 
 If \code{distribution} is "normal," then the assumption for
-\code{method} = "pearson" is that the data are bivariate normal. If
-\code{distribution} is "lognormal," then the assumption for
+\code{method} = "pearson" is that the data are bivariate normal.
+If \code{distribution} is "lognormal," then the assumption for
 \code{method} = "pearson" is that the data are bivariate log-normal and
-all data are natural log-transformed. The data are transformed for any
-\code{method}, but only make a difference for \code{method} = "pearson."
+all data are natural log-transformed.
+If \code{distribution} is "log1p," then the assumption for
+\code{method} = "pearson" is that the data are bivariate log-normal after
+adding 1 and all data are transformed using the \code{log1p} function.
+The data are transformed for any
+\code{method}, but only produce a different result for \code{method} = "pearson."
 
 }
 \value{

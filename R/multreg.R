@@ -19,7 +19,7 @@
 #    2013Apr09 DLLorenz Added setGD to plot
 #    2013May10 DLLorenz Use na.omit to work with both na.omit and na.exclude in call
 #    2013Dec30 DLLorenz Added * to print of observations exceeding test criterion
-#    
+#    2014May14 DLLorenz Increased criterion for dfits
 
 multReg <- function(object) {
   ## Arguments:
@@ -73,7 +73,7 @@ multReg <- function(object) {
   p <- ncol(x)+1
   n <- nrow(x)
   cvlev <- 3*p/n
-  cvdfit <- 2*sqrt(p/n)
+  cvdfit <- qgrubbs(0.01, n)*sqrt(p/n)
   cvcook <- qf(.5,p+1,n-p)
   pck <- c(lev>cvlev | cooksd>cvcook | abs(dfits)>cvdfit)
   ##  Combine the diagnostic stats into a single data set, round it to 3

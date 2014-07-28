@@ -7,7 +7,7 @@
 #    2011Oct25 DLLorenz Update for package
 #    2012Aug28 DLLorenz Change from diagPlot to plot
 #    2013Apr09 DLLorenz Added setGD to plot
-#
+#    2014May19 DLLorenz Modified criteria, and flag print
 
 binaryReg <- function(object, lc.max=1000) {
   ## Argument:
@@ -106,7 +106,7 @@ binaryReg <- function(object, lc.max=1000) {
   p <- ncol(x)+1
   n <- nrow(x)
   cvlev <- 3*p/n
-  cvdfit <- 2*sqrt(p/n)
+  cvdfit <- qgrubbs(0.01, n)*sqrt(p/n)
   cvcook <- qf(.5,p+1,n-p)
   pck <- c(lev>cvlev | cooksd>cvcook | abs(dfits)>cvdfit)
   ## Combine the diagnostic stats into a single data set, round it to 3
@@ -187,14 +187,26 @@ print.binaryreg <- function(x, digits=4, ...) {
   print(x$crit.val, digits=digits, ...)
   if(any(x$flagobs)) {
     cat("\tObservations exceeding at least one test criterion\n")
-    print(x$diagstats[x$flagobs,], digits=digits, ...)
+    dstats <- format(x$diagstats[x$flagobs,] , digits=digits)
+    ## Append * to each value that exceeds its criterion
+    dstats$leverage <- paste(dstats$leverage, 
+    												 ifelse(x$diagstats[x$flagobs, "leverage"] > x$crit.val[1L],
+    												 			 "*", " "), sep="")
+    dstats$cooksD <- paste(dstats$cooksD, 
+    											 ifelse(x$diagstats[x$flagobs, "cooksD"] > x$crit.val[2L],
+    											 			 "*", " "), sep="")
+    dstats$dfits <- paste(dstats$dfits, 
+    											ifelse(abs(x$diagstats[x$flagobs, "dfits"]) > x$crit.val[3L],
+    														 "*", " "), sep="")
+    print(dstats)
+    
   }
   else
     cat("\tNo observations exceeded any test criteria\n")
   invisible(x)
 }
 
-plot.binaryreg <- function(x, which='All', set.up=TRUE, bandw=0.3, ...) {
+plot.binaryreg <- function(x, which=2:5, set.up=TRUE, bandw=0.3, ...) {
   ## Arguments:
   ##  x (binaryreg object) the object to plot
   ##  which (character or integer) which graphs to plot
@@ -215,7 +227,7 @@ plot.binaryreg <- function(x, which='All', set.up=TRUE, bandw=0.3, ...) {
   ## Anything else produces all plots
   ## 
   ## Last are the L-W-Y partial plots
-  if(doPlot[5]) {
+  if(doPlot[5L]) {
     x.resid <- resid(x$object, 'response')
     x.coefs <- coef(x$object)
     x.mat <- model.matrix(x$object)
@@ -233,30 +245,33 @@ plot.binaryreg <- function(x, which='All', set.up=TRUE, bandw=0.3, ...) {
     }
   }
   ## ROC is plot # 4
-  if(doPlot[4])
+  if(doPlot[4L])
     plot(x$roc, set.up=FALSE)
   ## Third plot--classification graph
-  if(doPlot[3] && !is.null(x$PctCorrect)) {
+  if(doPlot[3L] && !is.null(x$PctCorrect)) {
     pd.0 <- density(x$object$fitted.values[x$object$y == 0], bw=0.25, kern='tri')
     pd.1 <- density(x$object$fitted.values[x$object$y == 1], bw=0.25, kern='tri')
-    ylim <- c(0, max(pd.0$y, pd.1$y))*1.1
-    AA <- xyPlot(pd.0$x, pd.0$y, Plot=list(name="specificity", color='darkblue'),
+    ylim <- pretty(c(0, max(pd.0$y, pd.1$y)))
+    ylim <- ylim[c(1L, length(ylim))] # pick first and last for range
+    AA <- xyPlot(pd.0$x, pd.0$y, Plot=list(name="specificity", 
+    						 color='darkblue', what="lines", width="color"),
                  xaxis.range=c(0,1), yaxis.range=ylim,
-                 xtitle='Predicted', ytitle='Relative Density', margin=c(NA, NA, 1.2, NA))
-    AA <- addXY(pd.1$x, pd.1$y, Plot=list(name="sensitivity", color='darkgreen'), current=AA)
+                 xtitle='Predicted', ytitle='Relative Density', margin=c(NA, NA, 1.6, NA))
+    AA <- addXY(pd.1$x, pd.1$y, Plot=list(name="sensitivity", color='darkgreen', width="color"), current=AA)
     addExplanation(AA, where='ur', title='')
     refLine(vertical=0.5)
     addTitle(paste("specificity:", round(x$PctCorrect[["0"]], 3),
                 "  sensitivity:", round(x$PctCorrect[["1"]], 3), sep=' '), Bold=FALSE)
   }
   ## Second Plot, overall fit with H-L
-  if(doPlot[2] && !is.null(x$Hosmer)) {
+  if(doPlot[2L] && !is.null(x$Hosmer)) {
     fits <- fitted(x$object)
     y <- x$object$y
     xyPlot(fits, y, Plot=list(what='points', filled=FALSE),
            xtitle='Fitted Values', ytitle='Observed values',
-           xlabels=list(labels=5, extend=5), ylabels=list(labels=5, extend=5),
-           margin=c(NA, NA, 1.2, NA))
+           xlabels=list(labels=5, extend.pct=5, extend.range=FALSE),
+    			 ylabels=list(labels=5, extend.pct=5, extend.range=FALSE),
+           margin=c(NA, NA, 1.6, NA))
     p2.smo <- ksmooth(fits, y, bandwidth=bandw, kernel='normal')
     addXY(range(fits), range(fits), Plot=list(what='lines'))
     addXY(p2.smo$x, p2.smo$y, Plot=list(what='lines'))
@@ -266,7 +281,7 @@ plot.binaryreg <- function(x, which='All', set.up=TRUE, bandw=0.3, ...) {
     addTitle(paste("Hosmer-Lemeshow Test, p-value =", round(x$Hosmer$p.value,4)), Bold=FALSE)
   }
   ## First plot (last on page), leCessie
-  if(!is.null(x$leCessie)) {
+  if(doPlot[1L] && !is.null(x$leCessie)) {
     plot(x$leCessie, which=1, set.up=FALSE)
     addTitle(paste("le Cessie-van Houwelingen Test, p-value =", round(x$leCessie$p.value,4)),
     				 Bold=FALSE)

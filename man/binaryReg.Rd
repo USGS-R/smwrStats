@@ -7,7 +7,7 @@ Diagnostics for Logistic Regression
 Computes diagnostic statistics for logistic regression
 }
 \usage{
-binaryReg(object, lc.max = 1000))
+binaryReg(object, lc.max = 1000)
 }
 \arguments{
   \item{object}{
@@ -50,7 +50,13 @@ McFadden, D., 1974, Conditional logit analysis of qualitative choice behavior:
 p. 105-142 in Zarembka, P. (ed.), Frontiers in Econometrics.  London, Academic Press, 252 p.
 }
 \note{
-Logistic regression can be very useful alternative method for heavily censored water-quality data.
+Logistic regression can be very useful alternative method for heavily censored water-quality data.\cr
+The critical values for the test criteria are computed as: leverage, \emph{3p/n};
+Cook's D, median quantile for the \emph{F} distribution with \emph{p+1} and \emph{n-p} 
+degrees of freedonm; and dfits, the .01 quantile of the \emph{grubbs} distribution for
+\emph{n} observations, where \emph{p} is the number of parameters estiamted in the
+regression and \emph{n} is the number of observations.\cr
+Objects of class "binaryreg" have \code{print} and \code{plot} methods.
 }
 \seealso{
 \code{\link{roc}}, \code{\link{leCessie.test}}, \code{\link{hosmerLemeshow.test}}

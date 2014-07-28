@@ -11,10 +11,10 @@ Produce a plot of time-series data by season that shows seasonal and overall tre
 \method{seriesPlot}{seaken}(x, SeasonLine = list(name = "", what = "vertical", color = "black"),
   SeasonPoint = list(name = "", what = "points", symbol = "circle", 
     filled = TRUE, size = 0.09, color = "black"),
-  SeasonTrend = list(name = "", what = "lines", color = "green"),
   yaxis.log = FALSE, yaxis.range = c(NA,NA),
   ylabels = 7, xlabels, xtitle = "", ytitle = deparse(substitute(x)),
-  caption = "", margin = c(NA, NA, NA, NA), 
+  caption = "", margin = c(NA, NA, NA, NA),
+  SeasonTrend = list(name = "", what = "lines", color = "green"),
   TrendLine = list(name = "", what = "lines", color = "blue"), ...)
 }
 
@@ -27,9 +27,6 @@ control parameters of the lines in the plot. See \bold{Details}.
 }
   \item{SeasonPoint}{
 control parameters of the points in the plot. See \bold{Details}.
-}
-  \item{SeasonTrend}{
-control parameters of the trend line for each season. See \bold{Details}.
 }
   \item{yaxis.log}{
 log-transform the y axis?
@@ -55,6 +52,9 @@ the figure caption.
 }
   \item{margin}{
 the parameters of the margin of the plot area.
+}
+  \item{SeasonTrend}{
+control parameters of the trend line for each season. See \bold{Details}.
 }
   \item{TrendLine}{
 control parameters of the overall trend line compute by \code{seaken}. See \bold{Details}.

@@ -20,7 +20,7 @@ confirm.seasonalPeak <- function(x, all=FALSE, plot.only=FALSE, ...) {
   Sel <- as.integer(all) # 0 is interactive
   if(Sel == 0L) {
     if(!plot.only)
-      X11(title="Confirm")
+      setGD("Confirm")
     Data <- attr(x, "Data")
     Smooth <- attr(x, "Smooth")
     plot(Data, xlim=c(0,1), xlab='x', ylab='y')

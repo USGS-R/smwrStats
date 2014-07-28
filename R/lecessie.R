@@ -143,7 +143,7 @@ plot.lecessie <- function(x, which="All", set.up=TRUE, ...) {
     xyPlot(target.mat[,i,drop=TRUE], x$smoothed.residuals,
            Plot=list(what="points", size=0.05), 
            ytitle="Smoothed residuals", xtitle=target.names[i],
-           margin=c(NA, NA, 1.2, NA)) # leave room for title
+           margin=c(NA, NA, 1.6, NA)) # leave room for title
     if(i == 1)
       addXY(target.mat[,i,drop=TRUE], target.resid,
             Plot=list(what="points", filled=FALSE, size=0.08))

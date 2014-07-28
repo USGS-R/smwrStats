@@ -14,7 +14,7 @@
 #    2013Apr01 DLLorenz Bug fix in printed output
 #    2013Apr09 DLLorenz Added setGD to plot
 #    2013Apr31 DLLorenz Switched which to y-axis and bug fix
-#
+#    2014May27 DLLorenz Added log1p distribution
 
 cor.all <- function(data, method="pearson", na.method="pairwise",
                     distribution="normal") {
@@ -47,9 +47,11 @@ cor.all <- function(data, method="pearson", na.method="pairwise",
   else if(na.meth == 0)
     stop("cor.all: Invalid na.method specified")
   ## Apply log-transform if requested
-  distribution <- match.arg(distribution, c("normal", "lognormal"))
-  if(distribution == "lognormal")
-    data <- as.data.frame(lapply(data, log))
+  distribution <- match.arg(distribution, c("normal", "lognormal", "log1p"))
+  if(distribution == "lognormal") {
+  	data <- as.data.frame(lapply(data, log))
+  } else if(distribution == "log1p") 
+  	data <- as.data.frame(lapply(data, log1p))
   cor.grid <- expand.grid(1:N, 1:N)
   cor.grid <- cor.grid[cor.grid[,1] < cor.grid[,2],]
   cor.stat <- matrix(1, ncol=N, nrow=N)
@@ -95,8 +97,10 @@ print.cor.all <- function(x, digits = 4, lower=TRUE, ...) {
   ##
   cat(paste("\n\t", x$method, "\n\n", sep = ""))
   cat("data: ", x$data.name, "\n\n")
-  if(x$distribution == "lognormal")
-    cat("All data were log-transformed\n")
+  if(x$distribution == "lognormal") {
+  	cat("All data were log-transformed\n")
+  } else if(x$distribution == "log1p") 
+  	cat("All data were log1p-transformed\n")
   est <- format(x$estimates, digits=digits)
   N <- ncol(est)
   val <- round(x$p.values, digits=digits)
@@ -162,6 +166,12 @@ plot.cor.all <- function(x, which="All", set.up=TRUE, ...) {
     colnames(x$estimates) <- paste("log", colnames(x$estimates), sep='.')
     rownames(x$p.values) <- paste("log", rownames(x$p.values), sep='.')
     colnames(x$p.values) <- paste("log", colnames(x$p.values), sep='.')
+  } else if(x$distribution == "log1p") {
+  	names(data) <- paste("log1p", names(data), sep='.') # fix for plot only
+  	rownames(x$estimates) <- paste("log1p", rownames(x$estimates), sep='.')
+  	colnames(x$estimates) <- paste("log1p", colnames(x$estimates), sep='.')
+  	rownames(x$p.values) <- paste("log1p", rownames(x$p.values), sep='.')
+  	colnames(x$p.values) <- paste("log1p", colnames(x$p.values), sep='.')
   }
   N <- ncol(data)
   ckN <- as.integer(min(par("fin")) / 1.6249)
@@ -174,10 +184,12 @@ plot.cor.all <- function(x, which="All", set.up=TRUE, ...) {
   } else { # Show which on the y-axis
     titles <- names(data)
     est <- c(pearson="cor", spearman="rho", kendall="tau")[call.method]
-    if(x$distribution == "lognormal")
-      which <- paste("log", which, sep='.')
+    if(x$distribution == "lognormal") {
+    	which <- paste("log", which, sep='.')
+    } else if(x$distribution == "log1p")
+    	which <- paste("log1p", which, sep='.')
     for(j in titles) {
-      if(j != which) {
+    	if(j != which) {
         AA.xy <- xyPlot(data[[j]], data[[which]], Plot=list(what="points"),
                         ylabels=5, xlabels=5,
                         xtitle=j, ytitle=which, margin=c(NA, NA, 1.6, 0.5))

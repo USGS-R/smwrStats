@@ -28,8 +28,6 @@ allReg <- function(x, y, wt=rep(1,nrow(x)), nmax=ncol(x), nbst=3,
   ##     showing the variables included in the nbst models for each model
   ##     size along with ratings
   ##
-  if(!require(leaps))
-    stop("The leaps package is required for allreg")
   if(is.null(dimnames(y)))
     yname <- deparse(substitute(y))
   else

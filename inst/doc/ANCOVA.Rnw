@@ -3,7 +3,7 @@
 \parindent 30pt
 \leftskip=-0.5in
 \rightskip=-0.5in
-%\VignetteIndexEntry{ANCOVA Example}
+%\VignetteIndexEntry{ANCOVA}
 %\VignetteDepends{USGSwsStats}
 %\VignetteDepends{USGSwsData}
 

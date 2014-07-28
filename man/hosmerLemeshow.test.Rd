@@ -32,15 +32,17 @@ the number of groups to use for the test.
     the name of \code{object}.
   }
   \item{alternative}{
-    the alternate hypothesis--"some lack of fit."
+    the alternate hypothesis---"some lack of fit."
   }
   \item{estimate}{
-    a matrix of the size, expected value, and actual counts in each group.
+    a data frame of the size, expected value, and actual counts in each group. If
+    the model has a single explanatory variable, then the mean value is included
+    as column 4.
   }
 }
 \references{
 Hosmer, D.W. and Lemeshow, S., 1980, Goodness-of-fit tests for the multiple logistic regression model:
-Communications in Statistics -- Theory and Methods, v. 9, p. 1043--1069
+Communications in Statistics --- Theory and Methods, v. 9, p. 1043--1069
 }
 \note{
 The null hypothesis is "no lack of fit." Rejection of the null hypothesis indicates "some lack of fit."

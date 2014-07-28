@@ -55,7 +55,7 @@ of the data, but Hyndman and Fan (1996) describe the slection of \code{type} for
 \examples{
 # The default value for type (7) will compute a value that is exceeded by 4 values 
 #  for a sample of size 14
-quantile.default(seq(14))
+quantile(seq(14), type=7)
 # But 4/14 is greater than 25 percent. But setting type to 2 will result in
 #  only 3 values that are larger than the computed 75th percentile.
 quantile(seq(14))

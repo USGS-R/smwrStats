@@ -1,0 +1,121 @@
+\documentclass{article}
+\parskip 3pt
+\parindent 30pt
+\leftskip=-0.5in
+\rightskip=-0.5in
+%\VignetteIndexEntry{Logistic}
+%\VignetteDepends{USGSwsStats}
+%\VignetteDepends{USGSwsData}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\title{Logistic Regression Example}
+
+\author{Dave Lorenz}
+
+\maketitle
+
+This examples demonstrates the \texttt{binaryReg} and other logistic regression support functions in the \texttt{USGSwsStats} package. The example uses the PugetNitrate dataset from Tesoriero and Voss (1997). The dataset is available from the \texttt{USGSwsData} package.
+
+<<echo=TRUE>>=
+# Load the USGSwsStats and USGSwsData packages
+library(USGSwsStats)
+library(USGSwsData)
+# Get the dataset
+data(PugetNitrate)
+head(PugetNitrate)
+@
+
+\eject
+\section{Single Variable Model}
+
+
+The \texttt{hosmerLemeshow.test}, \texttt{leCessie.test}, and \texttt{roc} functions performs diagnostic tests on a logistic regression model created by \texttt{glm}. The model can be constructed from either discrete values or counts of successes and failures.
+
+This example follows the assumptions in Tesoriero and Voss (1997). The regression will model the probability that the concentration equals or exceeds 3 mg/L as was done in that report. This example demonstrates the \texttt{hosmerLemeshow.test} and \texttt{roc} functions on one single variable model described by Tesoriero and Voss (1997). The \texttt{leCessie.test} is useful for glm models with fewer than 1000 observations because of the time required to process larger sample sizes.
+
+<<echo=TRUE>>=
+# Create the logistic regression model
+PSNO3.1 <- glm(formula = nitrate >= 3 ~ wellmet, family = binomial, 
+    data = PugetNitrate,  na.action = na.exclude)
+# Print the summary 
+print(summary(PSNO3.1))
+@
+
+The statistics from the printed summary agree reasonably well with table 2 in Tesoriero and Voss (1997). Small differences can be expected among different logistic regression implementations due to differences in convergence criteria for example. The G statistics in table 2 is the difference between the null deviance and the model deviance, 1014.85 - 925.19 = 89.66.
+
+The \texttt{hosmerLemeshow.test} can help diagnose lack of fit and the output can help construct diagnostic plots like figure 2 in Tesoriero and Voss (1997). The code below runs the test and creates a graph to replicate figure 2, very small differences can be noted due to small differences in grouping.
+
+<<echo=TRUE>>=
+# Run the H-L test
+PSNO3.1.hl <- hosmerLemeshow.test(PSNO3.1)
+print(PSNO3.1.hl)
+# Added fitted values to dataset for line in figure 2, and order
+PugetNitrate$fits <- fitted(PSNO3.1)
+OrderFits <- order(PugetNitrate$fits)
+# setSweave is a specialized function that sets up the graphics page for
+# Sweave scripts. For interactive use, it should be removed and the
+# default setting for set.up can be used.
+setSweave("binplot01", 5, 5)
+with(PugetNitrate, xyPlot(wellmet[OrderFits], fits[OrderFits],
+    Plot=list(what="lines"),
+    xaxis.range=c(0, 200),
+    yaxis.range=c(0, .25),
+    xtitle="Well Depth, in meters",
+    ytitle="Estimated Pobability"))
+# Add the observed frequencies
+with(PSNO3.1.hl$estimate, addXY(wellmet, Counts/Size,
+    Plot=list(what="points")))
+# Required call to close PDF output graphics
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{binplot01.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 1.} The estimated pobability that nitrate exceeds 3 mg/L as a function of well depth.
+
+The Hosmer-Lemeshow test can be very sensitive to the number of groups. Compare the p-values from the previous test using the default 10 groups with the output below for 12 groups.
+
+<<echo=TRUE>>=
+# Run the H-L test with 12 groups
+hosmerLemeshow.test(PSNO3.1, 12)
+@
+
+Another quick evaluation of a logisitc regression is the area under the receiver-operating-curve (AUROC). It is a measure of the predictive power of the model. The result is a number from varies from 0.5, no predicitve power, to 1.0, perfect prediction. Tape, from \texttt{http://gim.unmc.edu/dxtests/Default.htm}, accessed on 01/27/2009, gives general guidelines for the AUROC: .50-.60, fail; .60-70, poor; .70-80, fair, .80-.90 good, and .90-1.00 excellent. The \texttt{roc} function computes the statistic for any model. The output from the single variable model is shown below. The result indicates fair prediciton.
+
+<<echo=TRUE>>=
+# Compute the area under the ROC
+roc(PSNO3.1)
+@
+\eject
+\section{Multiple Variable Model}
+
+The \texttt{binaryReg} function performs a series of diagnostic tests on a logistic regression model created by \texttt{glm}. The model can be constructed from either discrete values or counts of successes and failures.
+
+This example follows the assumptions in Tesoriero and Voss (1997) for the groundwater vulnerability model for coarse-grained glacial materials. The regression will model the probability that the concentration equals or exceeds 3 mg/L as was done in that report. This example demonstrates the \texttt{binaryReg} function.
+
+<<echo=TRUE>>=
+# Create the logistic regression model
+PSNO3.3 <- glm(formula = nitrate >= 3 ~ wellmet + l20 + l10, 
+    family = binomial, subset = surfgeo == "Coarse",
+    data = PugetNitrate,  na.action = na.omit)
+# Create the assessment and print it
+PSNO3.3.br <- binaryReg(PSNO3.3)
+print(PSNO3.3.br)
+@
+
+
+\begin{thebibliography}{9}
+
+\bibitem{TV}
+Tesoriero, A.J., and Voss, F.D., 1997, Predicting the probability of elevated nitrate concentrations in the Puget Sound Basin???Implications for aquifer susceptibility and vulnerability: Groundwater, v. 35, no. 6, p. 1029???1039. 
+
+\bibitem{HH2}
+Helsel, D.R. and Hirsch, R.M., 2002, Statistical methods in water resources: U.S. Geological Survey Techniques of Water-Resources Investigations, book 4, chap. A3, 522 p.
+
+\end{thebibliography}
+
+\end{document}

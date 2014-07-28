@@ -13,9 +13,15 @@ hosmerLemeshow.test <- function(object, groups=10) {
   ##  object (a glm model object) the logistic regression model
   ##  groups (integer scalar) the number of groups to use for the test.
   ##
+	ExpClasses <- attributes(terms(object))$dataClasses[-1L]
+	if(length(ExpClasses) == 1L) {
+		if(!(ExpClasses %in% c("numeric", "integer")))
+			stop("Hosmer-Lemeshow test not appropriate for a single, non-numeric explanatory variable.")
+		ExpVar <- object$model[, 2L]
+	}
   Dname <- as.character(object$call$formula)
   Dname <- paste(Dname[2], Dname[1], Dname[3]) # get it in the correct order
-  Test <- fitted(object)
+  Test <- na.omit(fitted(object))
   Groups <- cut(rank(Test), groups, factor.result=TRUE,
                 labels=paste("group", seq(groups)))
   Sizes <- table(Groups)
@@ -26,16 +32,32 @@ hosmerLemeshow.test <- function(object, groups=10) {
   names(Crit) <- "Chi-square"
   P.val <- 1 - pchisq(Crit, groups-2)
   names(groups) <- "Number of groups"
-  ## This should return an object of class htest
-  retval <- list(method="Hosmer-Lemeshow goodness of fit test",
-                 statistic=Crit,
-                 parameters=groups,
-                 p.value=P.val,
-                 data.name=Dname,
-                 alternative="Some lack of fit\nnull hypothesis: No lack of fit",
-                 estimate=cbind(Size=Sizes,
-                   Expected=round(Expect, 3),
-                   Counts=Observed))
-  oldClass(retval) <- "htest"
-  return(retval)
+  ## Return an object of class htest
+	if(length(ExpClasses) > 1L) {
+		retval <- list(method="Hosmer-Lemeshow goodness of fit test",
+									 statistic=Crit,
+									 parameters=groups,
+									 p.value=P.val,
+									 data.name=Dname,
+									 alternative="Some lack of fit\nnull hypothesis: No lack of fit",
+									 estimate=data.frame(Size=as.vector(Sizes),
+									 							 Expected=as.vector(round(Expect, 3)),
+									 							 Counts=as.vector(Observed)))
+	} else {
+		ExpVar <- tapply(ExpVar, Groups, mean)
+		estimate=data.frame(Size=as.vector(Sizes),
+												Expected=as.vector(round(Expect, 3)),
+												Counts=as.vector(Observed), 
+												V4=as.vector(ExpVar))
+		names(estimate)[4L] <- names(ExpClasses)
+		retval <- list(method="Hosmer-Lemeshow goodness of fit test",
+									 statistic=Crit,
+									 parameters=groups,
+									 p.value=P.val,
+									 data.name=Dname,
+									 alternative="Some lack of fit\nnull hypothesis: No lack of fit",
+									 estimate=estimate)
+	}
+	oldClass(retval) <- "htest"
+	return(retval)
 }

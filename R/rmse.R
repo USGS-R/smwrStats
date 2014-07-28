@@ -4,7 +4,7 @@
 # Coding history:
 #   2009Oct02 DLLorenz Original Coding
 #   2012May24 DLLorenz Conversion to R
-#   2012Sep29          This version.
+#   2014Jul28 DLLorenz Bug fix to rpd.
 #
 
 rmse <- function(x, ...)
@@ -33,5 +33,5 @@ rpd <- function(x, y) {
   ## Arguments:
   ##  x, y, paired sample and duplicate
   ##
- (x - y)/(x + y) * 50 # from standard methods
+ (x - y)/(x + y) * 200 # from standard methods
 }
