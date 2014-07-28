@@ -33,5 +33,5 @@ rpd <- function(x, y) {
   ## Arguments:
   ##  x, y, paired sample and duplicate
   ##
- (x - y)/(x + y) * 200 # from standard methods
+ abs(x - y)/(x + y) * 200 # from standard methods
 }

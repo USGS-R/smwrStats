@@ -46,7 +46,7 @@ U.S. Geological Survey Techniques of Water-Resources Investigations, book 4, cha
 The definition for the RMSE of paired water-quality duplicates is 
 \deqn{ RMSE = \sqrt{\frac{\sum{(x_i - y_i)^2}}{2n}}}{RMSE = sqrt(sum of squared differences/2 times the number of duplicates)}
 The definition for RPD for paired water-quality duplicates is 
-\deqn{ RPD = (x - y)/(x + y)/2 * 100}{RPD = (x - y)/(x + y)/2 * 100}
+\deqn{ RPD = abs(x - y)/(x + y)/2 * 100}{RPD = abs(x - y)/(x + y)/2 * 100}
 Other disciplines may use different equations.
 }
 
