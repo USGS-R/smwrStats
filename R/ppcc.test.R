@@ -29,7 +29,7 @@ ppcc.test <- function(x) {
   P.val <- 1. - pnorm(z)
   retval <- list(statistic=Stat, p.value=P.val,
                  data.name=data.name,
-                 alternative="Data are from a normal distribution\nnull hypothesis: Data are not from a normal distribution",
+                 alternative="Data are not from a normal distribution\nnull hypothesis: Data are from a normal distribution",
                  method="PPCC Normality Test",
   							 x=x)
   oldClass(retval) <- c("htest", "ppcc")
