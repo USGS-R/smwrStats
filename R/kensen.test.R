@@ -1,27 +1,95 @@
-# Kendall's tau used as a trend estimator (the t vector is time) along
-#    with the Sen slope estimator.
-#
-# Coding History:
-#    2000Oct27 JRSlack  Original coding.
-#    2001Feb01 JRSlack  Additional input checking.
-#    2003Apr04 JRSlack  Change variable x to y plus editorial cleanup.
-#    2005Mar24 DLLorenz Fixed removal of NAs
-#    2005May04 DLLorenz made class htest
-#    2005Jul14 DLLorenz Bug fix
-#    2006Apr10 DLLorenz Modifed to print slope and medians
-#    2007Jul12 DLLorenz Removes 1:1 match between values and time
-#    2007Aug27 DLLorenz Added S and VarS to return value
-#    2007Sep05 DLLorenz Added protection against all ties in data
-#    2008Sep17 DLLorenz Bugfix to computation on n
-#    2011May02 DLLorenz Conversion to R (major changes needed)
-#    2011Oct26 DLLorenz Renamed to indicate that a hypo test is done
-#    2013Mar26 DLLorenz Added serial correction 
-#
-
+#' Test for a Trend
+#' 
+#' Tests for a temporal trend using Kendall's tau and computes the Sen slope
+#' estimate of the trend.
+#' 
+#' 
+#' @param y the data collected over time. Missing values (NAs) are allowed and
+#' removed before computations.
+#' @param t the time corresponding to each observations in \code{y}. Missing
+#' values are allowed only where \code{y} is missing. These should be expressed
+#' as Julian or decimal time and must be strictly increasing.
+#' @param n.min the minimum number of observations for adjusting the p-value
+#' for serial correlation.  Used when \code{t} are uniformly spaced to adjust
+#' the p-value for serial correlation. Any value larger than the number of
+#' observations in \code{y} or \code{Inf} will suppress the adjustment.
+#' @return An object of class "htest" containing the following components:
+#' \item{method}{ a description of the method.  } \item{statistic}{ the value
+#' of Kendall's tau. } \item{p.value}{ the p-value. } \item{estimate}{ a named
+#' vector containing the Sen estimate of the slope in units per year, the
+#' median value of the data, the median value of time, the number of
+#' observations, and if the serial correction is applied, the effective number
+#' of observations (n*). } \item{data.name}{ a string containing the actual
+#' name of the input series. } \item{coef}{ a vector of an estimate of the
+#' intercept and slope. } \item{alternative}{ a character string describing
+#' alternative to the test ("two.sided"). } \item{null.value}{ the value for
+#' the hypothesized slope (0).  }
+#' @note A straight line of the form \cr \preformatted{ ytrend = sen.slope * (
+#' t - median.time ) + median.data} may be used as a trend line for graphically
+#' portraying or detrending the data. It goes through the point\cr
+#' \preformatted{ (t,y) = ( median.time , median.data )} with slope sen.slope.
+#' \cr
+#' 
+#' Many tied values can cause misleading results.\cr
+#' 
+#' The p-values for uniformly spaced data (\code{t} values unit value like
+#' years) are adjusted for lag-1 autoregressive serial correlation according to
+#' the method described by Yue and Wang (2004) that adjusts for trend. In
+#' keeping with the logic of \code{seaken}, the p-value adjustment is never
+#' performed for fewer than 10 observations. The user can suppress the
+#' adjustment by setting the value of \code{n.min} to \code{Inf}.
+#' @seealso \code{\link{dectime}}, \code{\link{seaken}}
+#' @references Conover, W.J., 1980, Practical nonparametric statistics (2d
+#' ed.): New York, Wiley, 512 p.\cr
+#' 
+#' Helsel, D.R., and Hirsch, R.M., 2002, Statistical methods in water
+#' resources: U.S. Geological Survey Techniques of Water-Resources
+#' Investigations, book 4, chap. A3, 522 p.\cr
+#' 
+#' Hirsch, R.M., Alexander, R.B. , and Smith, R.A., 1991, Selection of methods
+#' for the detection and estimation of trends in water quality: Water Resources
+#' Research, v. 27 p. 803--813.\cr
+#' 
+#' Kendall, M.G., 1938, A new measure of rank correlation: Biometrika v. 30, p.
+#' 81--89.\cr
+#' 
+#' Kendall, M.G., 1976, Rank correlation methods (4th ed.): London, Griffin,
+#' 202 p.\cr
+#' 
+#' Sen, P.K., 1968, Estimates of regression coefficient based on Kendall's tau:
+#' Journal of the American Statisical Association, v. 63, p. 1379--1389.\cr
+#' 
+#' Yue, S. and Wang. C., 2004, The Mann-Kendall test modified by effective
+#' sample size to detect trend in serially correlated hydrological series:
+#' Water Resources Management v. 18, p. 201-218.
+#' @keywords htest
+#' @examples
+#' 
+#' \dontrun{
+#' library(smwrData)
+#' data(SaddlePeaks)
+#' with(SaddlePeaks, kensen.test(Flow, Year))
+#' }
+#' 
+#' @export kensen.test
 kensen.test <- function(y, t, n.min=10) {
-  ## Arguments:
-  ##  y (numeric vector) the observations for trend analysis
-  ##  t (numeric vector) the time assocated with y
+	# Coding History:
+	#    2000Oct27 JRSlack  Original coding.
+	#    2001Feb01 JRSlack  Additional input checking.
+	#    2003Apr04 JRSlack  Change variable x to y plus editorial cleanup.
+	#    2005Mar24 DLLorenz Fixed removal of NAs
+	#    2005May04 DLLorenz made class htest
+	#    2005Jul14 DLLorenz Bug fix
+	#    2006Apr10 DLLorenz Modifed to print slope and medians
+	#    2007Jul12 DLLorenz Removes 1:1 match between values and time
+	#    2007Aug27 DLLorenz Added S and VarS to return value
+	#    2007Sep05 DLLorenz Added protection against all ties in data
+	#    2008Sep17 DLLorenz Bugfix to computation on n
+	#    2011May02 DLLorenz Conversion to R (major changes needed)
+	#    2011Oct26 DLLorenz Renamed to indicate that a hypo test is done
+	#    2013Mar26 DLLorenz Added serial correction 
+	#    2014Dec22 DLLorenz Roxygen headers
+	#
   ## Set names
   data.name <- paste(deparse(substitute(y)), "and", deparse(substitute(t)))
   ## Remove missing values and error checking.

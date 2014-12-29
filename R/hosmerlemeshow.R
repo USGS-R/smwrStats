@@ -1,17 +1,34 @@
-# Compute the Hosmer-Lemeshow test for logistic regression
-#
-# Coding History
-#    2007May29 DLLorenz Initial version
-#    2008Apr03 DLLorenz Begin bug fixes and tweaks
-#    2011Aug22 DLLorenz Conversion to R
-#    2011Oct25 DLLorenz Update for package
-#    2012Feb03          This version.
-#
-
+#' The Hosmer-Lemeshow Test
+#' 
+#' Perform the Hosmer-Lemeshow test for goodness-of-fit for a logistic
+#' regression model.
+#' 
+#' 
+#' @param object an object of class "glm" on which to perform the test.
+#' @param groups the number of groups to use for the test.
+#' @return An object of class "htest" having these components: \item{method}{ a
+#' description of the method.  } \item{statistic}{ the test statistic.  }
+#' \item{p.value}{ the attained p-level of the test statistic.  }
+#' \item{data.name}{ the name of \code{object}.  } \item{alternative}{ the
+#' alternate hypothesis---"some lack of fit."  } \item{estimate}{ a data frame
+#' of the size, expected value, and actual counts in each group. If the model
+#' has a single explanatory variable, then the mean value is included as column
+#' 4.  }
+#' @note The null hypothesis is "no lack of fit." Rejection of the null
+#' hypothesis indicates "some lack of fit."
+#' @seealso \code{\link{binaryReg}}
+#' @references Hosmer, D.W. and Lemeshow, S., 1980, Goodness-of-fit tests for
+#' the multiple logistic regression model: Communications in Statistics ---
+#' Theory and Methods, v. 9, p. 1043--1069
+#' @keywords htest
+#' @export hosmerLemeshow.test
 hosmerLemeshow.test <- function(object, groups=10) {
-  ## Arguments:
-  ##  object (a glm model object) the logistic regression model
-  ##  groups (integer scalar) the number of groups to use for the test.
+	# Coding History
+	#    2007May29 DLLorenz Initial version
+	#    2008Apr03 DLLorenz Begin bug fixes and tweaks
+	#    2011Aug22 DLLorenz Conversion to R
+	#    2011Oct25 DLLorenz Update for package
+	#    2014Dec22 DLLorenz Roxygen headers
   ##
 	ExpClasses <- attributes(terms(object))$dataClasses[-1L]
 	if(length(ExpClasses) == 1L) {

@@ -1,17 +1,30 @@
-# compute the area under the ROC curve
-#
-# Coding history:
-#    2008Apr03 DLLorenz Original Coding in plotLogistic()
-#    2009Feb11 DLLorenz Moved to this file
-#    2011Aug22 DLLorenz Conversion to R
-#    2011Oct25 DLLorenz Update for package
-#    2012Aug28 DLLorenz Change from diagPlot to plot
-#    2013Apr09 DLLorenz Added setGD to plot
-#    2014May19 DLLorenz fixed ranges
-
+#' Receiver Operator Characteristics for Logistic Regression
+#' 
+#' Compute the receiver operator characteristics (ROC) for a logistic
+#' regression model.
+#' 
+#' 
+#' @param object an object of class "glm."
+#' @return An object of class "roc" haveing these components: \item{c.val}{the
+#' area under the ROC curve} \item{table}{a 3-column matrix of the fitted
+#' values, sensitivity and specificity}
+#' @note Objects of class "roc" have \code{print} and \code{plot} methods.
+#' @references Gonen, M., 2006, Receiver Operating Characteristics (ROC)
+#' Curves: SAS Users Group International Conference, Paper 210-31 18 p.,
+#' available at http://www2.sas.com/proceedings/sugi31/210-31.pdf, last
+#' accessed Octocer 26, 2011.
+#' @keywords regression
+#' @export roc
 roc <- function(object) {
-  ## Argument:
-  ##  object (a glm model object) the logistic regression model for ROC
+	# Coding history:
+	#    2008Apr03 DLLorenz Original Coding in plotLogistic()
+	#    2009Feb11 DLLorenz Moved to this file
+	#    2011Aug22 DLLorenz Conversion to R
+	#    2011Oct25 DLLorenz Update for package
+	#    2012Aug28 DLLorenz Change from diagPlot to plot
+	#    2013Apr09 DLLorenz Added setGD to plot
+	#    2014May19 DLLorenz fixed ranges
+	#    2014Dec29 DLLorenz Convert to roxygen header
   ##
   fits <- fitted(object)
   ## Force to integer, just in case there is some off-1 values
@@ -33,67 +46,4 @@ roc <- function(object) {
   retval <- list(c.val=c.val, table=roc.mat)
   oldClass(retval) <- "roc"
   return(retval)
-}
-
-print.roc <- function(x, digits=3, ...) {
-  ## Arguments:
-  ##  x (roc object) the object to print
-  ##  digits (integer scalar) how many digits to use when prining
-  ##   ... (dots) not used, required for method function
-  ##
-  cat("\nArea under the ROC curve: ", round(x$c.val, digits), "\n\n", sep='')
-  invisible()
-  return(x)
-}
-
-plot.roc <- function(x, which="All", set.up=TRUE, ...) {
-  ## Arguments:
-  ##  x (roc object) the object to plot
-  ##   ... (dots) unused, required for method function
-  ## 
-  ## Set up graphics page
-  if(set.up) 
-    setGD("ROC")
-  ## Set up to do all plots
-  doPlot <- TRUE    
-  if(is.numeric(which)) {    
-    if(which[1L] == -1) # why is beyond me!
-      doPlot <- FALSE    
-    if(length(which) > 1 || which != 1)
-    warning("Only one diagnostic plot for senSlope")
-  }
-  if(doPlot[1L]) {
-    sens <- x$table$sens
-    spec<- 1-x$table$spec
-    fit <- x$table$fits
-    ## Need to start at origin
-    xyPlot(c(1,spec,0), c(1,sens,0),
-    			 xaxis.range=c(0,1), yaxis.range=c(0,1),
-           ytitle='True positive rate (Sensitivity)',
-           xtitle='False positive rate (1-Specificity)',
-           margin=c(NA,NA, 1.6, NA))
-    refLine(coefficients=c(0,1))
-    ## Select labels along the length of the curve and plot the predicted value
-    curve.dist <- cumsum(diff(c(0, 1 - spec))^2 + diff(c(0, 1 - sens))^2)
-    for(i in seq(.05, .95, by=0.05) * max(curve.dist)) {
-      xdist <- abs(curve.dist - i)
-      min.xdist <-  min(xdist)
-      pick <- which(xdist == min.xdist)[1]
-      xpick <- spec[pick]
-      ypick <- sens[pick]
-      if(fit[pick] > 0.008 && fit[pick] < 0.993) { # label it
-        if(xpick > .04 && ypick < .96) {
-          addAnnotation(xpick-0.01, ypick-0.01,
-                        format(round(fit[pick], 2)), angle=-45, justification='right')
-        }
-        else { # Put on the left side of the line
-          addAnnotation(xpick+0.01, ypick-0.03,
-                        format(round(fit[pick], 2)), angle=-45, justification='left')
-        }
-      }
-    }
-    addTitle(Main=paste('ROC Analysis, Area under curve =',
-               round(x$c.val,3), sep=' '))
-  }
-  invisible(x)
 }

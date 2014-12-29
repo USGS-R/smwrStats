@@ -1,20 +1,39 @@
-# Do the actual fit of the Seasonal Wave
-#
-# Coding history:
-#    2007????? SVecchia Original Coding
-#    2007Aug21 DLLorenz Split into 2 functions and added to USGS library
-#    2007Aug22 DLLorenz Modified seasonalWave to take argument x and
-#                       return the wave values
-#    2008Sep10 DLLorenz Updated comments
-#    2009Jul22 DLLorenz Begin modification to allow any number of models
-#    2011May25 DLLorenz Begin Conversion to R and rename
-#    2011Jul06 DLLorenz Prep for package
-#    2012Aug11 DLLorenz Integer fixes
-#    2013Feb02 DLLorenz Modification to more easily facilitate new models
-#    2013Apr02 DLLorenz Final tweaks for release, not exported
-#
-
+#' Compute Seasonal Wave Model
+#' 
+#' This is a support function for seasonalWave model (Vecchia and others,
+#' 2008).
+#' 
+#' 
+#' @param cmax the time of the greatest peak value, expressed as a fraction of
+#' the year.
+#' @param wtx a vector of 12 monthly application rates.
+#' @param pkt the numeric month of peak expected from the data in \code{wtx},
+#' expressed as a fraction of the year.
+#' @param phi the recession rate, in 1/years.
+#' @return A vector of 361 values describing the annual seasonal wave.
+#' @note This function is support for the seasonalWave function and is not
+#' intended to be called by the user.
+#' @author Dave Lorenz, original coding by Aldo Vecchia.
+#' @seealso \code{\link{seasonalWave}}
+#' @references Vecchia, A.V., Martin, J.D., and Gilliom, R.J., 2008, Modeling
+#' variability and trends in pesticide concentrations in streams: Journal of
+#' the American Water Resources Association, v. 44, no. 5, p. 1308-1324.
+#' @keywords manip
 seasonalWave.fit <- function(cmax, wtx, pkt, phi) {
+	# Coding history:
+	#    2007????? SVecchia Original Coding
+	#    2007Aug21 DLLorenz Split into 2 functions and added to USGS library
+	#    2007Aug22 DLLorenz Modified seasonalWave to take argument x and
+	#                       return the wave values
+	#    2008Sep10 DLLorenz Updated comments
+	#    2009Jul22 DLLorenz Begin modification to allow any number of models
+	#    2011May25 DLLorenz Begin Conversion to R and rename
+	#    2011Jul06 DLLorenz Prep for package
+	#    2012Aug11 DLLorenz Integer fixes
+	#    2013Feb02 DLLorenz Modification to more easily facilitate new models
+	#    2013Apr02 DLLorenz Final tweaks for release, not exported
+	#    2014Dec29 DLLorenz Conversion to roxygen header
+	#
   ## This is a seasonalWave support function.
   ## It computes seasonal wave with cmax=time of peak,
   ## wtx=monthly application rates, pkt=month of peak,

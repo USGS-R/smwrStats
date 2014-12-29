@@ -1,0 +1,105 @@
+\documentclass{article}
+\parskip 3pt
+\parindent 30pt
+\leftskip=-0.5in
+\rightskip=-0.5in
+%\VignetteIndexEntry{CompareGroups}
+%\VignetteDepends{USGSwsStats}
+%\VignetteDepends{smwrData}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\title{Comparing Groups Example}
+
+\author{Dave Lorenz}
+
+\maketitle
+
+This example demonstrates some functions in the \texttt{USGSwsStats} package that facilitate comparing multiple groups. The example uses the subset of Knopman (1990) dataset C7 from Helsel and Hirsch (2002) to complement the analysis done in sections 7.1 and 7.4 in their book. All section references in this example are from Helsel and Hirsch (2002). The critical alpha value for all tests is 0.05.
+
+<<echo=TRUE>>=
+# Load the stats, USGSwsData, and USGSwsStats packages
+library(stats)
+library(smwrData)
+library(USGSwsStats)
+# Get the dataset
+data(AppalachianSpecCap)
+@
+
+\eject
+\section{Plot the Data}
+
+Helsel and Hirsch (2002) stress plotting the data to help undserstand the data and find an appropriate statistical technique. For these data, a box plot by group should indicate whether a parametric analysis can be used. Figure 1 replicates figure 7.14 from Helsel and Hirsch (2002) and indicates that the parametric analysis can be used, as well as the nonparametric analysis.
+
+<<echo=TRUE>>=
+# setSweave is a specialized function that sets up the graphics page for
+# Sweave scripts. For interactive use, it should be removed and the
+# default setting for set.up can be used.
+setSweave("CG01", 5, 5)
+with(AppalachianSpecCap, boxPlot(LogSpecCap, group=RockType,
+																 Box=list(type="tukey")))
+# Required call to close PDF output graphics
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{CG01.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 1.} The box plot of log specific capacities by rock type.
+
+\eject
+\section{Nonparametric Analysis}
+
+The \texttt{kruskal.test} function (stats package) performs the Kruskal-Wallis test decribed in section 7.1.1.
+
+<<echo=TRUE>>=
+# Perform the analysis using a formula
+kruskal.test(LogSpecCap ~ RockType, data=AppalachianSpecCap)
+@
+
+The attained p-value for the test is 0.00912, which is less than the critical alpha level set for the test, so one can proceed with a multiple comparison test to identify which rock types are different from one another. The \texttt{multicomp.test} in the USGSwsStats package can be used to identify similar groups using either parametric or nonparamteric methods. The nonparametric methods are closely related to the Krusak-Wallis test, in that the known statistics of ranks are used and not simply using a rank transform and parametric methods for computing the critical value separating groups. The code below demonstrates how to use \texttt{multicomp.test} to indentify similar groups using the nonparametric method. These nonparametric methods were developed after the original version of Helsel and Hirsh, from section 7.4.2.
+
+<<echo=TRUE>>=
+# Perform the MCT using the default Tukey method for determining the
+# critical value for separating groups.
+with(AppalachianSpecCap, multicomp.test(LogSpecCap, RockType,
+																				method="non"))
+@
+
+The critical value computed for the rank data using Tukey's method is 2.569. Groups are different if the difference in the mean rank (estimate) is is significantly different from 0. The lower and upper confidence interval are computed by subtracting and adding the stderr times the critrical value from the difference. The table of paired comparisons indicates that only Dolomite is different from Metamorhic. The table of associations reflects that by forming two association, one excluding Dolomite and the other excluding Metamorphic. Because Dolomite is more different from the others than Metamorphic, Group B is the more likely association.
+
+\eject
+\section{Parametric Analysis}
+
+The \texttt{oneway.test} function (stats package) performs the Kruskal-Wallis test decribed in section 7.1.2. It is more striaghtforward than the \texttt{aov} function (also in the stats package) because it presents the results as a simple hypothesis test and it adjusts for unequal variances, much like \texttt{t.test}.
+
+<<echo=TRUE>>=
+# Perform the analysis using a formula
+oneway.test(LogSpecCap ~ RockType, data=AppalachianSpecCap)
+@
+
+The attained p-value for the test is 0.0254, which is less than the critical alpha level set for the test, so one can proceed with a multiple comparison test to identify which rock types are different from one another. The \texttt{multicomp.test} in the USGSwsStats package can be used to identify similar groups. The parametric method uses the pooled variance and does not assume unequal variances. The code below demonstrates how to use \texttt{multicomp.test} to indentify similar groups using the parametric method.
+
+<<echo=TRUE>>=
+# Perform the MCT using the default Tukey method for determining the
+# critical value for separating groups.
+with(AppalachianSpecCap, multicomp.test(LogSpecCap, RockType,
+																				method="para"))
+@
+
+The critical value computed for the rank data using Tukey's method is 2.5912. Groups are different if the difference in the mean (estimate) is is significantly different from 0. The lower and upper confidence interval are computed by subtracting and adding the stderr times the critrical value from the difference. The table of paired comparisons indicates that only Dolomite is different from all others. The table of associations reflects that by forming two association, one including only Dolomite and the other excluding Dolomite.
+
+
+\begin{thebibliography}{9}
+
+\bibitem{HH2}
+Helsel, D.R. and Hirsch, R.M., 2002, Statistical methods in water resources: U.S. Geological Survey Techniques of Water-Resources Investigations, book 4, chap. A3, 522 p.
+
+\bibitem{Knp}
+Knopman, D. S., 1990, Factors related to the water-yielding potential of rocks in the Piedmont and Valley and Ridge provinces of Pennsylvania: U.S. Geological Survey Water-Resources Investigations Report 90-4174, 52 p.
+
+\end{thebibliography}
+
+\end{document}

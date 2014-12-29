@@ -1,25 +1,67 @@
-# new version of move.1 (Simple LOC as opposed to SLR)
-#
-# Coding history:
-#    2006Dec05 DLLorenz Initial version
-#    2009Mar19 DLLorenz Dated version
-#    2010Dec08 DLLorenz Conversion to R
-#    2011Aug05 DLLorenz Added print and plot (diagPlot) files
-#    2011Oct25 DLLorenz Update for package
-#    2012Aug28 DLLorenz Change from diagPlot to plot
-#    2012Nov21 DLLorenz Added Q-Q plot to diagnostics
-#    2012Dec21 DLLorenz Change gaussian to normal
-#    2013Apr09 DLLorenz Added setGD to plot
-#
-
+#' Maintenance of Variance Extension, Type 1
+#' 
+#' Calculates the Maintenance Of Variance Extension, Type 1 (MOVE.1) for record
+#' extension by fitting a Line of Organic Correlation (LOC) regression model.
+#' 
+#' If \code{distribution} is "normal," then the data in \code{x} and \code{y}
+#' are assumed to have a bivariate normal distribution. Otherwise, they are
+#' assumed to have a bivariate log-normal distribution and a logarithmic
+#' transform is applied to both \code{x} and \code{y} before analysis. The
+#' natural logarithm is used if \code{distribution} is "lognormal" and the
+#' commmon logarithm is used if \code{distribution} is "commonlog."
+#' 
+#' @param formula a formula object with the response variable on the left of
+#' the ~ operator and a single explantory variable on the right.
+#' @param data the data frame containing the variables named in \code{formula}.
+#' @param subset an optional vector specifying a subset of observations to be
+#' used in the fitting process.
+#' @param na.action a function that indicates what should happen when the data
+#' contain missing values (NAs).  The default is set by the \code{na.action}
+#' setting of \code{options} and is \code{na.fail} if that is unset. Ohter
+#' possible options include \code{na.exclude} and \code{na.omit}.
+#' @param distribution either "normal," "lognormal," or "commonlog" indicating
+#' nature of the bivariate distribution, See \bold{Details}.
+#' @return An object of class "move.1" having these components:
+#' \item{coefficients}{ the intercept and slope of the line describing the fit.
+#' } \item{na.action}{ a character string indicating the special handling of
+#' NAs. } \item{R}{ Pearson's correlation coefficient. } \item{call}{ the
+#' matched call to \code{move.1}. } \item{fitted.values}{ the fitted LOC values
+#' for the response. } \item{residuals}{ a 2-column matrix containing the
+#' signed distance from the predicted to to the corresponding \code{y} and
+#' \code{x} values. } \item{x}{ the (possibly transformed) values for \code{x}.
+#' } \item{y}{ the (possibly transformed) values for \code{y}. }
+#' \item{x.stats}{ the mean and standard deviation of the (possibly
+#' transformed) values for \code{x}. } \item{y.stats}{ the mean and standard
+#' deviation of the (possibly transformed) values for \code{y}. }
+#' \item{var.names}{ the names of \code{y} and \code{x}. } \item{model}{ the
+#' model frame. }
+#' @note Objects of class "move.1" have \code{print}, \code{predict}, and
+#' \code{plot} methods.
+#' @seealso \code{\link{predict.move.1}}, \code{\link{plot.move.1}}
+#' @references Hirsch, R.M., 1982, A comparison of four streamflow record
+#' extension techniques: Water Resources Research, v. 18, p. 1081--1088.
+#' @keywords models regression
+#' @examples
+#' 
+#' library(smwrData)
+#' data(IonBalance)
+#' # Build model for non missing Alkalinity
+#' IB.move <- move.1(Anion_sum ~ Cation_sum, data=IonBalance, subset=abs(Pct_Diff) < 10) 
+#' print(IB.move)
+#' 
+#' @export move.1
 move.1 <- function(formula, data, subset, na.action, distribution="normal") {
-  ## Arguments:
-  ##  formula (a formula with 1 left and 1 right entry) the model formula
-  ##  data (a data.frame or envirnment) where to find the data in the formula
-  ##  subset (any subset expression) subset the data?
-  ##  na.action (a function) how to hande missing values
-  ##  distribution (character scalar) use bivariate "normal" or
-  ##    "lognormal" or "commonlog" distribution
+	# Coding history:
+	#    2006Dec05 DLLorenz Initial version
+	#    2009Mar19 DLLorenz Dated version
+	#    2010Dec08 DLLorenz Conversion to R
+	#    2011Aug05 DLLorenz Added print and plot (diagPlot) files
+	#    2011Oct25 DLLorenz Update for package
+	#    2012Aug28 DLLorenz Change from diagPlot to plot
+	#    2012Nov21 DLLorenz Added Q-Q plot to diagnostics
+	#    2012Dec21 DLLorenz Change gaussian to normal
+	#    2013Apr09 DLLorenz Added setGD to plot
+	#    2014Dec22 DLLorenz Roxygen headers
   ##
   ## Process formula as with regular linear regression!
   call <- match.call()
@@ -87,124 +129,4 @@ move.1 <- function(formula, data, subset, na.action, distribution="normal") {
   return(fit)
 }
 
-print.move.1 <- function(x, digits=4, ...) {
-  ## Arguments:
-  ##  x (a move.1 object) the object to print
-  ##  digits (integer scalar) the number of significant digits to print
-  ##  ... (dots) any other arguments to print
-  ##
-  cat("Call:\n")
-  dput(x$call)
-  cat("\nCoefficients:\n")
-  print(x$coefficients, digits=digits, ...)
-  cat("\nStatistics of the variables:\nResponse (", x$var.names[1], "):\n",
-      sep="")
-  print(x$ystats, digits=digits, ...)
-  cat("Predictor (", x$var.names[2], "):\n", sep="")
-  print(x$xstats, digits=digits, ...)
-  cat("Correlation coefficient: ", round(x$R, digits), 
-      "\n                p-value: ", round(x$p.value, digits), "\n", sep="")
-  if(!is.null(x$na.action)) {
-    n.na <- length(x$na.action)
-    if(n.na > 1)
-      cat("  (", n.na, " observations deleted due to missing values)\n", sep="")
-    else
-      cat("  (", n.na, " observation deleted due to missing values)\n", sep="")
-  }
-  if(!is.null(x$cx) && !is.null(x$cy))
-    cat(sum(x$cx | x$cy), " observations were left-consored\n", sep="")
-  invisible(x)
-}
-
-plot.move.1 <- function(x, which="All", set.up=TRUE, span=0.8, ...) {
-  ## Arguments:
-  ##  x (a move.1 object) the object to plot
-  ##  which (character scalar or numeric vector) which plots?
-  ##  span (numeric scalar) the span for the x on y, y on x plots
-  ##  set.up and ... (dots) not used, required for method functions
-  ##
-  ## Identify which plots to do:
-  ## 1 Q-Q plot
-  ## 2 x on y, y on x
-  ## 
-  ## Set up graphics page
-  if(set.up) 
-    setGD("MOVE.1")
-  ## Set up to do all plots
-  doPlot <- c(rep(TRUE, 2L) , FALSE)
-  if(is.numeric(which)) {
-    if(min(which) > 0) # select which to plot
-      doPlot[seq(2L)[-which]] <- FALSE
-    else # which not to plot
-      doPlot[-which] <- FALSE
-  }
-  xname <- x$var.names[2L]
-  yname <- x$var.names[1L]
-  if(doPlot[3L]) {
-    ## This is done only by special request
-    AA <- scalePlot(x$x, x$y, scale=x$coef[2L], Plot=list(what="points"),
-                    xtitle=xname, ytitle=yname)
-    refLine(coefficients=x$coef, current=AA)
-    cov <- x$R*(x$xstats[2L]*x$ystats[2L])
-    cov <- matrix(c(x$xstats[2L]^2, cov, cov, x$ystats[2L]^2), 2)
-    el <- cov2Ellipse(cov, c(x$xstats[1L], x$ystats[1L]))
-    addXY(el$x, el$y, Plot=list(what="lines", color="blue"), current=AA)
-    el <- cov2Ellipse(cov, c(x$xstats[1L], x$ystats[1L]), scale=2)
-    addXY(el$x, el$y, Plot=list(what="lines", color="blue"), current=AA) 
-  }
-  if(doPlot[2L]) {
-    ## Set up for 2 graphs
-    AA.lo <- setLayout(width=6, height=c(3,3))
-    AA.gr <- setGraph(1, AA.lo)
-    AA <- xyPlot(x$x, x$y, Plot=list(what="points"), xtitle=xname, ytitle=yname)
-    refLine(coefficients=lsfit(x$x, x$y)$coef, Plot=list(color="green"), current=AA)
-    addSmooth(x$x, x$y, span=span, Plot=list(color="cyan"), current=AA)
-    AA.gr <- setGraph(2, AA.lo)
-    AA <- xyPlot(x$y, x$x, Plot=list(what="points"), xtitle=yname, ytitle=xname)
-    refLine(coefficients=lsfit(x$y, x$x)$coef, Plot=list(color="green"), current=AA)
-    addSmooth(x$y, x$x, span=span, Plot=list(color="cyan"), current=AA)
-  }
-  if(doPlot[1L]) {
-    qqPlot(x$x, x$y, xtitle=xname, ytitle=yname, Line1.1=list(what="none"))
-  }
-  invisible(x)
-}
-
-predict.move.1 <- function(object, newdata, type = c("response", "link")
-                           , ...) {
-  ## Arguments:
-  ##  object (a move.1 object) the model from which predictions are made
-  ##  newdata (a data.frame) the new data, if missing use old data
-  ##  type (character scalar) what to predict
-  ##  ... (dots) not used, required for method function
-  ##
-  if(missing(newdata))
-    newdata <- object$model
-  xlab <- attr(attr(object$model, "terms"), "term.labels")
-  xindex <- newdata[, xlab] # xindex is simple vector
-  ckdist <- FALSE
-  if(!is.null(object$call$distribution)) {
-    dist <- match.arg(object$call$distribution, c("normal", "lognormal",
-                                                  "commonlog"))
-    if(dist == "lognormal") {
-      ckdist <- TRUE
-      xindex <- log(xindex)
-    }
-    else if(dist == "commonlog") {
-      ckdist <- TRUE
-      xindex <- log10(xindex)
-    }
-  }
-  out <- cbind(1, xindex) %*% object$coef
-  type <- match.arg(type)
-  if(type == "response" && ckdist) {
-    if(dist == "commonlog")
-      out <- 10^out
-    else # Must be natural log
-      out <- exp(out)
-  }
-  as.vector(out) # Strip matrix info
-}
-
 ## The default extraction methods: coef, residuals, fitted work
-

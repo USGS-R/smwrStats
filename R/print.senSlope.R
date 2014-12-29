@@ -1,12 +1,21 @@
-
+#' Print Objects
+#' 
+#' Print the results of a Sen slope analysis (\code{senSlope}).
+#' 
+#' 
+#' @param x an object of class "senSlope" from \code{senSlope}.
+#' @param digits the number of significant digits to print numeric data.
+#' @param \dots additonal arguments for printing numeric values.
+#' @return The object \code{x} is returned invisibly.
+#' @note The printed output contains the call, the smalles and largest
+#' residuals, the regression coefficients, and the confidence limits of the Sen
+#' slope.
+#' @export
+#' @method print senSlope
 print.senSlope <- function(x, digits=4, ...) {
   ## Coding history:
   ##    2013Apr15 DLLorenz Original Coding
-  ##
-  ## Arguments:
-  ##  x (a senSlope object) the object to print
-  ##  digits (integer scalar) the number of significant digits to print
-  ##  ... (dots) any other arguments to print
+	##    2014Dec29 DLLorenz convert to roxygen header
   ##
   cat("Call:\n")
   dput(x$call)

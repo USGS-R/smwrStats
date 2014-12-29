@@ -1,17 +1,27 @@
-# Compute skewness
-#
-# Coding history:
-#    Unknown   DLLorenz Original Coding 
-#    2011Aug24 DLLorenz Conversion to R
-#    2013Feb28 DLLorenz Tweak to handling method
-#    2013Feb28          This version
-#
-
+#' Skewness
+#' 
+#' Compute the skewness statistic.
+#' 
+#' @param x any numeric vector.
+#' @param na.rm logical; if TRUE, then remove missing value before computation.
+#' @param method the method to use for computing the skew, must be "fisher" or
+#' "moments."
+#' @return a single value representing the skewness of the data in \code{x}.
+#' @references Helsel, D.R. and Hirsch, R.M., 2002, Statistical methods in
+#' water resources: U.S. Geological Survey Techniques of Water-Resources
+#' Investigations, book 4, chap. A3, 522 p.\cr
+#' @keywords univariate
+#' @examples
+#' 
+#' skew(c(1.0, 1.2, 1.5, 1.9, 2.5))
+#' 
+#' @export skew
 skew <- function(x, na.rm=TRUE, method="fisher") {
-  ## Arguments:
-  ##  x (numeric vector) 
-  ##  na.rm (logical scalar) remove missings?
-  ##  method (character scalar) the method to use: "fisher" or "moments"
+	# Coding history:
+	#    Unknown   DLLorenz Original Coding 
+	#    2011Aug24 DLLorenz Conversion to R
+	#    2013Feb28 DLLorenz Tweak to handling method
+	#    2014Dec29 DLLorenz Conversion to roxygen header
   ##
   method <- match.arg(method, c("fisher", "moments"))
   if(na.rm)

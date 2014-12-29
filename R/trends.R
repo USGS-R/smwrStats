@@ -1,25 +1,40 @@
-# function to compute terms for piecewise modeling of trends
-#
-# Coding history:
-#    2004Nov23 DLLorenz Original
-#    2011Aug31 DLLorenz Conversion to R
-#    2011Oct25 DLLorenz Update for package
-#    2013Aug15 DLLorenz Added class
-#
-
+#' Basis for Piecewise Linear Trends
+#' 
+#' Generate a basis matrix for piecewise linear modeling of trends.
+#' 
+#' 
+#' @param x a vector of dates/times, assumed to be in dectime format. Missing
+#' values are permitted and result in corresponding missing values in the
+#' output.
+#' @param breaks a vector of breakpoints in the linear trends.
+#' @param boundary.breaks a logical vector of length 2, indicating whether the
+#' breaks include the range of the data.  If the first is TRUE, then the first
+#' break denotes the beginning of a trend.  If the last is TRUE, then the last
+#' break denotes the end of a trend. Otherwise, the trends begin at the
+#' \code{floor} of the first value of \code{x} and end at the \code{ceiling} of
+#' the last value of \code{x}.
+#' @param steps a vector indicating any step trends.
+#' @return A matrix of dimension length of x by number of linear trend and step
+#' trends.  The breaks are included as an attribute.
+#' @note Each trend is 0 prior to the break, and then increases at the rate of
+#' 1 per unit and maintain that maximum value after the break. The regression
+#' coefficient then reprents the trend as a rate. A step trend is 0 before the
+#' step and 1 after it.
+#' @seealso \code{\link{floor}}, \code{\link{ceiling}}, \code{\link{curvi}}
+#' @keywords model
+#' @examples
+#' 
+#' # model two piecewise linear trends from 2000 to 2004, with a break at 2001 and 2003
+#' trends(2000 + seq(0,20)/5, breaks=c(2001, 2003))
+#' 
+#' @export trends
 trends <- function(x, breaks, boundary.breaks=c(FALSE, FALSE), steps) {
-  ## Arguments:
-  ##  x (numeric vector) the data on which to make the trends
-  ##  breaks (numeric vector) the breakpoints for the piecewise segments
-  ##  boundary.breaks (logical of length 2) extend breaks to boundary
-  ##  steps (numeric vector) the chnage points for step change
-  ## 
-  ## Creates separate trends of x at breaks, x is assumed to be dectime format
-  ## Each trend is 0 prior to the break, increase at 1 per unit and maintain
-  ## that maximum value after the break
-  ## If boundary.breaks=T, then breaks completely define the trends, otherwise
-  ## the breaks are interior breaks (the default)
-  ## steps indicates a step trend 0 before, 1 after
+	# Coding history:
+	#    2004Nov23 DLLorenz Original
+	#    2011Aug31 DLLorenz Conversion to R
+	#    2011Oct25 DLLorenz Update for package
+	#    2013Aug15 DLLorenz Added class
+	#    2014Dec29 DLLorenz Conversion to roxygen header
   ##
   boundary.breaks <- rep(boundary.breaks, length.out=2) # just in case
   if(!boundary.breaks[1])

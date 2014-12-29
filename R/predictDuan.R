@@ -1,9 +1,11 @@
-# correct transformed response variable using Duan's smoother
-#
-# Coding history:
-#    2013Aug13 DLLorenz Original coding
-
+#' @include predictMVUE.R
+#' @rdname predictMVUE
+#' @export
 predictDuan <- function(object, newdata, back.trans=exp) {
+	# Coding history:
+	#    2013Aug13 DLLorenz Original coding
+	#    2014Dec29 DLLorenz Conversion to roxygen headers
+	#
   if(missing(newdata))
     newdata <- eval(as.list(object$call)$data)
   firstguess <- predict(object, newdata, type = "response")

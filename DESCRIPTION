@@ -5,16 +5,72 @@ Title: General tools for hydrologic data and trend analysis.
 Author: Dave Lorenz <lorenz@usgs.gov>.
 Maintainer: Dave Lorenz <lorenz@usgs.gov>
 Depends:
-    USGSwsBase (>= 0.5),
-    stats,
-    leaps,
-    USGSwsGraphs (>= 0.6),
-    boot
+    smwrBase (>= 1.0),
+    smwrGraphs (>= 1.0)
 Suggests:
-    USGSwsData (>= 0.8)
+    smwrData (>= 1.0)
 Imports:
-    car
+    car,
+    leaps,
+    stats
 Description: Useful tools for the analysis of hydrologic data,
     not inlcuding censored water-quality data.
 License: file LICENSE
 LazyLoad: yes
+Collate:
+    'USGSwsStats-package.R'
+    'allreg.R'
+    'ancovareg.R'
+    'binreg.R'
+    'confirm.R'
+    'confirm.seasonalPeak.R'
+    'cor_all.R'
+    'curvi.R'
+    'grubbs.R'
+    'grubbs.test.R'
+    'hosmerlemeshow.R'
+    'kensen.test.R'
+    'lecessie.R'
+    'makepredictcall.R'
+    'move.1.R'
+    'multicomp.test.R'
+    'multreg.R'
+    'percentile.R'
+    'plot.Stats.R'
+    'plot.htest.R'
+    'ppcc.test.R'
+    'predict.move.1.R'
+    'predict.senSlope.R'
+    'predictMVUE.R'
+    'predictDuan.R'
+    'predictFerguson.R'
+    'press.R'
+    'print.MCT.R'
+    'print.ancovaReg.R'
+    'print.binaryReg.R'
+    'print.cor.all.R'
+    'print.lecessie.R'
+    'print.move.1.R'
+    'print.multReg.R'
+    'print.roc.R'
+    'print.seasonalPeak.R'
+    'print.senSlope.R'
+    'qtiles.CI.R'
+    'quantile.numeric.R'
+    'rmse.R'
+    'roc.R'
+    'seaken.R'
+    'seasonalPeak.R'
+    'seasonalWave.R'
+    'seasonalWave.fit.R'
+    'seasonalWave.wt.R'
+    'selBestWave.R'
+    'senSlope.R'
+    'serial.test.R'
+    'seriesPlot.seaken.R'
+    'skew.R'
+    'sumStats.R'
+    'summary.cor.all.R'
+    'timeWeightedMean.R'
+    'trends.R'
+    'vif.R'

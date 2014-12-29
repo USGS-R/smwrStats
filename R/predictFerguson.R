@@ -1,9 +1,11 @@
-# correct log-transformed response variable using Ferguson (MLE)
-#
-# Coding history:
-#    2013Aug13 DLLorenz Original coding
-
+#' @include predictMVUE.R
+#' @rdname predictMVUE
+#' @export
 predictFerguson <- function(object, newdata, Log10=FALSE) {
+	# Coding history:
+	#    2013Aug13 DLLorenz Original coding
+	#    2014Dec29 DLLorenz Conversion to roxygen headers
+	#
   Fact <- if(Log10) 2.30258509299405 else 1.
   if(missing(newdata))
     newdata <- eval(as.list(object$call)$data)

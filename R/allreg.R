@@ -1,32 +1,56 @@
-# All subsets regression problems
-# Requires the leaps package.
-#
-# Coding history:
-#    ????????? AVecchia Original coding
-#    2007Mar29 DLLorenz Modify argmuents for USGS library
-#    2007Mar30 DLLorenz More modifications
-#    2007May02 DLLorenz Changed column names in output
-#    2007Aug13 DLLorenz Added option to remove missing frm x
-#    2011Apr26 DLLorenz Conversion to R
-#    2011Oct25 DLLorenz Update argument documentation
-#    2011Oct25          This version.
-#
-
+#' All Subsets Regression
+#' 
+#' Create a table of the best subsets of explantory variables for a response
+#' variable.
+#' 
+#' @include USGSwsStats-package.R
+#' @param x matrix of candidate exmplanatory variables.
+#' @param y the response variable.
+#' @param wt the weight variable if needed.
+#' @param nmax the maximum number of explanatory variables to include in the
+#' largest model.
+#' @param nbst the number of best models to determine for each subset size.
+#' @param na.rm.x should missing values in x should be removed?
+#' @return A data frame containing these columns: \item{model.formula}{the
+#' subset model formula} \item{nvars}{the size (number of variables in the
+#' subset model} \item{stderr}{the standard error of the subsbet model}
+#' \item{R2}{the coefficient of determination for the subset model}
+#' \item{adjr2}{the adjusted r-squared of the subbset model} \item{Cp}{Mallow's
+#' Cp for the subset model} \item{press}{the press statistic for the subset
+#' model}
+#' @note This function is a wrapper for the \code{regsubsets} function in the
+#' leaps package.
+#' @seealso \code{\link{regsubsets}}
+#' @references Helsel, D.R. and Hirsch, R.M., 2002, Statistical methods in
+#' water resources: U.S. Geological Survey Techniques of Water-Resources
+#' Investigations, book 4, chap. A3, 522 p.\cr
+#' 
+#' Mallow, C.L., 1973, Come comments of Cp: Technometrics, v. 15, p.
+#' 661--675.\cr
+#' 
+#' Miller, A.J., 1990, Subset selection in regression in Monographs on
+#' Statistics and Applied Probability 40: London, Chapman and Hall.\cr
+#' @keywords models regression
+#' @examples
+#' 
+#' # See the regression vignette for examples
+#' .pager <- options("pager")
+#' options(pager="console")
+#' vignette(package="USGSwsStats")
+#' options(.pager)
+#' @importFrom leaps regsubsets
+#' @export allReg
 allReg <- function(x, y, wt=rep(1,nrow(x)), nmax=ncol(x), nbst=3,
                    na.rm.x=TRUE) {
-  ## Arguments:
-  ##  x (rectangular numeric) the candidate explanatory variables
-  ##  y (numeric matrix or vector) the response variables
-  ##  wt (numeric vector) any weighting variable
-  ##  nmax (numeric scalar) the maximum number of explanatory variables to
-  ##    include in the candidate models
-  ##  nbst (numeric scalar) the number of best models to determine for each
-  ##    subset size
-  ##  na.rm.x (logical scalar) should missing values in x be removed
-  ## 
-  ## The output object contains the regression output. It is a data.frame
-  ##     showing the variables included in the nbst models for each model
-  ##     size along with ratings
+	# Coding history:
+	#    ????????? AVecchia Original coding
+	#    2007Mar29 DLLorenz Modify argmuents for USGS library
+	#    2007Mar30 DLLorenz More modifications
+	#    2007May02 DLLorenz Changed column names in output
+	#    2007Aug13 DLLorenz Added option to remove missing frm x
+	#    2011Apr26 DLLorenz Conversion to R
+	#    2011Oct25 DLLorenz Update argument documentation
+	#    2014Dec22 DLLorenz Roxygen headers
   ##
   if(is.null(dimnames(y)))
     yname <- deparse(substitute(y))

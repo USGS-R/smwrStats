@@ -1,29 +1,47 @@
-# Select the "best" seasonal wave model
-#
-# Coding history:
-#    2007Aug28 DLLorenz Initial coding.
-#    2007Aug29 DLLorenz Code tweaks and revision
-#    2007Sep14 DLLorenz Modified to use any regression technique
-#    2011Aug11 DLLorenz Conversion to R
-#    2011Aug11          This version.
-#
-
+#' Select the "Best" Seasonal Wave
+#' 
+#' Select the "best" parameters for a seasonal wave fit.
+#' 
+#' For logistic regression, use \code{Regression}=\code{glm},
+#' \code{Test}=\code{deviance}, \code{family=binomial(link="logit")}.
+#' 
+#' @param formula the formula describing the model without a
+#' \code{seasonalWave} term.
+#' @param data the data.frame that contians the veriable specified in the
+#' formula.
+#' @param dec.time a character string of the name of the column in \code{data}
+#' in decimal time format.
+#' @param wave.list an object of class "seasonalPeak" (confirmed) describing
+#' the timing of the peak and potential candidate models.
+#' @param exhaustive logical; if TRUE, then do a fairly complete search for the
+#' timing of the peak, otherwise accept the timing specified in
+#' \code{wave.list}.
+#' @param Regression the regression function.
+#' @param Test the function to perform the comparison test among all of the
+#' candidate models.
+#' @param \dots any additional arguments to \code{Regression}.
+#' @return A 4- or 7-column matrix of the "best" models. The columns are the
+#' timing of the peak (\code{Cmax}), the primary peak loading (\code{Loading}),
+#' the half life (\code{Hlife}), and the test score (\code{Test}). If the model
+#' is a two-peak model, then additional columns (\code{la}, \code{lo}, and
+#' \code{w}) describeing the second peak are included.
+#' @references Vecchia, A.V., Martin, J.D., and Gilliom, R.J., 2008, Modeling
+#' variability and trends in pesticide concentrations in streams: Journal of
+#' the American Water Resources Association, v. 44, no. 5, p.1308--1324.
+#' @keywords models regression
+#' @examples
+#' 
+#' ## See the SeasonalWave demo
+#' 
+#' @export selBestWave
 selBestWave <- function(formula, data, dec.time, wave.list, exhaustive=FALSE,
                         Regression=lm, Test=AIC, ...) {
-  ## Arguments:
-  ##  formula (a formula) regression model without the seasonalWave term
-  ##  data (data.frame) the source of data for the regression model
-  ##  dec.time (character scalar) the name of the decimal time variable in data
-  ##  wave.list (a seasonalPeak object) the timing of the seasonal peak
-  ##  exhaustive (logical scalar) do an pretty exhaustive search for the
-  ##   best time of peak, model and half life.
-  ##  Regression (function) the function to use for the regression
-  ##  Test (function) the function to use to compare models
-  ##  ... (dots) any additional arguments for regression
-  ## 
-  ## the dots are included as additional options for the call
-  ## to Regression: eg Regression=glm, family=binomial(link=logit) does
-  ## logistic regression (Test must be deviance)
+	# Coding history:
+	#    2007Aug28 DLLorenz Initial coding.
+	#    2007Aug29 DLLorenz Code tweaks and revision
+	#    2007Sep14 DLLorenz Modified to use any regression technique
+	#    2011Aug11 DLLorenz Conversion to R
+	#    2014Dec29 DLLorenz Conversion to roxygen header
   ## 
   ## get candidate models, hlives, and cmax (WaveNum)
   NumPeaks <- attr(wave.list, "NumPeaks")

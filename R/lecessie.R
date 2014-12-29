@@ -1,22 +1,46 @@
-# Compute the GOF test of le Cressie and van Houwelingen for logistic
-#  regression models
-#
-# Coding history:
-#    2009Jan25 DLLorenz Original Coding and begin of modifications
-#    2011Aug22 DLLorenz Conversion to R
-#    2011Oct25 DLLorenz Update for package
-#    2012Aug28 DLLorenz Renamed to correct spelling
-#    2012Aug28 DLLorenz Change from diagPlot to plot
-#    2013Apr09 DLLorenz Added setGD to plot
-#    2013Sep26 DLLorenz Sligth improvement to speed for large models
-#
-
+#' The le Cessie-van Houwelingen Test
+#' 
+#' Perform the le Cressie-van Houwelingen test for goodness-of-fit for a
+#' logistic regression model.
+#' 
+#' If \code{bandwidth} is missing, then the mean distance between observations
+#' is used.
+#' 
+#' @param object an object of class "glm" on which to perform the test.
+#' @param bandwidth the bandwidth for smoothing the residuals.
+#' @param newterms any new variables to add to the model. Expressed as the
+#' right-hand side of a formula.
+#' @return An object of class "lecessie" having these components:
+#' \item{method}{ a description of the method.  } \item{statistic}{ the test
+#' statistic.  } \item{parameters}{ the degrees of freedom of the chi-squared
+#' test.  } \item{p.value}{ the attained p-level of the test statistic.  }
+#' \item{data.name}{ the name of \code{object}.  } \item{alternative}{ the
+#' alternate hypothesis--"some lack of fit."  } \item{estimate}{ the estimated
+#' values for the test.  } \item{object}{ the original \code{object}.  }
+#' \item{target.object}{ the \code{object} with any added \code{newterms}.  }
+#' \item{bandwidth}{ the bandwidth used for smoothing the residuals.  }
+#' \item{max.distance}{ the maximum distance between observations.  }
+#' \item{smoothed.residuals}{ the smoothed residuals.  }
+#' \item{distance.matrix}{ a matrix of the distances between observations.  }
+#' \item{hat}{ the hat matrix.  }
+#' @note The null hypothesis is "no lack of fit." Rejection of the null
+#' hypothesis indicates "some lack of fit."
+#' @seealso \code{\link{binaryReg}}
+#' @references le Cessie, S. and van Houwelingen, H.C., 1995, Testing the fit
+#' of a regression model via score tests in random effects models: Biometrics,
+#' v. 51, p 600-614.
+#' @keywords htest
+#' @export leCessie.test
 leCessie.test <- function(object, bandwidth, newterms) {
-  ## Arguments:
-  ##  object (a glm model object) the logistic regression model
-  ##  bandwidth (numeric scalar) the bandwidth to use for the smoothing
-  ##  newterms (formula) potential variables to add to the model. Should
-  ##   be constructed like ~ . + X3
+	# Coding history:
+	#    2009Jan25 DLLorenz Original Coding and begin of modifications
+	#    2011Aug22 DLLorenz Conversion to R
+	#    2011Oct25 DLLorenz Update for package
+	#    2012Aug28 DLLorenz Renamed to correct spelling
+	#    2012Aug28 DLLorenz Change from diagPlot to plot
+	#    2013Apr09 DLLorenz Added setGD to plot
+	#    2013Sep26 DLLorenz Slight improvement to speed for large models
+	#    2014Dec22 DLLorenz Roxygen headers
   ##
   ## Note there are very minor differences between this version and the SAS
   ## code by Saskia le Cessie.
@@ -101,52 +125,4 @@ leCessie.test <- function(object, bandwidth, newterms) {
                  hat=obj.hat)
   oldClass(retval) <- "lecessie"
   return(retval)
-}
-
-print.lecessie <- function(x, digits=4, ...) {
-  ## Arguments:
-  ##  x (lecessie object) the object to be printed
-  ##  digits (integer scalar) the number of digits to print
-  ##  ... (dots) not used, required for method function
-  ##
-  x.to.print <- x
-  x.to.print$parameters <- round(x.to.print$parameters, digits) # fix this
-  oldClass(x.to.print) <- "htest"
-  print(x.to.print)
-  cat("Distance between observations:\n")
-  print(c(maximum=x$max.distance, bandwidth=x$bandwidth))
-  cat("\n")
-  invisible(x)
-}
-
-plot.lecessie <- function(x, which="All", set.up=TRUE, ...) {
-  ## Arguments:
-  ##  x (lecessie object) the object to be printed
-  ##  which (character or numeric) which plots to plot
-  ##  ... (dots) not used, required for method function
-  ##
-  ## Set up graphics page
-  if(set.up) 
-    setGD("LECESIE")
-  target.mat <- model.matrix(x$target.object)
-  target.names <- dimnames(target.mat)[[2L]]
-  target.mat[, 1L] <- fitted(x$object)
-  target.names[1L] <- "Fitted values"
-  target.resid <- residuals(x$object, type="dev")
-  if(tolower(which[1]) == "all")
-    which <- seq(ncol(target.mat), 1L)
-  else if(tolower(which[1]) == "first")
-    which <- 1
-  else if(is.character(which))
-    which <- which(target.names %in% which)
-  for(i in which) {
-    xyPlot(target.mat[,i,drop=TRUE], x$smoothed.residuals,
-           Plot=list(what="points", size=0.05), 
-           ytitle="Smoothed residuals", xtitle=target.names[i],
-           margin=c(NA, NA, 1.6, NA)) # leave room for title
-    if(i == 1)
-      addXY(target.mat[,i,drop=TRUE], target.resid,
-            Plot=list(what="points", filled=FALSE, size=0.08))
-  }
-  invisible(x)
 }

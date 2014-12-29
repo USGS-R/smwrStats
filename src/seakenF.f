@@ -1,4 +1,4 @@
-      subroutine seakenF(x,n,nseas,results)
+      subroutine seakenf(x,n,nseas,results)
 c     Seasonal Kendall test for trend.
 c
 c     Arguments:

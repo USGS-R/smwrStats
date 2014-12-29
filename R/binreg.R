@@ -1,17 +1,60 @@
-# diagnostics for logistic regression
-#
-# Coding history:
-#    2009Jan26 DLLorenz Original Coding and start of tweaks
-#    2010Jan29 DLLorenz Modified to allow for matrix responses
-#    2011Aug22 DLLorenz Conversion to R
-#    2011Oct25 DLLorenz Update for package
-#    2012Aug28 DLLorenz Change from diagPlot to plot
-#    2013Apr09 DLLorenz Added setGD to plot
-#    2014May19 DLLorenz Modified criteria, and flag print
-
+#' Diagnostics for Logistic Regression
+#' 
+#' Computes diagnostic statistics for logistic regression
+#' 
+#' Because the le Cessie test is very slow to compute for many observations,
+#' the test is not performed if there are more than \code{lc.max} observations.
+#' 
+#' @param object the logistic regression model object.
+#' @param lc.max the lmaximum number of observations for the le Cessie test.
+#' @return A list of class "binaryreg" containing these components:
+#' \item{regsum}{the output from \code{summary(object)}} \item{Warning}{any
+#' warnings relevant to the model} \item{Factors}{information about factor
+#' explanatory variables} \item{Profile}{summary information about the coding
+#' of the response variable} \item{Hosmer}{output from the Hosmer-Lemeshow test
+#' on \code{object}} \item{leCessie}{output from the le Cessie-van Houwelingen
+#' test on \code{object}} \item{PctCorrect}{the classification table}
+#' \item{Concordance}{the concordance table} \item{roc}{output from the
+#' receiver operating characteristics test on \code{object}} \item{diagstats}{a
+#' data frame containing the response variable, the predicted response
+#' probability, the response residual, the deviance residuals, the Pearson
+#' residuals, the leverage, the value of Cook's D, and the dfits value}
+#' \item{crit.val}{the critical values for leverage, Cook's D, and dfits}
+#' \item{flagobs}{a logical value indicating which observaitons exceeded any
+#' one of the critical values} \item{object}{the \code{object}}
+#' @note Logistic regression can be very useful alternative method for heavily
+#' censored water-quality data.\cr The critical values for the test criteria
+#' are computed as: leverage, \emph{3p/n}; Cook's D, median quantile for the
+#' \emph{F} distribution with \emph{p+1} and \emph{n-p} degrees of freedonm;
+#' and dfits, the .01 quantile of the \emph{grubbs} distribution for \emph{n}
+#' observations, where \emph{p} is the number of parameters estiamted in the
+#' regression and \emph{n} is the number of observations.\cr Objects of class
+#' "binaryreg" have \code{print} and \code{plot} methods.
+#' @seealso \code{\link{roc}}, \code{\link{leCessie.test}},
+#' \code{\link{hosmerLemeshow.test}}
+#' @references Harrell, F.E., Jr., 2001, Regression modeling strategies with
+#' applications to linear models, logistic regression and survival analysis:
+#' New York, N.Y., Springer, 568 p.\cr
+#' 
+#' Helsel, D.R., and Hirsch, R.M., 2002, Statistical methods in water
+#' resources: U.S. Geological Survey Techniques of Water-Resources
+#' Investigations, book 4, chap. A3, 522 p.\cr
+#' 
+#' McFadden, D., 1974, Conditional logit analysis of qualitative choice
+#' behavior: p. 105-142 in Zarembka, P. (ed.), Frontiers in Econometrics.
+#' London, Academic Press, 252 p.
+#' @keywords models regression
+#' @export binaryReg
 binaryReg <- function(object, lc.max=1000) {
-  ## Argument:
-  ##  object (a glm model object) the logistic regression model
+	# Coding history:
+	#    2009Jan26 DLLorenz Original Coding and start of tweaks
+	#    2010Jan29 DLLorenz Modified to allow for matrix responses
+	#    2011Aug22 DLLorenz Conversion to R
+	#    2011Oct25 DLLorenz Update for package
+	#    2012Aug28 DLLorenz Change from diagPlot to plot
+	#    2013Apr09 DLLorenz Added setGD to plot
+	#    2014May19 DLLorenz Modified criteria, and flag print
+	#    2014Dec22 DLLorenz Roxygen header
   ##
   ## Get the model frame and do some preliminary processing
   obj.frame <- model.frame(object)
@@ -132,159 +175,4 @@ binaryReg <- function(object, lc.max=1000) {
                  crit.val=cvs, flagobs=pck, object=object)
   oldClass(retval) <- "binaryreg"
   return(retval)
-}
-
-print.binaryreg <- function(x, digits=4, ...) {
-  ## Arguments:
-  ##  x (binaryreg object) the object to print
-  ##  digits (integer scalar) how many digits to use when prining
-  ##   ... (dots) any additional arguments to print
-  ##
-  ## Print the summary, any warning, the factor information, and G2
-  print(x$regsum, digits=digits, ...)
-  if(x$Warning != "")
-    cat(x$Warning)
-  if(length(x$Factors) > 0) {
-    cat("\nFactor level information:\n")
-    lapply(x$Factors, print)
-  }
-  G2 <- round(x$regsum$null.deviance - x$regsum$deviance, digits)
-  df <- x$regsum$df[1]
-  cat("\nLikelihood ratio test: ", G2, " on ", df-1,
-      " degrees of freedom, p-value is ", round(1-pchisq(G2, df-1), digits),
-      "\n\n", sep='')
-  ## Print the response matrix and the le Cressie and Houwelingen test
-  cat("Response profile:\n")
-  print(x$Profile, digits=digits, ...)
-  cat("\n Goodness of fit tests\n")
-  if(!is.null(x$leCessie))
-    print(x$leCessie, digits=digits, ...)
-  else
-    cat("Le Cessie-Van Houwlingen test not computed.\n")
-  if(!is.null(x$Hosmer))
-    print(x$Hosmer, digits=digits, ...)
-  else
-    cat("Too few unique predcited values for Hosmer-Lemeshow Test\n")
-  ## Print the correct and concordant stats and the AUROC
-  cat("\nPredictive power estimates:\n")
-  ## Print the R2 and adjusted R2
-  R2 <- round(1 - x$object$deviance/x$object$null.deviance, digits)
-  adjR2 <- round(1 - (x$object$aic - 2)/x$object$null.deviance, digits) # need to correct for intercept term
-  cat("McFadden R-squared: ", R2, "\nadjusted R-squared: ", adjR2, "\n\n", sep="")
-  if(!is.null(x$PctCorrect)) {
-    cat("\nClassification table.\nPercent correct: (1 is sensitivity, 0 is specificity)\n")
-    print(x$PctCorrect, digits=3)
-    nConcord <-  sum(x$Concordance)
-    cat("\nConcordance Index, based on",
-        nConcord, "pairs\n")
-    print(100*x$Concordance/nConcord, digits=digits, ...)
-  }
-  else
-    cat("\nOther predictive power estimates cannot be computed for martix reponses.\n")
-  print(x$roc)
-  ## Print the diagnostics
-    cat("\nInfluence diagnostic test criteria:\n")
-  print(x$crit.val, digits=digits, ...)
-  if(any(x$flagobs)) {
-    cat("\tObservations exceeding at least one test criterion\n")
-    dstats <- format(x$diagstats[x$flagobs,] , digits=digits)
-    ## Append * to each value that exceeds its criterion
-    dstats$leverage <- paste(dstats$leverage, 
-    												 ifelse(x$diagstats[x$flagobs, "leverage"] > x$crit.val[1L],
-    												 			 "*", " "), sep="")
-    dstats$cooksD <- paste(dstats$cooksD, 
-    											 ifelse(x$diagstats[x$flagobs, "cooksD"] > x$crit.val[2L],
-    											 			 "*", " "), sep="")
-    dstats$dfits <- paste(dstats$dfits, 
-    											ifelse(abs(x$diagstats[x$flagobs, "dfits"]) > x$crit.val[3L],
-    														 "*", " "), sep="")
-    print(dstats)
-    
-  }
-  else
-    cat("\tNo observations exceeded any test criteria\n")
-  invisible(x)
-}
-
-plot.binaryreg <- function(x, which=2:5, set.up=TRUE, bandw=0.3, ...) {
-  ## Arguments:
-  ##  x (binaryreg object) the object to plot
-  ##  which (character or integer) which graphs to plot
-  ##  bandw (numeric scalar) bandwidth for kernel smoothing for H-L graph
-  ##
-  ## Set up graphics page
-  if(set.up) {
-    setGD("LOGISTIC")
-  }
-  ## Set up to do all 5 plots
-  doPlot <- rep(TRUE,5) 
-  if(is.numeric(which)) {
-    if(min(which) > 0) # select which to plot
-      doPlot[seq(5)[-which]] <- FALSE
-    else # which not to plot
-      doPlot[-which] <- FALSE
-  }
-  ## Anything else produces all plots
-  ## 
-  ## Last are the L-W-Y partial plots
-  if(doPlot[5L]) {
-    x.resid <- resid(x$object, 'response')
-    x.coefs <- coef(x$object)
-    x.mat <- model.matrix(x$object)
-    for(i in seq(2, length(x.coefs))) {
-      xs <- x.mat[,i]
-      ## Skip if binary
-      if(length(unique(xs)) < 3) next
-      rtoplot <- x.resid[order(xs)]
-      xs <- sort(xs)
-      rtoplot <-  cumsum(rtoplot)/sqrt(length(xs))
-      xyPlot(xs, rtoplot, Plot=list(what='stairstep'),
-             xtitle=names(x.coefs[i]),
-             ytitle='L-W-Y Cumulative Residuals', yaxis.range=c(-.6, .6))
-      refLine(horizontal=0)
-    }
-  }
-  ## ROC is plot # 4
-  if(doPlot[4L])
-    plot(x$roc, set.up=FALSE)
-  ## Third plot--classification graph
-  if(doPlot[3L] && !is.null(x$PctCorrect)) {
-    pd.0 <- density(x$object$fitted.values[x$object$y == 0], bw=0.25, kern='tri')
-    pd.1 <- density(x$object$fitted.values[x$object$y == 1], bw=0.25, kern='tri')
-    ylim <- pretty(c(0, max(pd.0$y, pd.1$y)))
-    ylim <- ylim[c(1L, length(ylim))] # pick first and last for range
-    AA <- xyPlot(pd.0$x, pd.0$y, Plot=list(name="specificity", 
-    						 color='darkblue', what="lines", width="color"),
-                 xaxis.range=c(0,1), yaxis.range=ylim,
-                 xtitle='Predicted', ytitle='Relative Density', margin=c(NA, NA, 1.6, NA))
-    AA <- addXY(pd.1$x, pd.1$y, Plot=list(name="sensitivity", color='darkgreen', width="color"), current=AA)
-    addExplanation(AA, where='ur', title='')
-    refLine(vertical=0.5)
-    addTitle(paste("specificity:", round(x$PctCorrect[["0"]], 3),
-                "  sensitivity:", round(x$PctCorrect[["1"]], 3), sep=' '), Bold=FALSE)
-  }
-  ## Second Plot, overall fit with H-L
-  if(doPlot[2L] && !is.null(x$Hosmer)) {
-    fits <- fitted(x$object)
-    y <- x$object$y
-    xyPlot(fits, y, Plot=list(what='points', filled=FALSE),
-           xtitle='Fitted Values', ytitle='Observed values',
-           xlabels=list(labels=5, extend.pct=5, extend.range=FALSE),
-    			 ylabels=list(labels=5, extend.pct=5, extend.range=FALSE),
-           margin=c(NA, NA, 1.6, NA))
-    p2.smo <- ksmooth(fits, y, bandwidth=bandw, kernel='normal')
-    addXY(range(fits), range(fits), Plot=list(what='lines'))
-    addXY(p2.smo$x, p2.smo$y, Plot=list(what='lines'))
-    HLx <- x$Hosmer$estimate[,2] / x$Hosmer$estimate[,1]
-    HLy <- x$Hosmer$estimate[,3] / x$Hosmer$estimate[,1]
-    addXY(HLx, HLy, Plot=list(what='points', filled=TRUE))
-    addTitle(paste("Hosmer-Lemeshow Test, p-value =", round(x$Hosmer$p.value,4)), Bold=FALSE)
-  }
-  ## First plot (last on page), leCessie
-  if(doPlot[1L] && !is.null(x$leCessie)) {
-    plot(x$leCessie, which=1, set.up=FALSE)
-    addTitle(paste("le Cessie-van Houwelingen Test, p-value =", round(x$leCessie$p.value,4)),
-    				 Bold=FALSE)
-  }
-  invisible(x)
 }
