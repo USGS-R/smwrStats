@@ -9,6 +9,8 @@
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}
+\raggedright
+\parindent 30pt
 
 \title{Logistic Regression Example}
 

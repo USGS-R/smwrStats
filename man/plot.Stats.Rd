@@ -6,6 +6,7 @@
 \alias{plot.cor.all}
 \alias{plot.lecessie}
 \alias{plot.move.1}
+\alias{plot.move.2}
 \alias{plot.multReg}
 \alias{plot.roc}
 \alias{plot.senSlope}
@@ -20,6 +21,8 @@
 \method{plot}{lecessie}(x, which = "All", set.up = TRUE, ...)
 
 \method{plot}{move.1}(x, which = "All", set.up = TRUE, span = 0.8, ...)
+
+\method{plot}{move.2}(x, which = "All", set.up = TRUE, span = 0.8, ...)
 
 \method{plot}{multReg}(x, which = "All", set.up = TRUE, span = 1, ...)
 
@@ -88,7 +91,7 @@ If \code{which} is one or more of the variable names, then those partial
 residual plots are created. If \code{which} is numeric, then the fitted vs.
 Residual (1) sequentially numbered partial residual plots are created.\cr
 
-For objects of class "move.1," the argument \code{which} can be a character
+For objects of class "move.1" or "move.2," the argument \code{which} can be a character
 string, "All" or any of a sequence of numbers from 1 to 3. If it is "All,"
 then all plots are produced.  Numeric values for \code{which}: \enumerate{
 \item x on y and y on x \item The LOC regression line with ellipse \item Q-Q
@@ -112,7 +115,7 @@ p. 1--12.
 \seealso{
 \code{\link{ancovaReg}}, \code{\link{binaryReg}},
 \code{\link{cor.all}}, \code{\link{leCessie.test}}, \code{\link{move.1}},
-\code{\link{multReg}}, \code{\link{roc}}, \code{\link{senSlope}},
+\code{\link{move.2}}, \code{\link{multReg}}, \code{\link{roc}}, \code{\link{senSlope}},
 \code{\link{loess.smooth}}, \code{\link{setPage}}
 }
 \keyword{hplot}

@@ -8,7 +8,8 @@ Depends:
     smwrBase (>= 1.0),
     smwrGraphs (>= 1.0)
 Suggests:
-    smwrData (>= 1.0)
+    smwrData (>= 1.0),
+    dataRetrieval
 Imports:
     car,
     leaps,
@@ -33,13 +34,16 @@ Collate:
     'lecessie.R'
     'makepredictcall.R'
     'move.1.R'
+    'move.2.R'
     'multicomp.test.R'
     'multreg.R'
+    'optimBoxCox.R'
     'percentile.R'
     'plot.Stats.R'
     'plot.htest.R'
     'ppcc.test.R'
     'predict.move.1.R'
+    'predict.move.2.R'
     'predict.senSlope.R'
     'predictMVUE.R'
     'predictDuan.R'
@@ -51,7 +55,9 @@ Collate:
     'print.cor.all.R'
     'print.lecessie.R'
     'print.move.1.R'
+    'print.move.2.R'
     'print.multReg.R'
+    'print.optimBoxCox.R'
     'print.roc.R'
     'print.seasonalPeak.R'
     'print.senSlope.R'

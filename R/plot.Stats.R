@@ -1,9 +1,8 @@
-
 #' Diagnostic Plots
 #' 
 #' Produce a series of diagnostic plots for statistical analyses.
 #' 
-#' For objects of class "ancovaReg" and "multReg," the argument \code{which}
+#' @details For objects of class "ancovaReg" and "multReg," the argument \code{which}
 #' can be a character string, "All" or any of a sequence of numbers from 1 to
 #' 8. If it is "All," then all plots are produced. For class "multReg," can
 #' also be the name of an explanatory variable so that a residual dependence
@@ -40,7 +39,7 @@
 #' residual plots are created. If \code{which} is numeric, then the fitted vs.
 #' Residual (1) sequentially numbered partial residual plots are created.\cr
 #' 
-#' For objects of class "move.1," the argument \code{which} can be a character
+#' For objects of class "move.1" or "move.2," the argument \code{which} can be a character
 #' string, "All" or any of a sequence of numbers from 1 to 3. If it is "All,"
 #' then all plots are produced.  Numeric values for \code{which}: \enumerate{
 #' \item x on y and y on x \item The LOC regression line with ellipse \item Q-Q
@@ -55,7 +54,7 @@
 #' the data with the regression line in green and a smoothed line in cyan.
 #' 
 #' @aliases plot.Stats plot.ancovaReg plot.binaryreg plot.cor.all plot.lecessie
-#' plot.move.1 plot.multReg plot.roc plot.senSlope
+#' plot.move.1 plot.move.2 plot.multReg plot.roc plot.senSlope
 #' @param x the object to be plotted.
 #' @param which a character string or sequence of integers indicating which
 #' diagnostic plots to produce. See \bold{Details}.
@@ -69,7 +68,7 @@
 #' @return The object \code{x} is returned invisibly.
 #' @seealso \code{\link{ancovaReg}}, \code{\link{binaryReg}},
 #' \code{\link{cor.all}}, \code{\link{leCessie.test}}, \code{\link{move.1}},
-#' \code{\link{multReg}}, \code{\link{roc}}, \code{\link{senSlope}},
+#' \code{\link{move.2}}, \code{\link{multReg}}, \code{\link{roc}}, \code{\link{senSlope}},
 #' \code{\link{loess.smooth}}, \code{\link{setPage}}
 #' @references le Cessie, S. and van Houwelingen, H.C., 1995, Testing the fit
 #' of a regression model via score tests in random effects models: Biometrics,
@@ -560,11 +559,6 @@ plot.lecessie <- function(x, which="All", set.up=TRUE, ...) {
 #' @export
 #' @method plot move.1
 plot.move.1 <- function(x, which="All", set.up=TRUE, span=0.8, ...) {
-	## Arguments:
-	##  x (a move.1 object) the object to plot
-	##  which (character scalar or numeric vector) which plots?
-	##  span (numeric scalar) the span for the x on y, y on x plots
-	##  set.up and ... (dots) not used, required for method functions
 	##
 	## Identify which plots to do:
 	## 1 Q-Q plot
@@ -573,6 +567,7 @@ plot.move.1 <- function(x, which="All", set.up=TRUE, span=0.8, ...) {
 	## Set up graphics page
 	if(set.up) 
 		setGD("MOVE.1")
+	fin <- par("fin")
 	## Set up to do all plots
 	doPlot <- c(rep(TRUE, 2L) , FALSE)
 	if(is.numeric(which)) {
@@ -597,7 +592,7 @@ plot.move.1 <- function(x, which="All", set.up=TRUE, span=0.8, ...) {
 	}
 	if(doPlot[2L]) {
 		## Set up for 2 graphs
-		AA.lo <- setLayout(width=6, height=c(3,3))
+		AA.lo <- setLayout(width=fin[1L], height=fin[2L]/c(2,2))
 		AA.gr <- setGraph(1, AA.lo)
 		AA <- xyPlot(x$x, x$y, Plot=list(what="points"), xtitle=xname, ytitle=yname)
 		refLine(coefficients=lsfit(x$x, x$y)$coef, Plot=list(color="green"), current=AA)
@@ -608,6 +603,63 @@ plot.move.1 <- function(x, which="All", set.up=TRUE, span=0.8, ...) {
 		addSmooth(x$y, x$x, span=span, Plot=list(color="cyan"), current=AA)
 	}
 	if(doPlot[1L]) {
+		# Reset if 2 done
+		setLayout(width=fin[1L] - .5, height=(fin[2L] - .5))
+		qqPlot(x$x, x$y, xtitle=xname, ytitle=yname, Line1.1=list(what="none"))
+	}
+	invisible(x)
+}
+
+#' @rdname plot.Stats
+#' @export
+#' @method plot move.2
+plot.move.2 <- function(x, which="All", set.up=TRUE, span=0.8, ...) {
+	##
+	## Identify which plots to do:
+	## 1 Q-Q plot
+	## 2 x on y, y on x
+	## 
+	## Set up graphics page
+	if(set.up) 
+		setGD("MOVE.2")
+	fin <- par("fin")
+	## Set up to do all plots
+	doPlot <- c(rep(TRUE, 2L) , FALSE)
+	if(is.numeric(which)) {
+		if(min(which) > 0) # select which to plot
+			doPlot[seq(2L)[-which]] <- FALSE
+		else # which not to plot
+			doPlot[-which] <- FALSE
+	}
+	xname <- x$var.names[2L]
+	yname <- x$var.names[1L]
+	if(doPlot[3L]) {
+		## This is done only by special request
+		AA <- scalePlot(x$x, x$y, scale=x$coef[2L], Plot=list(what="points"),
+										xtitle=xname, ytitle=yname)
+		refLine(coefficients=x$coef, current=AA)
+		cov <- x$R*(x$xstats[2L]*x$ystats[2L])
+		cov <- matrix(c(x$xstats[2L]^2, cov, cov, x$ystats[2L]^2), 2)
+		el <- cov2Ellipse(cov, c(x$xstats[1L], x$ystats[1L]))
+		addXY(el$x, el$y, Plot=list(what="lines", color="blue"), current=AA)
+		el <- cov2Ellipse(cov, c(x$xstats[1L], x$ystats[1L]), scale=2)
+		addXY(el$x, el$y, Plot=list(what="lines", color="blue"), current=AA) 
+	}
+	if(doPlot[2L]) {
+		## Set up for 2 graphs
+		AA.lo <- setLayout(width=fin[1L], height=fin[2L]/c(2,2))
+		AA.gr <- setGraph(1, AA.lo)
+		AA <- xyPlot(x$x, x$y, Plot=list(what="points"), xtitle=xname, ytitle=yname)
+		refLine(coefficients=lsfit(x$x, x$y)$coef, Plot=list(color="green"), current=AA)
+		addSmooth(x$x, x$y, span=span, Plot=list(color="cyan"), current=AA)
+		AA.gr <- setGraph(2, AA.lo)
+		AA <- xyPlot(x$y, x$x, Plot=list(what="points"), xtitle=yname, ytitle=xname)
+		refLine(coefficients=lsfit(x$y, x$x)$coef, Plot=list(color="green"), current=AA)
+		addSmooth(x$y, x$x, span=span, Plot=list(color="cyan"), current=AA)
+	}
+	if(doPlot[1L]) {
+		# Reset if 2 done
+		setLayout(width=fin[1L] - .5, height=(fin[2L] - .5))
 		qqPlot(x$x, x$y, xtitle=xname, ytitle=yname, Line1.1=list(what="none"))
 	}
 	invisible(x)
