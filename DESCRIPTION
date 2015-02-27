@@ -1,6 +1,6 @@
-Package: USGSwsStats
-Version: 0.6
-Date: 2013-08-15
+Package: smwrStats
+Version: 0.7.0
+Date: 2015-01-23
 Title: General tools for hydrologic data and trend analysis.
 Author: Dave Lorenz <lorenz@usgs.gov>.
 Maintainer: Dave Lorenz <lorenz@usgs.gov>
@@ -19,7 +19,7 @@ Description: Useful tools for the analysis of hydrologic data,
 License: file LICENSE
 LazyLoad: yes
 Collate:
-    'USGSwsStats-package.R'
+    'smwrStats-package.R'
     'allreg.R'
     'ancovareg.R'
     'binreg.R'

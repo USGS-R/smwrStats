@@ -1,0 +1,148 @@
+\documentclass{article}
+\parskip 6pt
+\leftskip=-0.5in
+\rightskip=-0.5in
+%\VignetteIndexEntry{LowFlowExtension}
+%\VignetteDepends{smwrStats}
+%\VignetteDepends{dataRetrieval}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\raggedright
+
+\title{Low Flow Extension Example}
+
+\author{Dave Lorenz}
+
+\maketitle
+
+This example demonstrates the \texttt{move.1} and related functions in the \texttt{smwrStats} package. The example retrieves data from NWISweb using functions in the \texttt{dataRetrieval} package. The Data are from the Passaic River at outlet of Osborn Pond, NJ. (USGS station identifier 01378700), the Passaic River near Millington, NJ. (USGS station identifier 01379000), and the Whippany River at Morristown, NJ. (USGS station identifier 01381500).
+
+<<echo=TRUE>>=
+# Load the smwrStats and dataRetrieval packages
+library(smwrStats)
+library(dataRetrieval)
+# Get the reference datasets and Initial processing 
+Passaic.Ref <- readNWISdv("01379000", parameterCd="00060",  startDate="1960-10-01", 
+  endDate="2014-09-30")
+Passaic.Ref <- renameNWISColumns(Passaic.Ref)
+Whippany.Ref <- readNWISdv("01381500", parameterCd="00060",  startDate="1960-10-01",
+  endDate="2014-09-30")
+Whippany.Ref <- renameNWISColumns(Whippany.Ref)
+# Get the partial record data
+Passaic.PR <- readNWISmeas("01378700", endDate="2014-09-30")
+# Need date only for matching
+Passaic.PR <- transform(Passaic.PR, Date=as.Date(measurement_dt))
+@
+
+\eject
+\section{Determine Base Flow}
+
+The objective of this example is to estimate the 10th percentile of flow, the 90th percentile of flow exceedance, at the partial record station (Passaic River at outlet of Osborn Pond, NJ.). The partial record station has only flow measurements and no continuous record. The 10th percentile of flow is computed at the selected reference gage for the period from 1960-10-01 to 2014-09-30 and transferred to the partial record site using move.1. Two reference gages were selected, one downstream and one on a nearby similar size stream.
+
+The first step is to determine base-flow conditions at the reference gages. This step is necessary to ensure that the measurements and associated daily flows are from the same population of base flows. This example will use a simple filtering mechanism---flow values less than the median flow and the output from \texttt{hysteresis} between -5 and 0. The \texttt{hysteresis} function produces positive values for a rise and negative values for a recession; the range from -5 to 0 was selected to represent a smaller recession rate, more indicative of base flow that more negative values. Other tools for determining base flow could be more appropriate, such as PART (Rutledge, 1998).
+
+<<echo=TRUE>>=
+# Compute the condition of the flow
+Passaic.Ref <- transform(Passaic.Ref, Flow_cond=hysteresis(Flow))
+Whippany.Ref <- transform(Whippany.Ref, Flow_cond=hysteresis(Flow))
+# Determine base flow, will be TRUE for base flow
+Passaic.Ref <- transform(Passaic.Ref, Base=Flow < median(Flow) &
+  Flow_cond > -5 & Flow_cond <= 0)
+# There are a few missing values in the flow record at 01381500
+Whippany.Ref <- transform(Whippany.Ref, Base=Flow < median(Flow, na.rm=TRUE) & 
+  Flow_cond > -5 & Flow_cond <= 0)
+# Merge The reference flows with the measured flows
+Passaic.Mrg <- merge(Passaic.PR, Passaic.Ref, by="Date")
+Whippany.Mrg <- merge(Passaic.PR, Whippany.Ref, by="Date")
+# Retain only the base-flow data
+Passaic.Mrg <- subset(Passaic.Mrg, Base)
+Whippany.Mrg <- subset(Whippany.Mrg, Base)
+@
+
+<<echo=TRUE>>=
+# setSweave is a specialized function that sets up the graphics page for
+# Sweave scripts. For interactive use, it should be removed and the
+# default setting for set.up can be used.
+setSweave("graph01", 6, 6)
+AA.lo <- setLayout(num.rows=2)
+# Plot the data
+setGraph(1, AA.lo)
+AA.pl <- with(Passaic.Mrg, xyPlot(Flow, discharge_va, xaxis.log=T, yaxis.log=T))
+# Add the linear regresion line to asses the goodness of fit
+addSLR(AA.pl)
+addTitle("Passaic")
+# Plot the data
+setGraph(2, AA.lo)
+AA.pl <- with(Whippany.Mrg, xyPlot(Flow, discharge_va, xaxis.log=T, yaxis.log=T))
+addSLR(AA.pl)
+addTitle("Whippany")
+# Add the linear regresion line to asses the goodness of fit
+addSLR(AA.pl)
+# Required call to close PDF output graphics
+graphics.off()
+@
+
+\includegraphics{graph01.pdf}
+\paragraph{}
+
+\textbf{Figure 1.} The goodness of the fit for each reference gage.
+
+One value appears to be a poor fit to the general trend of the data for the reference Passaic site. The Whippany site shows a better fit, but with a possibility of some curvature.
+
+\eject
+\section{Build the Model}
+
+The next step is the build the model and evaluate the fit. The first model will be based on the downstream site, which should be a better fit because the basin is nested.
+
+<<echo=TRUE>>=
+# Construct the and print the first model
+Passaic1.mv1 <- move.1(discharge_va ~ Flow, data=Passaic.Mrg, distribution = "lognormal")
+print(Passaic1.mv1)
+# PLot the first diagnostic plot
+setSweave("graph02", 6, 6)
+plot(Passaic1.mv1, which=1, set.up=FALSE)
+graphics.off()
+@
+
+\includegraphics{graph02.pdf}
+\paragraph{}
+
+\textbf{Figure 2.} The diagnostic plot for the downstream Passaic site.
+
+The diagnostic plot is a Q-Q plot that shows the actual prediction line in the context of the distribution of the data. The fit is clearly not very good. Try the Whippany site.
+
+<<echo=TRUE>>=
+# Construct the and print the second model
+Passaic2.mv1 <- move.1(discharge_va ~ Flow, data=Whippany.Mrg, distribution = "lognormal")
+print(Passaic2.mv1)
+# PLot the first diagnostic plot
+setSweave("graph03", 6, 6)
+plot(Passaic2.mv1, which=1, set.up=FALSE)
+graphics.off()
+@
+
+\includegraphics{graph03.pdf}
+\paragraph{}
+
+\textbf{Figure 3.} The diagnostic plot for the nearby Whippany site.
+
+The diagnostic plot for the Whippany site is much better than for the downstream Passaic site. The estimates will be based on the Whippany site. The statistic is computed from the Whippany data and used in the prediction.
+
+<<echo=TRUE>>=
+# Compute the 10th percentile of flow
+Whippany.10 <- quantile(Whippany.Ref$Flow, probs=0.1, na.rm=TRUE)
+# Use that to estiamte the 10th percentil at the partial record station
+predict(Passaic2.mv1, newdata=data.frame(Flow=Whippany.10))
+@
+
+The estimate 10th percentile of flow at the partial record Passaic site is about 1.8 cubic feet per second using these data.
+
+\begin{thebibliography}{9}
+
+\bibitem{Rut}
+Rutledge, A.T., 1998, Computer programs for describing the recession of ground-water discharge and for estimating mean ground-water recharge and discharge from streamflow records---Update: U.S. geological Survey Water-Resources Investigations Report 98-4148. 43 p.
+
+\end{thebibliography}
+
+\end{document}

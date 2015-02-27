@@ -4,7 +4,7 @@
 \leftskip=-0.5in
 \rightskip=-0.5in
 %\VignetteIndexEntry{Logistic}
-%\VignetteDepends{USGSwsStats}
+%\VignetteDepends{smwrStats}
 %\VignetteDepends{smwrData}
 
 \begin{document}
@@ -18,12 +18,12 @@
 
 \maketitle
 
-This examples demonstrates the \texttt{binaryReg} and other logistic regression support functions in the \texttt{USGSwsStats} package. The example uses the PugetNitrate dataset from Tesoriero and Voss (1997). The dataset is available from the \texttt{smwrData} package.
+This examples demonstrates the \texttt{binaryReg} and other logistic regression support functions in the \texttt{smwrStats} package. The example uses the PugetNitrate dataset from Tesoriero and Voss (1997). The dataset is available from the \texttt{smwrData} package.
 
 <<echo=TRUE>>=
-# Load the USGSwsStats and USGSwsData packages
-library(USGSwsStats)
-library(smwrsData)
+# Load the smwrStats and smwrData packages
+library(smwrStats)
+library(smwrData)
 # Get the dataset
 data(PugetNitrate)
 head(PugetNitrate)

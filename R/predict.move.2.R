@@ -28,7 +28,7 @@
 #'}
 #' @export
 #' @method predict move.2
-predict.move.2 <- function(object, newdata, type = c("response", "link")) {
+predict.move.2 <- function(object, newdata, type = c("response", "link"), ...) {
   ## Set lag to 0 and reset only for prediction from original data
   lag <- 0
   if(missing(newdata)) {

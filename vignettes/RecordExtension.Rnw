@@ -1,16 +1,14 @@
 \documentclass{article}
-\parskip 3pt
-\parindent 30pt
+\parskip 6pt
 \leftskip=-0.5in
 \rightskip=-0.5in
 %\VignetteIndexEntry{RecordExtension}
-%\VignetteDepends{USGSwsStats}
+%\VignetteDepends{smwrStats}
 %\VignetteDepends{dataRetrieval}
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 \raggedright
-\parindent 30pt
 
 \title{Streamflow Record Extension Example}
 
@@ -18,11 +16,11 @@
 
 \maketitle
 
-This example demonstrates the \texttt{move.2} and related functions in the \texttt{USGSwsStats} package. The example retrieves data from NWISweb using functions in the \texttt{dataRetrieval} package. The Data are from the North Fork Yellow Bank River near Odessa, Minn. (USGS station identifier 05292704) and the Yellow Bank River near Odessa, Minn. (USGS station identifier 05293000).
+This example demonstrates the \texttt{move.2} and related functions in the \texttt{smwrStats} package. The example retrieves data from NWISweb using functions in the \texttt{dataRetrieval} package. The Data are from the North Fork Yellow Bank River near Odessa, Minn. (USGS station identifier 05292704) and the Yellow Bank River near Odessa, Minn. (USGS station identifier 05293000).
 
 <<echo=TRUE>>=
-# Load the USGSwsStats and USGSwsData packages
-library(USGSwsStats)
+# Load the smwrStats and dataRetrieval packages
+library(smwrStats)
 library(dataRetrieval)
 # Get the datasets and rename columns 
 NFYB <- readNWISdv("05292704", parameterCd="00060", startDate="2000-10-01", 
@@ -42,7 +40,7 @@ The first step is to merge the data by date, then build the MOVE.2 model. Becaus
 
 <<echo=TRUE>>=
 # Merge the data
-YBM <- merge(NFYB, YB, by="dateTime", all=TRUE, suffixes=c(".NFYB", ".YB"))
+YBM <- merge(NFYB, YB, by="Date", all=TRUE, suffixes=c(".NFYB", ".YB"))
 # Construct and print the model.
 YBM.m2ln <- move.2(Flow.YB ~ Flow.NFYB, data=YBM, distribution="lognormal")
 print(YBM.m2ln)
@@ -59,10 +57,9 @@ plot(YBM.m2ln, which=2, set.up=FALSE)
 # Required call to close PDF output graphics
 graphics.off()
 @
-<<results=tex, echo=FALSE>>=
-cat("\\includegraphics{graph01.pdf}\n")
-cat("\\paragraph{}\n")
-@
+
+\includegraphics{graph01.pdf}
+\paragraph{}\
 
 \textbf{Figure 1.} The diagnsotic plot showing the linearity of the fit.
 
@@ -72,15 +69,14 @@ The predicted values are computed using the \texttt{predict} function without sp
 # Predict all values
 YBM$Pred.ln <- predict(YBM.m2ln)
 setSweave("graph02", 6, 6)
-AA.pl <- with(YBM, timePlot(dateTime, Pred.ln, yaxis.log=TRUE))
-AA.pl <- with(YBM, addXY(dateTime, Flow.YB, 
+AA.pl <- with(YBM, timePlot(Date, Pred.ln, yaxis.log=TRUE))
+AA.pl <- with(YBM, addXY(Date, Flow.YB, 
   Plot=list(what="lines", color="green"), current=AA.pl))
 graphics.off()
 @
-<<results=tex, echo=FALSE>>=
-cat("\\includegraphics{graph02.pdf}\n")
-cat("\\paragraph{}\n")
-@
+
+\includegraphics{graph02.pdf}
+\paragraph{}
 
 \textbf{Figure 2.} The predicted and concurrent values.
 
@@ -101,18 +97,17 @@ print(YBM.m2bc)
 # Predict all values
 YBM$Pred.bc <- predict(YBM.m2bc)
 setSweave("graph03", 6, 6)
-AA.pl <- with(YBM, timePlot(dateTime, Pred.bc, yaxis.log=TRUE))
-AA.pl <- with(YBM, addXY(dateTime, Flow.YB, 
+AA.pl <- with(YBM, timePlot(Date, Pred.bc, yaxis.log=TRUE))
+AA.pl <- with(YBM, addXY(Date, Flow.YB, 
   Plot=list(what="lines", color="green"), current=AA.pl))
 graphics.off()
 @
-<<results=tex, echo=FALSE>>=
-cat("\\includegraphics{graph03.pdf}\n")
-cat("\\paragraph{}\n")
-@
+
+\includegraphics{graph03.pdf}
+\paragraph{}
 
 \textbf{Figure 3.} The predicted and concurrent values for the Box-Cox power transformation model.
-@
+
 
 \begin{thebibliography}{9}
 

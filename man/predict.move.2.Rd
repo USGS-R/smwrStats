@@ -3,7 +3,7 @@
 \alias{predict.move.2}
 \title{Predict Maintenance of Variance Extension, Type 2}
 \usage{
-\method{predict}{move.2}(object, newdata, type = c("response", "link"))
+\method{predict}{move.2}(object, newdata, type = c("response", "link"), ...)
 }
 \arguments{
 \item{object}{an object of class "move.2" on which to base the predicted

@@ -65,7 +65,7 @@
 #' #  as seen with see with acf(manaus).
 #' }
 #' 
-#' @useDynLib USGSwsStats seakenf
+#' @useDynLib smwrStats seakenf
 #' @export seaken
 seaken <- function(series, nseas=12) {
 	# Coding history:

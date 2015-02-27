@@ -41,7 +41,7 @@ leaps package.
 # See the regression vignette for examples
 .pager <- options("pager")
 options(pager="console")
-vignette(package="USGSwsStats")
+vignette(package="smwrStats")
 options(.pager)
 }
 \references{

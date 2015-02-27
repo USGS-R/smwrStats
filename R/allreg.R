@@ -3,7 +3,7 @@
 #' Create a table of the best subsets of explantory variables for a response
 #' variable.
 #' 
-#' @include USGSwsStats-package.R
+#' @include smwrStats-package.R
 #' @param x matrix of candidate exmplanatory variables.
 #' @param y the response variable.
 #' @param wt the weight variable if needed.
@@ -36,7 +36,7 @@
 #' # See the regression vignette for examples
 #' .pager <- options("pager")
 #' options(pager="console")
-#' vignette(package="USGSwsStats")
+#' vignette(package="smwrStats")
 #' options(.pager)
 #' @importFrom leaps regsubsets
 #' @export allReg

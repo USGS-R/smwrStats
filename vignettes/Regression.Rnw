@@ -4,25 +4,25 @@
 \leftskip=-0.5in
 \rightskip=-0.5in
 %\VignetteIndexEntry{Regression}
-%\VignetteDepends{USGSwsStats}
+%\VignetteDepends{smwrStats}
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 \raggedright
 \parindent 30pt
 
-\title{Regression Example}
+\title{Regression Examples}
 
 \author{Dave Lorenz}
 
 \maketitle
 
-This examples demonstrates a couple of linear regression functions in the \texttt{USGSwsStats} package. The example uses the Haan (1977) dataset C14 from Helsel and Hirsch (2002) to replicate the analysis done in section 11.6 in their book. Please note that there are only 13 observations in the dataset and most practitioners would prefer more observations for this kind of multiple regression analysis; Harrell (2001) has some very good guidance in chapter 4 of his book.
+These examples demonstrates the functions in the \texttt{smwrStats} package that aid linear regression analysis. The first set of examples uses the Haan (1977) dataset C14 from Helsel and Hirsch (2002) to replicate the analysis done in section 11.6 in their book. Please note that there are only 13 observations in the dataset and most practitioners would prefer more observations for this kind of multiple regression analysis; Harrell (2001) has some very good guidance in chapter 4 of his book. See section \textbf{Subset Selection Comments} about some specific for this example. The second set of examples uses the CuyhaogaTDS dataset in the \texttt{smwrData} package. Those examples demonstrate bias correction for a log-transformed response.
 
 <<echo=TRUE>>=
-# Load the USGSwsStats package
-library(USGSwsStats)
-# Create the dataset
+# Load the smwrStats package
+library(smwrStats)
+# Create the Hann dataset
 Haan1977 <- data.frame(
 ROFF=c(17.38, 14.62, 15.48, 14.72, 18.37, 17.01, 18.2, 18.95, 13.94, 18.64,
  17.25, 17.48, 13.16),
@@ -43,12 +43,17 @@ FREQ=c(1.36, 2.37, 2.31, 3.87, 3.3, 1.87, 0.94, 1.2, 4.76, 3.08, 2.99,
  3.53, 2.33),
 Rr=c(332, 55, 77, 68, 68, 230, 44, 72, 40, 115, 352, 300, 39)
 )
+# load the data library and get the Cuyahoga data
+library(smwrData)
+data(CuyahogaTDS)
 @
 
 \eject
 \section{Subset Selection}
 
 The \texttt{allReg} function creates a data frame that contains candidate models and selection criteria. Note that the name of the response variable is taken from the column name for the \texttt{y} argument if it is rectangular, and from the argument name if it is not. Two general approaches for specifying the \texttt{x} and \texttt{y} arguments. The first uses the \texttt{with} function and is most useful when a subset of columns are explanatory variables, but it is probably more clear in identifying the variables. The second, which is commented out, requires less typing and can be useful when most columns are explanatory variables as in this case.
+
+As a preliminary 
 
 <<echo=TRUE>>=
 # Create the allReg output dataset
@@ -71,7 +76,7 @@ The output from \texttt{allReg} can be used to evaluate any of the selected mode
 \eject
 \section{Model Diagnostics}
 
-The \texttt{multReg} function is designed to assist the user by performing many of the model diagnostic tests and plots suggested by Helsel and Hirsch (2002). This section will discuss the use of the \texttt{multReg} function to perform the selected model diagnostics and set up diagnostic plots for the model that Haan (1977) used.
+The \texttt{multReg} function is designed to assist the user by performing many of the model diagnostic tests and plots suggested by Helsel and Hirsch (2002). This section will discuss the use of the \texttt{multReg} function to perform the selected model diagnostics and set up diagnostic plots for the model that Haan (1977) used. The \textbf{Support Functions} illustrates the individual functions the \texttt{smwrStats} package that aid linear regression analysis.
 
 The code below specifies the model, created the regression model and prints the diagnostic tests.
 
@@ -88,7 +93,7 @@ The printed results are comprised of several sections. The first section is the 
 The following sections highlight selected diagnostic plots. When using the \texttt{plot} function in an interactive session, it is not necessary to specify which plot to create nor to set up a graphics device. The only call that would be necessary would be \texttt{plot(Haan.reg)}. Note that plot number 4 cannot be shown because it describes serial correlation and these data are not collected at specific points in time.
 
 \eject
-\section{Response vs. Fitted}
+\section{Response vs. Fitted Plot}
 
 The first diagnostic plot is response vs. fitted. The second is residuals vs fitted and is not shown. The basic difference is that the deviation shown by the smoothed line is exaggerated in the second plot! Each observation is plotted, the dashed line is the 1:1 fit and the solid line is a loess smooth (function \texttt{loess.smooth}) using the "symmetric" option for the \texttt{family} argument. The regression equation with the residual standard error.
 
@@ -194,7 +199,72 @@ cat("\\paragraph{}\n")
 
 \textbf{Figure 5.} The residual dependence diagnostic plot.
 
+\eject
+\section{Support Functions}
+
+The prediction error sum of squares (PRESS) is one of the best measures of the quality of a regression equation (Helsel and Hirsch (2002). PRESS is a validation-type estimator of error; it sequentially drops a signle observation then computes its value from the remaining observations and sums the squares of the differences. The \texttt{press} function will compute the PRESS statistic for any linear regression model created by \texttt{lm}. The following example uses the previously created regression model on the Haan data.
+
+<<echo=TRUE>>=
+# Compute the PRESS statistic
+press(Haan.lm)
+@
+
+The \texttt{rmse} function is a very easy way to extract the root-mean-squared error or residual standard error from a regression  model without running the \texttt{summary} function on the model.
+
+<<echo=TRUE>>=
+# The resdidual standard error is computed by the summary function.
+summary(Haan.lm)
+# But can easily be computed using rmse:
+rmse(Haan.lm)
+@
+
+Helsel and Hirsch (2002) state "Concern over multi-collinearity should be strongest when the purpose is to make inferences about coefficients." The variance inflation factor is a good diagnostic for measuring multi-collinearity. The \texttt{vif} function computes the variance inflation factor for each variable in the model.
+
+<<echo=TRUE>>=
+# The variance inflation factors:
+vif(Haan.lm)
+@
+
+\eject
+\section{Subset Selection Comments}
+
+As noted in the openning paragraph, Harrell (2001) describes concerns about subset selection of explanatory variables and offers advice on how to approach building lregression models. This example demonstrates one of his concerns: the individual significance of an explanatory variable is not appropiate in the context of many possible explanatory variables. This example uses the \texttt{cor.all} function to demonstrate that issue, but has applications beyond linear regression.
+
+<<echo=TRUE>>=
+# Create the correlation structure, and print it:
+Haan.cor <- cor.all(Haan1977)
+print(Haan.cor, digits=3)
+# Now summaryize the signficance of the realtions between ROFF and the other variables 
+summary(Haan.cor, variable="ROFF")
+@
+
+The summary output shows the p-values adjusted for the significance level in the context of eight other variables. The p-values in the summary output have changed considerably from the p-values in the first column in the printed output.
+
+\eject
+\section{Bias Correction}
+
+Helsel and Hirsch (2002) state that the mass of a constituent estimated using a log-transformed regression equation is not correctly estimated simply by back-transforming the predicted values. They describe two methods for bias correction, the Ferguson or maximum likelihood estimation method and Duan's smearing estimate. These are implemented in \texttt{smwrStats} in the \texttt{predictFerguson} and the \texttt{predictDuan} functions. Also included is the \texttt{preductMVUE} fucntion which applies the minimum variance unbiased estimator described in Bradu and Mundlak (1970). This example build a log-transformed regression model and compares the sum of the estimates from all of the methods.
+
+<<echo=TRUE>>=
+# Create the regression model and print it:
+TDS.lm <- lm(log(TDS) ~ log(Q) + fourier(TIME), data=CuyahogaTDS)
+print(TDS.lm)
+# The sum of the TDS data in the calibration dataset:
+sum(CuyahogaTDS$TDS)
+# The sum of the simple back-transformed predictions
+sum(exp(predict(TDS.lm)))
+# No the sume from each of the bais-corrected methods
+sum(predictFerguson(TDS.lm))
+sum(predictDuan(TDS.lm))
+sum(predictMVUE(TDS.lm))
+@
+
+The back-transformation bias correction funcitons are necessary when the goal is to preserve mass or the mean estimate is needed. The estimates from the simple back-transformed values are valid for point estimates. Note that \texttt{predictFerguson} and \texttt{preductMVUE} can only be used for log-transformed regression model, but \texttt{predictDuan} can be used for any monotonic transformation.
+
 \begin{thebibliography}{9}
+
+\bibitem{BM}
+Bradu, D. and Mundlak, Y., 1970, Estimation in the lognormal linear models: Journal of the American Statistical Association, v. 65, no. 329, p. 198???211.
 
 \bibitem{WSC}
 Cleveland, W.S., 1993, Visualizing data: Summit, New Jersey, Hobart Press, 360 p.

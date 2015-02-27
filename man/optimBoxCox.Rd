@@ -29,8 +29,13 @@ Compute Box-Cox transformations that maximimize the log likelihood
 of the transformations.
 }
 \note{
-The maximum likelihood of the Box-Cox transformations corresponds to the
-minimum determinant of the variance of the transformed \code{X}.
+The maximum likelihood estimate of the Box-Cox transformations corresponds to the
+minimum determinant of the variance-covariance matrix of the transformed \code{X}. The
+methodology is described in Andrews and others (1971).
+}
+\references{
+Andrews, D.F., Gnanadesikan, R., and Warner, J.L., 1971, Transformations
+of multivariate data: Biometrics, v. 27, p. 825--840.
 }
 \seealso{
 \code{\link[smwrBase]{boxCox}}, \code{\link[stats]{optim}}

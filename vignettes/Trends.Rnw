@@ -1,30 +1,28 @@
 \documentclass{article}
-\parskip 3pt
-\parindent 30pt
-\leftskip=-0.5in
-\rightskip=-0.5in
+\parskip 6pt
+
 %\VignetteIndexEntry{Trends}
-%\VignetteDepends{USGSwsStats}
+%\VignetteDepends{smwrStats}
 %\VignetteDepends{smwrData}
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 \raggedright
-\parindent 30pt
 
-\title{Trends Example}
+
+\title{Trends Examples}
 
 \author{Dave Lorenz}
 
 \maketitle
 
-These examples demonstrate some functions in the \texttt{USGSwsStats} package that facilitate trend analysis. The first example uses the ConecuhFlows dataset from Appendix C2 in Helsel and Hirsch (2002) to illustrate trend analysis of annual series data. The second example uses the KlamathTP data set in the smwrData package to illustrate seasonally adjusted trend analysis. This example uses the data modified for censoring in uncensored techniques. All section references in these examples are from Helsel and Hirsch (2002). The critical alpha value for all tests is 0.05.
+These examples demonstrate some functions in the \texttt{smwrStats} package that facilitate trend analysis. The first example uses the ConecuhFlows dataset from Appendix C2 in Helsel and Hirsch (2002) to illustrate trend analysis of annual series data. The second example uses the KlamathTP data set in the smwrData package to illustrate seasonally adjusted trend analysis. This example uses the data modified for censoring in uncensored techniques. All section references in these examples are from Helsel and Hirsch (2002). The critical alpha value for all tests is 0.05.
 
 <<echo=TRUE>>=
-# Load the stats, smwrData, and USGSwsStats packages
+# Load the stats, smwrData, and smwrStats packages
 library(stats)
 library(smwrData)
-library(USGSwsStats)
+library(smwrStats)
 # Get the datasets
 data(ConecuhFlows)
 data(KlamathTP)
@@ -33,29 +31,34 @@ data(KlamathTP)
 \eject
 \section{Example 1.}
 
-Helsel and Hirsch (2002) stress plotting the data to help undserstand the data and find an appropriate statistical technique. For this analysis, a simple graph of the annual mean flow by year shows a downward trend. The \texttt{kensen.test} function is used to describe the trend.
+Helsel and Hirsch (2002) stress plotting the data to help undserstand the data and find an appropriate statistical technique. For this analysis, a simple graph of the annual mean flow by year shows a downward trend---more observations are above the median line in the first ten years and more below in the last ten years. The \texttt{kensen.test} function is used to describe the trend.
 
 <<echo=TRUE>>=
 setSweave("trend01", 5, 5)
-with(ConecuhFlows, timePlot(Year, Flow, Plot=list(what="points")))
+with(ConecuhFlows, timePlot(Year, Flow, Plot=list(what="both")))
+with(ConecuhFlows, refLine(horizontal=median(Flow)))
 # Required call to close PDF output graphics
 graphics.off()
 @
-<<results=tex, echo=FALSE>>=
-cat("\\includegraphics{trend01.pdf}\n")
-cat("\\paragraph{}\n")
-@
+
+\includegraphics{trend01.pdf}
+\paragraph{}
+
 
 \textbf{Figure 1.} The time-series plot of annual mean flow in the Conecuh River at Brantley, AL.
 
 The \texttt{kensen.test} function has three arguments---\texttt{y}, the response variable to test for trend; \texttt{t}, the time corresponding to each value in \texttt{y}; and \texttt{n.min}, the minimum number of observations required for adjusting for serial correlation. The default value for \texttt{n.min} is set at 10, in keeping with the 10-year minimum requirement in the seasonal Kendall test (\texttt{seaken}), but a more practical limit seems to be 25.
 
-<<echo=TRUE>>=
-# The trend test
-with(ConecuhFlows, kensen.test(Flow, Year, 25))
-@
-
 The attained p-value is greater than 0.05, so the null hypothesis of no trend is not rejected. There is no evidence of a significant downward trend in the annual mean flows from 1941 through 1960 for these data.
+
+The \texttt{serial.test} function can also be used to assess any effect from serial correlation. It may be more appropraite for shorter time periods that the adjustment in \texttt{kensen.test}. There are two options for the method used in \texttt{serial.test}. Both are shown below. Refer to the documentation for details about the methods. Note that for these data, the results are very different between the methods.
+
+<<echo=TRUE>>=
+# The default method, Wilcosxon rank-sum serial test
+with(ConecuhFlows, serial.test(Flow))
+# The runs test method
+with(ConecuhFlows, serial.test(Flow, method="runs"))
+@
 
 \eject
 \section{Example 2.}
@@ -71,10 +74,10 @@ with(KlamathTP, timePlot(sample_dt, TP_ss, Plot=list(what="points")))
 # Required call to close PDF output graphics
 graphics.off()
 @
-<<results=tex, echo=FALSE>>=
-cat("\\includegraphics{trend02.pdf}\n")
-cat("\\paragraph{}\n")
-@
+
+\includegraphics{trend02.pdf}
+\paragraph{}
+
 
 \textbf{Figure 2.} The time-series plot of total phosphorus concentration. Note the strong seasonal pattern.
 
@@ -84,10 +87,9 @@ with(KlamathTP, xyPlot(Flow, TP_ss))
 # Required call to close PDF output graphics
 graphics.off()
 @
-<<results=tex, echo=FALSE>>=
-cat("\\includegraphics{trend03.pdf}\n")
-cat("\\paragraph{}\n")
-@
+
+\includegraphics{trend03.pdf}
+\paragraph{}
 
 \textbf{Figure 3.} The relation between flow and total phosphorus concentration.
 
@@ -131,23 +133,24 @@ The attained p-value for the test is 0.4899, which is greater than the critical 
 \eject
 \section{Parametric Trend Tests}
 
-Section 12.4.3 discusses the construction of a linear regression model with periodic functions. This example will demonstrate only the flow- and seasonally-adjusted trends. The regression for flow adjustment only requires a linear relation, but the parametric seasonal trend model requires that all assumptions of linear regression are met---linearity  and the homoscedasticity, independence and normality of the residuals.
+Section 12.4.3 in Helsel and Hirsch (2002) discusses the construction of a linear regression model with periodic functions. This example will demonstrate only the flow- and seasonally-adjusted trends. The regression for flow adjustment only requires a linear relation, but the parametric seasonal trend model requires that all assumptions of linear regression are met---linearity  and the homoscedasticity, independence and normality of the residuals.
 
 To maintain those assumptions of linear regression, the log transformation of concentration and flow are almost always required. The total phosphorus data are left censored, so tobit regression should be used. However, simple substitution and ordinary least squares have been historicly used for trend analyses for low rates of censoring. For example Schertz and others (1991) accepted about 5 percent censoring before using tobit regression. Modern user interfaces to censored data make those techniques easy to use, so there is little reason not to use them for any censored data, but for this example of a single censored value, simple substitution will be used.
 
-Smith and others (1982) used a value of 0 as the substitute value, but for a log transform, a different, positive, value must be used. This example will use one-half the detection limit. The first executable statement in the code below computes the substitute value and converts the sample date to decimal time format, which is easier to interpret as a annual rate. The linear regresion trend test uses the \texttt{fourier} function (USGSwsBase) to construct the sine and cosine variables. This example uses the natural log transform because it is easier to express the result as a trend in percent per year than the common logarithm.
+Smith and others (1982) used a value of 0 as the substitute value, but for a log transform, a different, positive, value must be used. This example will use one-half the detection limit. The first executable statement in the code below computes the substitute value and converts the sample date to decimal time format, which is easier to interpret as a annual rate. The linear regresion trend test uses the \texttt{fourier} function (in package \texttt{smwrBase}) to construct the sine and cosine variables. This example uses the natural log transform because it is easier to express the result as a trend in percent per year than the common logarithm.
 
 <<echo=TRUE>>=
-# Simple substitution
+# Simple substitution for one left-censored value
 KlamathTP <- transform(KlamathTP, TP_ss2 = ifelse(TP_rmk == "<", TP/2, TP),
 											 Dectime = dectime(sample_dt))
-# The trend analysis
-KTP.lm <- lm(log(TP_ss2) ~ Dectime + log(Flow) + fourier(Dectime),
+# The trend analysis, residual plot review indicates that
+# Flow must second-order 
+KTP.lm <- lm(log(TP_ss2) ~ Dectime + quadratic(log(Flow)) + fourier(Dectime),
 						 data=KlamathTP)
 summary(KTP.lm)
 @
 
-The attained p-value for the trend is about 0.0093, which is less than the critical alpha level set for the test. The value of the coefficient (-0.07646) can be used to estimate the trend in percent per year: 100 * (exp(-0.07646) - 1) = -7.36. That value, with the median concentration from the previous nonparamteric analysis can be used to estimate the trend in mg/L: (-7.36 / 100) * 0.075 = -0.0055, approximately.
+The attained p-value for the trend is about 0.0092, which is less than the critical alpha level set for the test. The value of the coefficient (-0.06377) can be used to estimate the trend in percent per year: 100 * (exp(-0.06377) - 1) = -6.18. That value, with the median concentration from the previous nonparametric analysis can be used to estimate the trend in mg/L: (-6.18 / 100) * 0.075 = -0.0046, approximately.
 
 \begin{thebibliography}{9}
 

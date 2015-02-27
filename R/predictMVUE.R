@@ -42,7 +42,7 @@
 #' predictDuan(XX.lm, newdata=data.frame(x=1:5))
 #' predictMVUE(XX.lm, newdata=data.frame(x=1:5))
 #' 
-#' @useDynLib USGSwsStats phimvue
+#' @useDynLib smwrStats phimvue
 #' @export predictMVUE
 predictMVUE <- function(object, newdata, Log10=FALSE) {
 	# Coding history:

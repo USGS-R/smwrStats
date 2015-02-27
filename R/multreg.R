@@ -31,7 +31,6 @@
 #' @references Draper, N.R. and Smith, H., 1998, Applied Regression Analysis,
 #' (3rd ed.): New York, Wiley, 724 p.\cr
 #' @keywords models regression
-#' @importFrom car Anova
 #' @export multReg
 multReg <- function(object) {
 	# Coding history:
@@ -57,7 +56,7 @@ multReg <- function(object) {
 	#    2014Dec22 DLLorenz Roxzygen headers
 	##
   ## Required USGS core functions: ppcc.test, vif
-  ##
+  ## Anova already imported from car by ancovareg
   aovtab <- Anova(object) # Anova from car does type II
   regsum <- summary(object)
   vif <- vif(object)

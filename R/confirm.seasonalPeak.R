@@ -40,6 +40,8 @@
 #' confirm(with(QW05078470, seasonalPeak(dectime(DATES), P00665)))
 #' }
 #' 
+#' @export
+#' @method confirm seasonalPeak
 confirm.seasonalPeak <- function(x, all=FALSE, plot.only=FALSE, ...) {
 	# Coding history:
 	#    2007Sep14 DLLorenz Start of confirm

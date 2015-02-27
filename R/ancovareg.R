@@ -37,6 +37,7 @@
 #' @references Draper, N.R. and Smith, H., 1998, Applied Regression Analysis,
 #' (3rd ed.): New York, Wiley, 724 p.
 #' @keywords models regression
+#' @importFrom car Anova
 #' @export ancovaReg
 ancovaReg <- function(object, find.best=TRUE, trace=FALSE) {
 	# Coding history:

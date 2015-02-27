@@ -4,7 +4,7 @@
 \leftskip=-0.5in
 \rightskip=-0.5in
 %\VignetteIndexEntry{CompareGroups}
-%\VignetteDepends{USGSwsStats}
+%\VignetteDepends{smwrStats}
 %\VignetteDepends{smwrData}
 
 \begin{document}
@@ -18,13 +18,13 @@
 
 \maketitle
 
-This example demonstrates some functions in the \texttt{USGSwsStats} package that facilitate comparing multiple groups. The example uses the subset of Knopman (1990) dataset C7 from Helsel and Hirsch (2002) to complement the analysis done in sections 7.1 and 7.4 in their book. All section references in this example are from Helsel and Hirsch (2002). The critical alpha value for all tests is 0.05.
+This example demonstrates some functions in the \texttt{smwrStats} package that facilitate comparing multiple groups. The example uses the subset of Knopman (1990) dataset C7 from Helsel and Hirsch (2002) to complement the analysis done in sections 7.1 and 7.4 in their book. All section references in this example are from Helsel and Hirsch (2002). The critical alpha value for all tests is 0.05.
 
 <<echo=TRUE>>=
-# Load the stats, USGSwsData, and USGSwsStats packages
+# Load the stats, smwrData, and smwrStats packages
 library(stats)
 library(smwrData)
-library(USGSwsStats)
+library(smwrStats)
 # Get the dataset
 data(AppalachianSpecCap)
 @
@@ -61,7 +61,7 @@ The \texttt{kruskal.test} function (stats package) performs the Kruskal-Wallis t
 kruskal.test(LogSpecCap ~ RockType, data=AppalachianSpecCap)
 @
 
-The attained p-value for the test is 0.00912, which is less than the critical alpha level set for the test, so one can proceed with a multiple comparison test to identify which rock types are different from one another. The \texttt{multicomp.test} in the USGSwsStats package can be used to identify similar groups using either parametric or nonparamteric methods. The nonparametric methods are closely related to the Krusak-Wallis test, in that the known statistics of ranks are used and not simply using a rank transform and parametric methods for computing the critical value separating groups. The code below demonstrates how to use \texttt{multicomp.test} to indentify similar groups using the nonparametric method. These nonparametric methods were developed after the original version of Helsel and Hirsh, from section 7.4.2.
+The attained p-value for the test is 0.00912, which is less than the critical alpha level set for the test, so one can proceed with a multiple comparison test to identify which rock types are different from one another. The \texttt{multicomp.test} in the \texttt{smwrStats} package can be used to identify similar groups using either parametric or nonparamteric methods. The nonparametric methods are closely related to the Krusak-Wallis test, in that the known statistics of ranks are used and not simply using a rank transform and parametric methods for computing the critical value separating groups. The code below demonstrates how to use \texttt{multicomp.test} to indentify similar groups using the nonparametric method. These nonparametric methods were developed after the original version of Helsel and Hirsh, from section 7.4.2.
 
 <<echo=TRUE>>=
 # Perform the MCT using the default Tukey method for determining the
@@ -82,7 +82,7 @@ The \texttt{oneway.test} function (stats package) performs the Kruskal-Wallis te
 oneway.test(LogSpecCap ~ RockType, data=AppalachianSpecCap)
 @
 
-The attained p-value for the test is 0.0254, which is less than the critical alpha level set for the test, so one can proceed with a multiple comparison test to identify which rock types are different from one another. The \texttt{multicomp.test} in the USGSwsStats package can be used to identify similar groups. The parametric method uses the pooled variance and does not assume unequal variances. The code below demonstrates how to use \texttt{multicomp.test} to indentify similar groups using the parametric method.
+The attained p-value for the test is 0.0254, which is less than the critical alpha level set for the test, so one can proceed with a multiple comparison test to identify which rock types are different from one another. The \texttt{multicomp.test} in the \texttt{smwrStats} package can be used to identify similar groups. The parametric method uses the pooled variance and does not assume unequal variances. The code below demonstrates how to use \texttt{multicomp.test} to indentify similar groups using the parametric method.
 
 <<echo=TRUE>>=
 # Perform the MCT using the default Tukey method for determining the
