@@ -26,3 +26,7 @@ install.packages("smwrStats",
 install.packages("smwrStats", 
     repos=c("http://usgs-r.github.com","http://cran.us.r-project.org"), 
     dependencies=TRUE, type = "both")
+```
+    
+Linux: [![travis](https://travis-ci.org/USGS-R/smwrStats.svg?branch=master)](https://travis-ci.org/USGS-R/smwrStats)    
+    
