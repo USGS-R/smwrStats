@@ -1,7 +1,7 @@
 smwrStats
 ===========
 
-Statistic USGS water science R functions.
+R functions to support statistical methods in water resources.
 
 Disclaimer
 ----------
@@ -17,12 +17,9 @@ Installation
 **for windows**:
 ```R
 install.packages("smwrStats", 
-    repos=c("http://usgs-r.github.com","http://cran.us.r-project.org"), 
-    dependencies=TRUE)
+    repos=c("http://owi.usgs.gov/R",
+    "http://cran.us.r-project.org"), 
+    dependencies = TRUE)
 ```
 
-**for mac**:
-```R
-install.packages("smwrStats", 
-    repos=c("http://usgs-r.github.com","http://cran.us.r-project.org"), 
-    dependencies=TRUE, type = "both")
+Linux: [![travis](https://travis-ci.org/USGS-R/smwrStats.svg?branch=master)](https://travis-ci.org/USGS-R/smwrStats)
