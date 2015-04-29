@@ -51,7 +51,7 @@ optimBoxCox<-function(X, start=NULL) {
 		lower <- -100
 		upper <- 100
 	} else {
-		method <- "Nelder-Mead"
+		method <- "BFGS" # Faster than "Nelder-Mead" and relatively stable here
 		lower <- -Inf
 		upper <- Inf
 	}

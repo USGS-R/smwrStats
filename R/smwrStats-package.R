@@ -4,7 +4,7 @@
 #' water-quality data.
 #' 
 #' \tabular{ll}{ Package: \tab smwrStats\cr Type: \tab Package\cr Version:
-#' \tab 0.7.0\cr Date: \tab 2015-01-23\cr License: \tab file LICENSE\cr }
+#' \tab 0.7.1\cr Date: \tab 2015-04-29\cr License: \tab file LICENSE\cr }
 #' Regression applications:\cr allReg\cr binaryReg\cr hosmerLemeshow.test\cr
 #' leCessie.test\cr multicomp.test\cr multReg\cr press\cr rmse\cr
 #' roc\cr vif\cr
@@ -30,7 +30,7 @@
 #' Investigations, book 4, chap. A3, 522 p.\cr
 #' 
 #' Lorenz, D.L., in preparation. smwrStats---an R package for the analysis of
-#' hydrologic data, version 0.7.0.
+#' hydrologic data, version 0.7.1.
 #' @keywords package
 #' @import smwrBase
 #' @import smwrGraphs

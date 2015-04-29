@@ -11,10 +11,13 @@
 #'If \code{distribution} is "normal," then the data in the explanatory variable 
 #'and the response variable are assumed to have a bivariate normal distribution. 
 #'Otherwise, they are assumed to have a bivariate log-normal distribution and a 
-#'logarithmic ttransform is applied to both the explanatory variable and the 
+#'logarithmic transform is applied to both the explanatory variable and the 
 #'response variable before analysis. The natural logarithm is used if 
 #'\code{distribution} is "lognormal" and the commmon logarithm is used if 
-#'\code{distribution} is "commonlog." Alternatively, the output from \code{optimBoxCox}
+#'\code{distribution} is "commonlog." If either the response or the explanatory 
+#'has zero values, then the "log1p" option can be used. That option adds 1 to
+#'each value and then computes the natural logarithm.
+#'Alternatively, the output from \code{optimBoxCox}
 #'that contains both the response and explanatory variables can be supplied to
 #'transform those variables by other than a logarithmic transform.
 #' 
@@ -23,10 +26,10 @@
 #' @param data the data frame containing the variables named in \code{formula}.
 #' @param subset an optional vector specifying a subset of observations to be
 #'used in the fitting process.
-#' @param distribution either "normal," "lognormal," "commonlog," or an object
-#'of class "optimBoxCox" indicating the nature of the bivariate distribution, 
-#'See \bold{Details}.
-#' @param lag the number of days to account for tiem of travel between the explanatory
+#' @param distribution either "normal," "lognormal," "commonlog," "log1p," 
+#'or an object of class "optimBoxCox" indicating the nature of the bivariate 
+#'distribution, see \bold{Details}.
+#' @param lag the number of days to account for time of travel between the explanatory
 #'and response sites. If the explanatory site is upstream, then lag can be positive,
 #'otherwise, lag can be negative to account for the travel time between the sites.
 #' @return An object of class "move.2" having these components:
@@ -90,8 +93,14 @@ move.2 <- function(formula, data, subset, distribution="normal", lag=0) {
   fit$na.action <- attr(m, "na.action")
   ## Adjust for transforms
   if(inherits(distribution, "character")) {
-    distribution <- match.arg(distribution, c("normal", "lognormal", "commonlog"))
+    distribution <- match.arg(distribution, c("normal", "lognormal", "commonlog", "log1p"))
     addTrans <- FALSE
+    # Check for 0s and force to log1p
+    if(min(c(Y,X, X2)) == 0 && distribution != "normal" && distribution != "log1p") {
+    	warning("Zero values in data, changing distribution to \"log1p\"")
+    	distribution <- "log1p"
+    	call$distribution <- "log1p"
+    }
     if(distribution == "lognormal") {
       Y <- log(Y)
       X <- log(X)
@@ -104,6 +113,12 @@ move.2 <- function(formula, data, subset, distribution="normal", lag=0) {
       X2 <- log10(X2)
       xname <- paste("log10(", xname, ")", sep='')
       yname <- paste("log10(", yname, ")", sep='')
+    } else if(distribution == "log1p") {
+    	Y <- log1p(Y)
+    	X <- log1p(X)
+    	X2 <- log1p(X2)
+    	xname <- paste("log1p(", xname, ")", sep='')
+    	yname <- paste("log1p(", yname, ")", sep='')
     }
     ## Otherwise normal
   } else { # Must be the output from optimBoxCox
@@ -124,8 +139,10 @@ move.2 <- function(formula, data, subset, distribution="normal", lag=0) {
   }
   ybar <- mean(Y)
   yvar <- var(Y)
+  ystats.orig <- c(concurrent.mean=ybar, concurrent.sd=sqrt(yvar))
   xbar <- mean(X)
   xvar <- var(X)
+  xstats.orig <- c(concurrent.mean=xbar, concurrent.sd=sqrt(xvar))
   retcor <- cor.test(X, Y)
   fit$R <- retcor$estimate
   fit$p.value <- retcor$p.value
@@ -173,7 +190,10 @@ move.2 <- function(formula, data, subset, distribution="normal", lag=0) {
   fit$y <- Y
   fit$lag <- lag
   fit$xstats <- c(mean=xbar, sd=sqrt(xvar))
-  fit$ystats <- c(mean=ybar, sd=sqrt(yvar))
+  fit$xstats.orig <- xstats.orig
+  fit$ystats <- c(corrected.mean=as.vector(ybar), 
+  								corrected.sd=as.vector(sqrt(yvar)))
+  fit$ystats.orig <- ystats.orig
   fit$var.names <- c(yname, xname)
   fit$N1 <- N1
   fit$N2 <- N2
@@ -192,4 +212,3 @@ move.2 <- function(formula, data, subset, distribution="normal", lag=0) {
 }
 
 ## The default extraction methods: coef, residuals, fitted work
-

@@ -19,15 +19,18 @@ print.move.2 <- function(x, digits=4, ...) {
   print(x$coefficients, digits=digits, ...)
   cat("\nStatistics of the variables:\nResponse (", x$var.names[1], "):\n",
       sep="")
-  print(x$ystats, digits=digits, ...)
+  print(x$ystats.orig, digits=digits, ...)
+  # This code and that for xstats nicely aligns the tables
+  tmp <- capture.output(print(x$ystats, digits=digits, print.gap=2, ...))
+  cat(" ",tmp[1L], "\n ", tmp[2L], "\n", sep="")
   cat("Predictor (", x$var.names[2], "):\n", sep="")
-  print(x$xstats, digits=digits, ...)
+  print(x$xstats.orig, digits=digits, ...)
+  tmp <- capture.output(print(x$xstats, digits=digits, print.gap=10, ...))
+  cat("         ",tmp[1L], "\n         ", tmp[2L], "\n", sep="")
   cat("Correlation coefficient: ", round(x$R, digits), 
       "\n                p-value: ", round(x$p.value, digits), "\n", sep="")
   ## Need different summary of lengths 
   cat("\nConcurrent record length: ", x$N1,
       "\n  Extended record length: ", x$N2, "\n", sep="")
-  if(!is.null(x$cx) && !is.null(x$cy))
-    cat(sum(x$cx | x$cy), " observations were left-consored\n", sep="")
   invisible(x)
 }

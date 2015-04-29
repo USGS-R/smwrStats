@@ -8,6 +8,8 @@
 #' @aliases rmse rmse.default rmse.lm rpd
 #' @param x either a random vector an object for which a method exists.
 #' @param y duplicate samples paired with \code{x}.
+#' @param plotit logical, if \code{TRUE}, then create a Bland-Altman 
+#'mean-difference plot (banld and Altman, 1986); otherwise no plot is created.
 #' @param \dots arguments to be passed to or from methods.
 #' @return For the \code{rmse} functions, a single value representing the
 #' estimated RMSE. For \code{rpd}, the relative percent differences for each
@@ -18,17 +20,22 @@
 #' RPD for paired water-quality duplicates is \deqn{ RPD = abs(x - y)/(x + y)/2
 #' * 100}{RPD = abs(x - y)/(x + y)/2 * 100} Other disciplines may use different
 #' equations.
-#' @references Clesceri, L.S., Greenberg, A.E., and Eaton, A.D., 1998, Standard
-#' methods for the examination of water and wastewater, 20th edition:
-#' Baltimore, Md, United Book Press, Inc., 1162 p.\cr
-#' 
+#' @references 
+#' Bland J.M. and Altman D.G., 1986 Statistical methods for assessing agreement 
+#'between two methods of clinical measurement: Lancet, i, p. 307--310.\cr
+#'
+#' Clesceri, L.S., Greenberg, A.E., and Eaton, A.D., 1998, Standard
+#'methods for the examination of water and wastewater, 20th edition:
+#'Baltimore, Md, United Book Press, Inc., 1162 p.\cr
+
+#'
 #' Harvey, D., undated, Analytical chemistry 2.0: Analytical Sciences Digital
-#' Library: online at URL:
-#' http://www.asdlib.org/onlineArticles/ecourseware/Analytical%20Chemistry%202.0/Welcome.html\cr
+#'Library: online at URL:
+#'http://www.asdlib.org/onlineArticles/ecourseware/Analytical%20Chemistry%202.0/Welcome.html\cr
 #' 
 #' Helsel, D.R., and Hirsch, R.M., 2002, Statistical methods in water
-#' resources: U.S. Geological Survey Techniques of Water-Resources
-#' Investigations, book 4, chap. A3, 522 p.\cr
+#'resources: U.S. Geological Survey Techniques of Water-Resources
+#'Investigations, book 4, chap. A3, 522 p.\cr
 #' @keywords univar
 #' @examples
 #' 
@@ -73,9 +80,17 @@ rmse.lm <- function(x, ...) {
 
 #' @name rmse
 #' @export rpd
-rpd <- function(x, y) {
-  ## Arguments:
-  ##  x, y, paired sample and duplicate
+rpd <- function(x, y, plotit=FALSE) {
+  xname <- deparse(substitute(x))
+  yname <- deparse(substitute(x))
+  dif <- x - y
+  summ <- x + y
+  if(plotit){ # Create the Bland-Altman (Tukey m-d) plot
+  	xyPlot(summ/2, dif, Plot=list(size=0.05), 
+  				 xtitle=paste("Mean of", xname, "and", yname, sep=" "),
+  				 ytitle=paste0(xname, " - ", yname))
+  	refLine(horizontal=0)
+  }
   ##
- abs(x - y)/(x + y) * 200 # from standard methods
+ abs(dif)/summ * 200 # from standard methods
 }

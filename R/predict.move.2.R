@@ -44,16 +44,20 @@ predict.move.2 <- function(object, newdata, type = c("response", "link"), ...) {
     if(dist == "lognormal") {
       ckdist <- TRUE
       xindex <- log(xindex)
-    }
-    else if(dist == "commonlog") {
+    } else if(dist == "commonlog") {
       ckdist <- TRUE
       xindex <- log10(xindex)
+    } else if(dist == "log1p") {
+    	ckdist <- TRUE
+    	xindex <- log1p(xindex)
     }
     out <- cbind(1, xindex) %*% object$coef
     type <- match.arg(type)
     if(type == "response" && ckdist) {
       if(dist == "commonlog") {
         out <- 10^out
+      } else if(dist == "log1p") {
+      	out <- pmax(expm1(out), 0)
       } else # Must be natural log
         out <- exp(out)
     }
