@@ -1,7 +1,7 @@
 Package: smwrStats
-Version: 0.7.1
-Date: 2015-04-29
-Title: General tools for hydrologic data and trend analysis.
+Version: 0.7.2
+Date: 2015-04-30
+Title: R functions to support statistical methods in water resources
 Author: Dave Lorenz <lorenz@usgs.gov>.
 Maintainer: Dave Lorenz <lorenz@usgs.gov>
 Depends:

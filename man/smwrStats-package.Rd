@@ -10,8 +10,13 @@ Useful tools for the analysis of hydrologic data, not inlcuding censored
 water-quality data.
 }
 \details{
-\tabular{ll}{ Package: \tab smwrStats\cr Type: \tab Package\cr Version:
-\tab 0.7.1\cr Date: \tab 2015-04-29\cr License: \tab file LICENSE\cr }
+\tabular{ll}{
+Package: \tab smwrStats\cr
+Type: \tab Package\cr
+Version: \tab 0.7.2\cr
+Date: \tab 2015-04-20\cr
+License: \tab file CC0\cr
+}
 Regression applications:\cr allReg\cr binaryReg\cr hosmerLemeshow.test\cr
 leCessie.test\cr multicomp.test\cr multReg\cr press\cr rmse\cr
 roc\cr vif\cr

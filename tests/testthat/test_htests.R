@@ -60,4 +60,4 @@ test_that("Correlation/Regression Tests working", {
 							equals(c("Chi-square"=6.40319888)))
 	expect_that(as.vector(hosmerLemeshow.test(GM)$p.value),
 							equals(0.602163681))
-							
+})
