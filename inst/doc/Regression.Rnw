@@ -1,0 +1,283 @@
+\documentclass{article}
+\parskip 3pt
+\parindent 30pt
+\leftskip=-0.5in
+\rightskip=-0.5in
+%\VignetteIndexEntry{Regression}
+%\VignetteDepends{smwrStats}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\raggedright
+\parindent 30pt
+
+\title{Regression Examples}
+
+\author{Dave Lorenz}
+
+\maketitle
+
+These examples demonstrates the functions in the \texttt{smwrStats} package that aid linear regression analysis. The first set of examples uses the Haan (1977) dataset C14 from Helsel and Hirsch (2002) to replicate the analysis done in section 11.6 in their book. Please note that there are only 13 observations in the dataset and most practitioners would prefer more observations for this kind of multiple regression analysis; Harrell (2001) has some very good guidance in chapter 4 of his book. See section \textbf{Subset Selection Comments} about some specific for this example. The second set of examples uses the CuyhaogaTDS dataset in the \texttt{smwrData} package. Those examples demonstrate bias correction for a log-transformed response.
+
+<<echo=TRUE>>=
+# Load the smwrStats package
+library(smwrStats)
+# Create the Hann dataset
+Haan1977 <- data.frame(
+ROFF=c(17.38, 14.62, 15.48, 14.72, 18.37, 17.01, 18.2, 18.95, 13.94, 18.64,
+ 17.25, 17.48, 13.16),
+PCIP=c(44.37, 44.09, 41.25, 45.5, 46.09, 49.12, 44.03, 48.71, 44.43, 47.72,
+ 48.38, 49, 47.03),
+AREA=c(2.21, 2.53, 5.63, 1.55, 5.15, 2.14, 5.34, 7.47, 2.1, 3.89, 0.67,
+ 0.85, 1.72),
+SLOPE=c(50, 7, 19, 6, 16, 26, 7, 11, 5, 18, 21, 23, 5),
+LEN=c(2.38, 2.55, 3.11, 1.84, 4.14, 1.92, 4.73, 4.24, 2, 2.1, 1.15, 1.27,
+ 1.93),
+PERIM=c(7.93, 7.65, 11.61, 5.31, 11.35, 5.89, 12.59, 12.33, 6.81, 9.87,
+ 3.93, 3.79, 5.19),
+DI=c(0.91, 1.23, 2.11, 0.94, 1.63, 1.41, 1.3, 2.35, 1.19, 1.65, 0.62, 0.83,
+ 0.99),
+Rs=c(0.38, 0.48, 0.57, 0.49, 0.39, 0.71, 0.27, 0.52, 0.53, 0.6, 0.48, 0.61,
+ 0.52),
+FREQ=c(1.36, 2.37, 2.31, 3.87, 3.3, 1.87, 0.94, 1.2, 4.76, 3.08, 2.99,
+ 3.53, 2.33),
+Rr=c(332, 55, 77, 68, 68, 230, 44, 72, 40, 115, 352, 300, 39)
+)
+# load the data library and get the Cuyahoga data
+library(smwrData)
+data(CuyahogaTDS)
+@
+
+\eject
+\section{Subset Selection}
+
+The \texttt{allReg} function creates a data frame that contains candidate models and selection criteria. Note that the name of the response variable is taken from the column name for the \texttt{y} argument if it is rectangular, and from the argument name if it is not. Two general approaches for specifying the \texttt{x} and \texttt{y} arguments. The first uses the \texttt{with} function and is most useful when a subset of columns are explanatory variables, but it is probably more clear in identifying the variables. The second, which is commented out, requires less typing and can be useful when most columns are explanatory variables as in this case.
+
+As a preliminary 
+
+<<echo=TRUE>>=
+# Create the allReg output dataset
+HaanSub <- with(Haan1977, allReg(cbind(PCIP, AREA, SLOPE, LEN, PERIM, 
+		DI, Rs, FREQ, Rr), ROFF))
+# An alternative call, note the use of the drop argument
+HaanSub <- allReg(Haan1977[, -1], Haan1977[, 1, drop=FALSE])
+# What are the "best" 5 models by Cp
+head(HaanSub[order(HaanSub$Cp),])
+@
+
+Helsel and Hirsch (2002) state "Based on Cp, the best model would be the 5 variable model having PCIP, PERIM, DI, FREQ and Rr as explanatory variables---the same model as selected by \texttt{allReg}.  Remember that there is no guarantee that stepwise procedures regularly select the lowest Cp or PRESS models. The advantage of using an overall statistic like Cp is that options are given to the scientist to select what is best. If the scientist decided AREA must be in the model, the lowest CP model containing AREA (the same four-variable model) could be selected. Cp and PRESS allow model choice to be based on multiple criteria such as prediction quality (PRESS), low VIF, cost, etc."
+
+To select a good model, Helsel and Hirsch (2002) describe several criteria in section 11.7. Those criteria need to be considered in addition to the assumptions of linear regression (section 9.1.1) and regression diagnostics (sections 9.5 and 11.5).
+
+The output from \texttt{allReg} can be used to evaluate any of the selected models, by using the \texttt{as.formula} function on the contents of the \texttt{model.formula} column as in the following example.
+
+\texttt{lm(as.formula(HaanSub[13, "model.formula"]), data=Haan1977)}
+
+\eject
+\section{Model Diagnostics}
+
+The \texttt{multReg} function is designed to assist the user by performing many of the model diagnostic tests and plots suggested by Helsel and Hirsch (2002). This section will discuss the use of the \texttt{multReg} function to perform the selected model diagnostics and set up diagnostic plots for the model that Haan (1977) used. The \textbf{Support Functions} illustrates the individual functions the \texttt{smwrStats} package that aid linear regression analysis.
+
+The code below specifies the model, created the regression model and prints the diagnostic tests.
+
+<<echo=TRUE>>=
+# Create the regression model
+Haan.lm <- lm(ROFF ~ PCIP + PERIM + Rr, data=Haan1977)
+# Create the diagnostic object and print it.
+Haan.reg <- multReg(Haan.lm)
+print(Haan.reg)
+@
+
+The printed results are comprised of several sections. The first section is the regression summary, consisting of the call, residual statistics, the coefficient table (without the significance stars), and statistics of the overall fit; the next section is the analysis of variance (ANOVA) table, which is most useful for assessing the overall significance of complex terms such as first- and second-order polynomials (\texttt{quadratic}) or sine and cosine transforms (\texttt{fourier}); the third section is a listing of the variance inflation factors (VIFs); and the last section shows the selected test criteria and the observations that exceed at least one of those criteria.
+
+The following sections highlight selected diagnostic plots. When using the \texttt{plot} function in an interactive session, it is not necessary to specify which plot to create nor to set up a graphics device. The only call that would be necessary would be \texttt{plot(Haan.reg)}. Note that plot number 4 cannot be shown because it describes serial correlation and these data are not collected at specific points in time.
+
+\eject
+\section{Response vs. Fitted Plot}
+
+The first diagnostic plot is response vs. fitted. The second is residuals vs fitted and is not shown. The basic difference is that the deviation shown by the smoothed line is exaggerated in the second plot! Each observation is plotted, the dashed line is the 1:1 fit and the solid line is a loess smooth (function \texttt{loess.smooth}) using the "symmetric" option for the \texttt{family} argument. The regression equation with the residual standard error.
+
+<<echo=TRUE>>=
+# setSweave is a specialized function that sets up the graphics page for
+# Sweave scripts. For interactive use, it should be removed and the
+# default setting for set.up can be used.
+setSweave("regplot01", 5, 5)
+plot(Haan.reg, which=1, set.up=FALSE)
+# Required call to close PDF output graphics
+
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{regplot01.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 1.} The residual vs. fitted diagnostic plot.
+
+\eject
+\section{Scale-Location Plot}
+
+The third diagnostic plot is the scale-location plot, which plots the square root of the residuals vs. the fitted values. It is useful for diagnosing heteroscedasticity and is described by Cleveland (1993).  Each observation is plotted, the dashed line is the theoretical mean, assuming a normal distribution, and the solid line is a loess smooth (function \texttt{loess.smooth} using the "symmetric" option for the \texttt{family} argument. Wooding's test for heteroscedasticity is also shown---it is a straightforward interpretation of the data, simply the results of the Spearman correlation of the data that are shown.  The null hypothesis is
+that the residuals are homoscedastic.
+
+<<echo=TRUE>>=
+# setSweave is a specialized function that sets up the graphics page for
+# Sweave scripts. For interactive use, it should be removed and the
+# default setting for set.up can be used.
+setSweave("regplot02", 5, 5)
+plot(Haan.reg, which=3, set.up=FALSE)
+# Required call to close PDF output graphics
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{regplot02.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 2.} The scale-location diagnostic plot.
+
+\eject
+\section{Probability Plot}
+
+The fifth diagnostic plot tests for the normality of the residuals.  Each observation is plotted, the solid line is the theoretical fit, assuming a normal distribution. The PPCC test for normality is also shown. The null hypothesis is that the residuals are from a normal distribution.
+
+<<echo=TRUE>>=
+# setSweave is a specialized function that sets up the graphics page for
+# Sweave scripts. For interactive use, it should be removed and the
+# default setting for set.up can be used.
+setSweave("regplot03", 5, 5)
+plot(Haan.reg, which=5, set.up=FALSE)
+# Required call to close PDF output graphics
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{regplot03.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 3.} The normal probability diagnostic plot.
+
+\eject
+\section{Influence Plot}
+
+The sixth diagnostic plot shows the approximate influence of each observation identified as exceeding one of the test criteria.  Each observation is plotted, the solid line is the actual fit. Each identified observation is plotted in a different color and the fitted line with that observation removed is plotted in the same color. The seventh diagnostic plot is a plot of the studentized residual vs. the fitted value and is not shown in this vignette. Note that the label for observation number 8 is not shown in this example because it would be outside the range of the plot area.
+
+<<echo=TRUE>>=
+# setSweave is a specialized function that sets up the graphics page for
+# Sweave scripts. For interactive use, it should be removed and the
+# default setting for set.up can be used.
+setSweave("regplot04", 5, 5)
+plot(Haan.reg, which=6, set.up=FALSE)
+# Required call to close PDF output graphics
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{regplot04.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 4.} The influence diagnostic plot.
+
+\eject
+\section{Residual Dependence Plot}
+
+The eighth diagnostic plot is actually a series of plots, one for each explanatory variable. But, a single explanatory variable can be selected instead of the series, as is shown in this example.  Each observation is plotted, the dashed line is 0, the expected value of the residual for each observation and the solid line is a loess smooth (function \texttt{loess.smooth} using the "symmetric" option for the \texttt{family} argument. The results for a second order polynomial fit is also shown; it is the attained p-value of the squared explanatory variable added to the model.
+
+<<echo=TRUE>>=
+# setSweave is a specialized function that sets up the graphics page for
+# Sweave scripts. For interactive use, it should be removed and the
+# default setting for set.up can be used.
+setSweave("regplot05", 5, 5)
+plot(Haan.reg, which="PERIM", set.up=FALSE)
+# Required call to close PDF output graphics
+graphics.off()
+@
+<<results=tex, echo=FALSE>>=
+cat("\\includegraphics{regplot05.pdf}\n")
+cat("\\paragraph{}\n")
+@
+
+\textbf{Figure 5.} The residual dependence diagnostic plot.
+
+\eject
+\section{Support Functions}
+
+The prediction error sum of squares (PRESS) is one of the best measures of the quality of a regression equation (Helsel and Hirsch (2002). PRESS is a validation-type estimator of error; it sequentially drops a signle observation then computes its value from the remaining observations and sums the squares of the differences. The \texttt{press} function will compute the PRESS statistic for any linear regression model created by \texttt{lm}. The following example uses the previously created regression model on the Haan data.
+
+<<echo=TRUE>>=
+# Compute the PRESS statistic
+press(Haan.lm)
+@
+
+The \texttt{rmse} function is a very easy way to extract the root-mean-squared error or residual standard error from a regression  model without running the \texttt{summary} function on the model.
+
+<<echo=TRUE>>=
+# The resdidual standard error is computed by the summary function.
+summary(Haan.lm)
+# But can easily be computed using rmse:
+rmse(Haan.lm)
+@
+
+Helsel and Hirsch (2002) state "Concern over multi-collinearity should be strongest when the purpose is to make inferences about coefficients." The variance inflation factor is a good diagnostic for measuring multi-collinearity. The \texttt{vif} function computes the variance inflation factor for each variable in the model.
+
+<<echo=TRUE>>=
+# The variance inflation factors:
+vif(Haan.lm)
+@
+
+\eject
+\section{Subset Selection Comments}
+
+As noted in the openning paragraph, Harrell (2001) describes concerns about subset selection of explanatory variables and offers advice on how to approach building lregression models. This example demonstrates one of his concerns: the individual significance of an explanatory variable is not appropiate in the context of many possible explanatory variables. This example uses the \texttt{cor.all} function to demonstrate that issue, but has applications beyond linear regression.
+
+<<echo=TRUE>>=
+# Create the correlation structure, and print it:
+Haan.cor <- cor.all(Haan1977)
+print(Haan.cor, digits=3)
+# Now summaryize the signficance of the realtions between ROFF and the other variables 
+summary(Haan.cor, variable="ROFF")
+@
+
+The summary output shows the p-values adjusted for the significance level in the context of eight other variables. The p-values in the summary output have changed considerably from the p-values in the first column in the printed output.
+
+\eject
+\section{Bias Correction}
+
+Helsel and Hirsch (2002) state that the mass of a constituent estimated using a log-transformed regression equation is not correctly estimated simply by back-transforming the predicted values. They describe two methods for bias correction, the Ferguson or maximum likelihood estimation method and Duan's smearing estimate. These are implemented in \texttt{smwrStats} in the \texttt{predictFerguson} and the \texttt{predictDuan} functions. Also included is the \texttt{preductMVUE} fucntion which applies the minimum variance unbiased estimator described in Bradu and Mundlak (1970). This example build a log-transformed regression model and compares the sum of the estimates from all of the methods.
+
+<<echo=TRUE>>=
+# Create the regression model and print it:
+TDS.lm <- lm(log(TDS) ~ log(Q) + fourier(TIME), data=CuyahogaTDS)
+print(TDS.lm)
+# The sum of the TDS data in the calibration dataset:
+sum(CuyahogaTDS$TDS)
+# The sum of the simple back-transformed predictions
+sum(exp(predict(TDS.lm)))
+# No the sume from each of the bais-corrected methods
+sum(predictFerguson(TDS.lm))
+sum(predictDuan(TDS.lm))
+sum(predictMVUE(TDS.lm))
+@
+
+The back-transformation bias correction funcitons are necessary when the goal is to preserve mass or the mean estimate is needed. The estimates from the simple back-transformed values are valid for point estimates. Note that \texttt{predictFerguson} and \texttt{preductMVUE} can only be used for log-transformed regression model, but \texttt{predictDuan} can be used for any monotonic transformation.
+
+\begin{thebibliography}{9}
+
+\bibitem{BM}
+Bradu, D. and Mundlak, Y., 1970, Estimation in the lognormal linear models: Journal of the American Statistical Association, v. 65, no. 329, p. 198???211.
+
+\bibitem{WSC}
+Cleveland, W.S., 1993, Visualizing data: Summit, New Jersey, Hobart Press, 360 p.
+
+\bibitem{Haan}
+Haan, C. T., 1977. Statistical methods in hydrology: Iowa State University Press, Ames, Iowa, 378 p.
+
+\bibitem{FEH}
+Harrell, F.E., Jr., 2001, Regression modeling strategies with applications to linear models, logistic regression and survival analysis: New York, N.Y., Springer, 568 p.
+
+\bibitem{HH2}
+Helsel, D.R. and Hirsch, R.M., 2002, Statistical methods in water resources: U.S. Geological Survey Techniques of Water-Resources Investigations, book 4, chap. A3, 522 p.
+
+\end{thebibliography}
+
+\end{document}
