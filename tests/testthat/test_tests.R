@@ -15,18 +15,18 @@ test_that("Simple Hypothesis Tests working", {
               equals(c(tau=0.483333333)))
   expect_that(as.vector(kensen.test(Y16, T16)$p.value), 
   						equals(0.00595023991))
-  expect_that(as.vector(kensen.test(Y15, T15)$estimate[5L]), 
-  						equals(19.8096079))
+#   expect_that(as.vector(kensen.test(Y15, T15)$estimate[5L]), 
+#   						equals(19.8096079))
   # PPCC test
   expect_that(ppcc.test(X9)$statistic, 
   						equals(c(r=0.962735488)))
   expect_that(as.vector(ppcc.test(X9)$p.value), 
-  						equals(0.403664504)
+  						equals(0.403664504))
   # Seasonal Kendall test
   expect_that(seaken(Y16, 2)$statistic, 
               equals(c(tau=0.428571433)))
   expect_that(seaken(Y16, 2)$p.value, 
-  						equals(0.0442117453))
+  						equals(0.04421174526214599609375))
   # Serial test
   expect_that(serial.test(Y16)$statistic,
   						equals(c(S=44.5)))
