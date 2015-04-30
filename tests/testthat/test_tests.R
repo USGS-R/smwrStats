@@ -23,8 +23,8 @@ test_that("Simple Hypothesis Tests working", {
   expect_that(as.vector(ppcc.test(X9)$p.value), 
   						equals(0.403664504))
   # Seasonal Kendall test
-  expect_that(seaken(Y16, 2)$statistic, 
-              equals(c(tau=0.428571433)))
+  expect_that(sprintf("%.5f", seaken(Y16, 2)$statistic), 
+              equals("0.42857"))
   expect_that(seaken(Y16, 2)$p.value, 
   						equals(0.04421174526214599609375))
   # Serial test
