@@ -25,8 +25,8 @@ test_that("Simple Hypothesis Tests working", {
   # Seasonal Kendall test
   expect_that(sprintf("%.5f", seaken(Y16, 2)$statistic), 
               equals("0.42857"))
-  expect_that(seaken(Y16, 2)$p.value, 
-  						equals(0.04421174526214599609375))
+  expect_that(sprintf("%.5f", seaken(Y16, 2)$p.value), 
+  						equals("0.04421"))
   # Serial test
   expect_that(serial.test(Y16)$statistic,
   						equals(c(S=44.5)))
