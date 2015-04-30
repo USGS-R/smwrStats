@@ -9,14 +9,15 @@ Depends:
     smwrGraphs (>= 1.0)
 Suggests:
     smwrData (>= 1.0),
-    dataRetrieval
+    dataRetrieval,
+    testthat
 Imports:
     car,
     leaps,
     stats
 Description: Useful tools for the analysis of hydrologic data,
     not inlcuding censored water-quality data.
-License: file CC0
+License: CC0
 LazyLoad: yes
 Collate:
     'smwrStats-package.R'
