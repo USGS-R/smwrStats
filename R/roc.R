@@ -1,6 +1,6 @@
 #' Receiver Operator Characteristics for Logistic Regression
 #' 
-#' Compute the receiver operator characteristics (ROC) for a logistic
+#' Computes the receiver operator characteristics (ROC) for a logistic
 #' regression model.
 #' 
 #' 

@@ -1,6 +1,6 @@
 #' Print Object
 #' 
-#' PRint the results of a multivariate unconditional Box-Cox transformation.
+#' Prints the results of a multivariate unconditional Box-Cox transformation.
 #' 
 #' @param x an object of class "optimBoxCox" from \code{optimBoxCox}.
 #' @param digits the number of significant digits to print numeric data.

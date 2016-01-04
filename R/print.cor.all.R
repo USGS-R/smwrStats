@@ -1,6 +1,6 @@
 #' Print Objects
 #' 
-#' Print the results of a correlation test (\code{cor.all}).
+#' Prints the results of a correlation test (\code{cor.all}).
 #' 
 #' 
 #' @param x an object of class "cor.all" from \code{cor.all}.
@@ -12,6 +12,7 @@
 #' @note The printed output contains a description of the test; and 3 lines for
 #' each comparison that is printed: the correlation statistic, the attained
 #' p-value, and the number of pairs.
+#' @seealso \code{\link{cor.all}}, \code{\link{printCor}}
 #' @export
 #' @method print cor.all
 print.cor.all <- function(x, digits = 4, lower=TRUE, ...) {

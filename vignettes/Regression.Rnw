@@ -1,15 +1,13 @@
 \documentclass{article}
-\parskip 3pt
-\parindent 30pt
-\leftskip=-0.5in
-\rightskip=-0.5in
+\parskip 6pt
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
 %\VignetteIndexEntry{Regression}
 %\VignetteDepends{smwrStats}
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 \raggedright
-\parindent 30pt
 
 \title{Regression Examples}
 
@@ -17,12 +15,20 @@
 
 \maketitle
 
+\begin{abstract}
 These examples demonstrates the functions in the \texttt{smwrStats} package that aid linear regression analysis. The first set of examples uses the Haan (1977) dataset C14 from Helsel and Hirsch (2002) to replicate the analysis done in section 11.6 in their book. Please note that there are only 13 observations in the dataset and most practitioners would prefer more observations for this kind of multiple regression analysis; Harrell (2001) has some very good guidance in chapter 4 of his book. See section \textbf{Subset Selection Comments} about some specific for this example. The second set of examples uses the CuyhaogaTDS dataset in the \texttt{smwrData} package. Those examples demonstrate bias correction for a log-transformed response.
+\end{abstract}
 
+\tableofcontents
+
+\eject
+\section{Introduction}
+
+These examples use data from the smwrData package. The data are created and retrieved in the following code.
 <<echo=TRUE>>=
 # Load the smwrStats package
 library(smwrStats)
-# Create the Hann dataset
+# Create the Haan dataset
 Haan1977 <- data.frame(
 ROFF=c(17.38, 14.62, 15.48, 14.72, 18.37, 17.01, 18.2, 18.95, 13.94, 18.64,
  17.25, 17.48, 13.16),
@@ -51,16 +57,16 @@ data(CuyahogaTDS)
 \eject
 \section{Subset Selection}
 
-The \texttt{allReg} function creates a data frame that contains candidate models and selection criteria. Note that the name of the response variable is taken from the column name for the \texttt{y} argument if it is rectangular, and from the argument name if it is not. Two general approaches for specifying the \texttt{x} and \texttt{y} arguments. The first uses the \texttt{with} function and is most useful when a subset of columns are explanatory variables, but it is probably more clear in identifying the variables. The second, which is commented out, requires less typing and can be useful when most columns are explanatory variables as in this case.
+The \texttt{allReg} function creates a data frame that contains candidate models and selection criteria. Note that the name of the response variable is taken from the column name for the \texttt{y} argument if it is rectangular, and from the argument name if it is not. Two general approaches for specifying the \texttt{x} and \texttt{y} arguments. The first uses the \texttt{with} function and is most useful when a subset of columns are explanatory variables, but it is probably more clear in identifying the variables. The second, which is commented out, requires less typing and can be useful when most columns are explanatory variables as in this case. Note the argument \texttt{lin.dep} is used to protect agiant potential linear dependiencies---the defualt is to require atleast 10 more observations than vexplanatory variables. For these data \texttt{lin.dep} is set to 1 for these data because there are 13 observations and 9 explanatory variables.
 
 As a preliminary 
 
 <<echo=TRUE>>=
 # Create the allReg output dataset
 HaanSub <- with(Haan1977, allReg(cbind(PCIP, AREA, SLOPE, LEN, PERIM, 
-		DI, Rs, FREQ, Rr), ROFF))
+		DI, Rs, FREQ, Rr), ROFF, lin.dep=1))
 # An alternative call, note the use of the drop argument
-HaanSub <- allReg(Haan1977[, -1], Haan1977[, 1, drop=FALSE])
+#HaanSub <- allReg(Haan1977[, -1], Haan1977[, 1, drop=FALSE], lin.dep=1)
 # What are the "best" 5 models by Cp
 head(HaanSub[order(HaanSub$Cp),])
 @

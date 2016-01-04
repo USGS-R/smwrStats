@@ -1,6 +1,6 @@
 #' Test for Outlier
 #' 
-#' Test for a single outlier in a sample from a normal distribution.
+#' Tests for a single outlier in a sample from a normal distribution.
 #' 
 #' 
 #' @param x a vector of numeric values. Missing values are allowed, but are

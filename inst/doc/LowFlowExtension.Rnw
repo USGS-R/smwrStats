@@ -1,7 +1,7 @@
 \documentclass{article}
 \parskip 6pt
-\leftskip=-0.5in
-\rightskip=-0.5in
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
 %\VignetteIndexEntry{LowFlowExtension}
 %\VignetteDepends{smwrStats}
 %\VignetteDepends{dataRetrieval}
@@ -16,8 +16,16 @@
 
 \maketitle
 
+\begin{abstract}
 This example demonstrates the \texttt{move.1} and related functions in the \texttt{smwrStats} package. The example retrieves data from NWISweb using functions in the \texttt{dataRetrieval} package. The Data are from the Passaic River at outlet of Osborn Pond, NJ. (USGS station identifier 01378700), the Passaic River near Millington, NJ. (USGS station identifier 01379000), and the Whippany River at Morristown, NJ. (USGS station identifier 01381500).
+\end{abstract}
 
+\tableofcontents
+
+\eject
+\section{Introduction}
+
+These examples use data from NWISWeb. The data are retrieved in the following code.
 <<echo=TRUE>>=
 # Load the smwrStats and dataRetrieval packages
 library(smwrStats)

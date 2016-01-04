@@ -1,6 +1,6 @@
 #' Print Objects
 #' 
-#' Print the results of a le Cessie-van Houwelingen test
+#' Prints the results of a le Cessie-van Houwelingen test
 #' (\code{leCessie.test}).
 #' 
 #' 

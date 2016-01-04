@@ -1,6 +1,6 @@
 #' Summarize Correlations
 #' 
-#' Extract a data frame that summarizes the correlations computed by
+#' Extracts a data frame that summarizes the correlations computed by
 #' \code{cor.all}.
 #' 
 #' 

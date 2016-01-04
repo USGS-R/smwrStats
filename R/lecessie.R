@@ -1,6 +1,6 @@
 #' The le Cessie-van Houwelingen Test
 #' 
-#' Perform the le Cressie-van Houwelingen test for goodness-of-fit for a
+#' Performs the le Cressie-van Houwelingen test for goodness-of-fit for a
 #' logistic regression model.
 #' 
 #' If \code{bandwidth} is missing, then the mean distance between observations

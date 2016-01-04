@@ -1,6 +1,6 @@
 #' Predict Values.
 #' 
-#' Predict new values from Sen slope (senSlope) model fit.
+#' Predicts new values from Sen slope (senSlope) model fit.
 #' 
 #' 
 #' @param object an object of class "senSlope" on which to base the predicted

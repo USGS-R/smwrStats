@@ -1,6 +1,6 @@
 #' Prediction Error Sum of Squares
 #' 
-#' Compute the prediction error sum of squares statistic (PRESS) (Helsel and
+#' Computes the prediction error sum of squares statistic (PRESS) (Helsel and
 #' Hirsch, 2002) for a linear regression model.
 #' 
 #' 

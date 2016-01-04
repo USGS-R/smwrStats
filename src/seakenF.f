@@ -7,6 +7,7 @@ c           (or missing value = -99999.0) per time period (season or month).
 c        n is the length (total number of time periods) of x, it should be
 c           be a multiple of nseas.
 c        nseas is the number of equally sized time periods per year.
+c           or the number of sites in a regional analysis
 c        results is the output vector containing
 c           results(1) = Kendall's tau,
 c           results(2) = p-level without serial correlation correction,
@@ -164,7 +165,7 @@ c                                           ! p-level with correction.
 c
                              results(3)=plevel
 c
-c     Calculte the slope estimate.
+c     Calculate the slope estimate.
 c
       index = index - 1                     ! Adjust index to actual used.
 c
@@ -184,7 +185,7 @@ c        point (tmed,dmed) where
 c           tmed is the median in time (x-axis) and
 c           dmed is the median of the data (y-axis).
 c
-      tmed = ny / 2.0                       ! Median vaule of time.
+      tmed = ny / 2.0                       ! Median value of time.
 c
                              results(5)=tmed
 c

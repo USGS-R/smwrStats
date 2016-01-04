@@ -1,6 +1,6 @@
 #' Series Plot
 #' 
-#' Produce a plot of time-series data by season that shows seasonal and overall
+#' Produces a plot of time-series data by season that shows seasonal and overall
 #' trends.
 #' 
 #' The argument \code{what} for \code{SeasonLine} must be either "lines" or
@@ -41,13 +41,13 @@ seriesPlot.seaken <- function(x, # data
 															SeasonPoint=list(name="", what="points", symbol="circle", 
 																							 filled=TRUE, size=0.09, color="black"), # plot controls
 															yaxis.log=FALSE, yaxis.range=c(NA,NA), # y-axis controls
-															ylabels=7, xlabels, # labels
+															ylabels=7, xlabels=x$seasonames, # labels
 															xtitle="",
 															ytitle=deparse(substitute(x)), # axis titles
 															caption="", # caption 
 															margin=c(NA, NA, NA, NA),  # margin controls
 															SeasonTrend=list(name="", what="lines",
-																							 color="green"), 
+																							 color="brown"), 
 															TrendLine=list(name="", what="lines",
 																						 color="blue"), ...) { # Trends
 	if(dev.cur() == 1)
@@ -55,7 +55,9 @@ seriesPlot.seaken <- function(x, # data
 	## Set reverse option for y-axis, needed as default and other defaults
 	ytitle <- ytitle
 	yaxis.rev <- FALSE
-	xlabels <- x$nseasons
+	if(is.null(xlabels)) {
+		xlabels <- x$nseasons
+	}
 	TrendLine$slope <- x$estimate[1]
 	if(is.list(ylabels))
 		yax <- c(list(data=x$series, axis.range=yaxis.range, axis.log=yaxis.log,
@@ -69,7 +71,7 @@ seriesPlot.seaken <- function(x, # data
 	if(length(xlabels) == 1)
 		xlabels <- seq(xlabels)
 	xlabels <- as.character(xlabels)
-	xax <- namePretty(xlabels, orientation="grid")
+	xax <- namePretty(xlabels, orientation="grid", style="between")
 	## set margins and controls
 	margin.control <- setMargin(margin, yax)
 	margin <- margin.control$margin
@@ -91,7 +93,7 @@ seriesPlot.seaken <- function(x, # data
 	}
 	SeasonPoint <- setPlot(SeasonPoint, name="", what="points", symbol="circle", 
 												 filled=TRUE, size=0.09, color="black")
-	SeasonTrend <- setDefaults(SeasonTrend, name="", what="lines", color="green")
+	SeasonTrend <- setDefaults(SeasonTrend, name="", what="lines", color="brown")
 	## Replace NA with mean so that the complete plot is made
 	N <- length(y)
 	xseas <- rep(seq(along=xlabels), length.out=N)
@@ -124,16 +126,20 @@ seriesPlot.seaken <- function(x, # data
 	explan <- retval$explanation
 	par(lwd=stdWt())
 	## Add the trend lines if requested
+	# Scale set to represent change over x-range of .9 to represent nyears of time
+	scl <- 0.5/0.9*x$nyears 
 	TrendLine <- setDefaults(TrendLine,name="", what="lines", color="blue")
 	if(TrendLine$what != "none") {
 		for(i in seq(along=xlabels)) {
 			ymean <- mean(y[[xlabels[i]]], na.rm=TRUE)
-			segments(i - .45, ymean - .45*TrendLine$slope,
-							 i + .45, ymean + .45*TrendLine$slope, col=TrendLine$color)
+			segments(i - .45, ymean - scl*TrendLine$slope,
+							 i + .45, ymean + scl*TrendLine$slope, col=TrendLine$color, 
+							 lwd=lineWt("bold"))
 		}
 		if(TrendLine$name != "") # add to explanation
-			explan <- setExplan(setPlot(TrendLine), explan)
+			explan <- setExplan(setPlot(TrendLine, width="bold"), explan)
 	}
+	# Defaults set earlier
 	if(SeasonTrend$what != "none") {
 		for(i in seq(along=xlabels)) {
 			ydat <- y[[xlabels[i]]]
@@ -141,11 +147,12 @@ seriesPlot.seaken <- function(x, # data
 			xdiff <- outer(seq(along=ydat), seq(along=ydat), "-")
 			slope <- median(ydiff[lower.tri(ydiff)] / xdiff[lower.tri(xdiff)], na.rm=TRUE)
 			ymean <- mean(ydat, na.rm=TRUE)
-			segments(i - .45, ymean - .45*slope,
-							 i + .45, ymean + .45*slope, col=SeasonTrend$color)
+			segments(i - .45, ymean - scl*slope,
+							 i + .45, ymean + scl*slope, col=SeasonTrend$color, 
+							 lwd=lineWt("bold"))
 		}
 		if(SeasonTrend$name != "") # add to explanation
-			explan <- setExplan(setPlot(SeasonTrend), explan)
+			explan <- setExplan(setPlot(SeasonTrend, width="bold"), explan)
 	}
 	## recover the log-transforms and explanation if necessary
 	retval$yaxis.log <- yaxis.log

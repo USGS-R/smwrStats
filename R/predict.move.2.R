@@ -1,6 +1,6 @@
 #' Predict Maintenance of Variance Extension, Type 2
 #' 
-#' Predict new values from a maintenance of variance extension, type 2 (MOVE.2)
+#' Predicts new values from a maintenance of variance extension, type 2 (MOVE.2)
 #' model fit.
 #' 
 #' @details If \code{type} is "response," then the predicted values are

@@ -1,6 +1,6 @@
 #' Compute the Sen Slope
 #' 
-#' Computes the Sen slope, confidence intervals, and an intercept for paired
+#' Computes the Sen slope with confidence interval and an intercept for paired
 #' data.
 #' 
 #' The argument \code{intercept} may be either "Ac" or "A1m." If it is "Ac,"

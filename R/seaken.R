@@ -1,23 +1,33 @@
 #' Trend Test
 #' 
-#' Computes the seasonal Kendall trend test.
+#' Computes the seasonal Kendall trend test with Sen slope estimator.
 #' 
 #' 
 #' @param series a regularly spaced numeric vector to test for trend. Missing
 #' values are permitted.
-#' @param nseas the number of seasons per year. Must not exceed 52.
-#' @return An object of class "htest" containing the following components:
-#' \item{method}{ a description of the method.  } \item{statistic}{ the value
-#' of Kendall's tau. } \item{p.value}{ the p-value. See \bold{Note}. }
+#' @param nseas the number of seasons per year. Must not exceed 52. Can also
+#'be a character vector of the names of the seasons. The length of the 
+#'character vector determines the number of seasons.
+#' @return An object of class "htest" also inhereting class "seaken" containing 
+#' the following components:
+#' \item{method}{ a description of the method.  } 
+#' \item{statistic}{ the value of Kendall's tau. } 
+#' \item{p.value}{ the p-value. See \bold{Note}. }
 #' \item{p.value.raw}{ the p-value computed without correction for serial
-#' correlation. See \bold{Note}. } \item{p.value.corrected}{ the p-value
-#' computed with correction for serial correlation. See \bold{Note}. }
+#' correlation. See \bold{Note}. } 
+#' \item{p.value.corrected}{ the p-value computed with correction for serial
+#' correlation. See \bold{Note}. }
 #' \item{estimate}{ a named vector containing the Sen estimate of the slope in
-#' units per year, the median value of the data, and the median value of time.
-#' } \item{data.name}{ a string containing the actual name of the input series
-#' with the number of years and seasons. } \item{alternative}{ a character
-#' string describing alternative to the test ("two.sided"). }
-#' \item{null.value}{ the value for the hypothesized slope (0).  }
+#' units per year, the median value of the data, and the median value of time.} 
+#' \item{data.name}{ a string containing the actual name of the input series
+#' with the number of years and seasons. } 
+#' \item{alternative}{ a character string describing alternative to the test 
+#' ("two.sided"). }
+#' \item{null.value}{ the value for the hypothesized slope (0).}
+#' \item{nyears}{ the number of years.}
+#' \item{nseasons}{ the number of seasons.}
+#' \item{series}{ the data that was analyzed.}
+#' \item{seasonnames}{ the names of the seasons.}
 #' @note The value of \code{p.value} is \code{p.value.raw} if there are fewer
 #' than 10 years of data and is \code{p.value.corrected} otherwise.
 #' @seealso \code{\link{kensen.test}}, \code{\link{regularSeries}}
@@ -86,7 +96,12 @@ seaken <- function(series, nseas=12) {
 	Dname <- deparse(substitute(series))
 	x <- as.single(series)
 	n <- as.integer(length(series))
-	ns <- as.integer(nseas)
+	if(class(nseas) == "character") {
+		ns <- as.integer(length(nseas))
+	} else {
+		ns <- as.integer(nseas)
+		nseas <- as.character(seq(nseas))
+	}
 	if (n/ns < 2) stop ("seaken requires at least 2 years of data.")
 	# Pad any trailing partial year to a full year. The original Fortran
 	#    code truncated the series using n<-floor(n/ns)*ns
@@ -121,9 +136,10 @@ seaken <- function(series, nseas=12) {
 		p.value <- results[2]
 	else
 		p.value <- results[3]
+	x <- miss2na(as.numeric(x), -99999.0)
 	z <- list(method = method, data.name =
 							paste(Dname, " (", n/ns, " years and ", ns, " seasons)", sep=""),
-						nyears = n/ns, nseasons = ns, series=series,
+						nyears = n/ns, nseasons = ns, series=x, seasonames=nseas,
 						statistic=tau, p.value=p.value,
 						p.value.raw = results[2], p.value.corrected = results[3],
 						estimate=est, alternative = "two.sided", null.value = zero)

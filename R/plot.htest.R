@@ -1,6 +1,6 @@
 #' Diagnostic Plots
 #' 
-#' Create diagnostic plots for selected hypothesis tests.
+#' Creates diagnostic plots for selected hypothesis tests.
 #' 
 #' The \code{kensen} method for \code{plot} graphs the y and t data with the
 #' best fit line.

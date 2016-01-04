@@ -1,6 +1,6 @@
 #' Skewness
 #' 
-#' Compute the skewness statistic.
+#' Computes the skewness statistic.
 #' 
 #' @param x any numeric vector.
 #' @param na.rm logical; if TRUE, then remove missing value before computation.

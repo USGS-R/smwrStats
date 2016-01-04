@@ -1,5 +1,5 @@
-# Preform a simple seasonal wave analysis
-library(USGSwsStats)
+# Perform a simple seasonal wave analysis
+library(smwrStats)
 # Create the data set. These are Atrazine concentrations from the 
 #  White River at Hazleton, IN. No data were censored in this time frame.
 WHRatra <- data.frame(

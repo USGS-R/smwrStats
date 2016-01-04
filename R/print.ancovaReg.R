@@ -1,6 +1,6 @@
 #' Print Objects
 #' 
-#' Print the results of a analysis of covariance (\code{ancovaReg}).
+#' Prints the results of a analysis of covariance (\code{ancovaReg}).
 #' 
 #' 
 #' @param x an object of class "ancovaReg" from \code{ancovaReg}.
@@ -30,7 +30,18 @@ print.ancovaReg <- function(x, digits=3, ...) {
 	print(x$crit.val, digits=digits)
 	if(any(x$flagobs)) {
 		cat("\tObservations exceeding at least one test criterion\n")
-		print(x$diagstats[x$flagobs,], digits=digits)
+		dstats <- format(x$diagstats[x$flagobs,] , digits=digits)
+		## Append * to each value that exceeds its criterion
+		dstats$leverage <- paste(dstats$leverage, 
+														 ifelse(x$diagstats[x$flagobs, "leverage"] > x$crit.val[1L],
+														 			 "*", " "), sep="")
+		dstats$cooksD <- paste(dstats$cooksD, 
+													 ifelse(x$diagstats[x$flagobs, "cooksD"] > x$crit.val[2L],
+													 			 "*", " "), sep="")
+		dstats$dfits <- paste(dstats$dfits, 
+													ifelse(abs(x$diagstats[x$flagobs, "dfits"]) > x$crit.val[3L],
+																 "*", " "), sep="")
+		print(x$dstats[x$flagobs,], digits=digits)
 	}
 	else
 		cat("\tNo observations exceeded any test criteria\n")

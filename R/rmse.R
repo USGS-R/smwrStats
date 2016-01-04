@@ -1,6 +1,6 @@
 #' Root-Mean-Squared and Relative Differences
 #' 
-#' Compute the root-mean-squared error (RMSE) of the difference between
+#' Computes the root-mean-squared error (RMSE) of the difference between
 #' observed values and the predicted values or the RMSE or relative percent
 #' differences (RPD) between samples and duplicates.
 #' 

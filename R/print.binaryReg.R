@@ -1,6 +1,6 @@
 #' Print Objects
 #' 
-#' Print the results of a logistic regression diagnotic analysis
+#' Prints the results of a logistic regression diagnotic analysis
 #' (\code{binaryReg}).
 #' 
 #' The original regression model should be the output from \code{glm} with
@@ -51,7 +51,7 @@ print.binaryreg <- function(x, digits=4, ...) {
 	if(!is.null(x$Hosmer))
 		print(x$Hosmer, digits=digits, ...)
 	else
-		cat("Too few unique predcited values for Hosmer-Lemeshow Test\n")
+		cat("Too few unique predicted values for Hosmer-Lemeshow Test\n")
 	## Print the correct and concordant stats and the AUROC
 	cat("\nPredictive power estimates:\n")
 	## Print the R2 and adjusted R2

@@ -1,8 +1,7 @@
 #' Confirm Seasonal Peak
 #' 
 #' This function processes the output of function seasonalPeak and requires the
-#' user to accept or change the timing of the peak, if there is a secondary
-#' peak and the necessary characteristics of the peaks.
+#' user to accept or change the timing of the peak or peaks.
 #' 
 #' 
 #' @param x a seasonalPeak object.

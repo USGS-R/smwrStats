@@ -1,6 +1,6 @@
 #' Print Objects
 #' 
-#' Print the results of a multiple regression diagnostic analysis
+#' Prints the results of a multiple regression diagnostic analysis
 #' (\code{multReg}).
 #' 
 #' 

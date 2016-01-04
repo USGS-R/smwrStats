@@ -1,12 +1,6 @@
-# print a seasonalPeak
-#
-
-
-
-
 #' Print Objects
 #' 
-#' Print the results of a seasonal peak analysis (\code{seasonalPeak}).
+#' Prints the results of a seasonal peak analysis (\code{seasonalPeak}).
 #' 
 #' 
 #' @param x an object of class "seasonalPeak" from \code{seasonalpeak}.

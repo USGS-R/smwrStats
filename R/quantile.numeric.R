@@ -1,6 +1,6 @@
 #' Sample Quantiles
 #' 
-#' Compute sample quantiles corresponding to the given probabilities. The
+#' Computes sample quantiles corresponding to the given probabilities. The
 #' smallest observation corresponds to a probability of 0 and the largest to a
 #' probability of 1. This method function is a simple wrapper for the default
 #' function that sets the default \code{type} to 2.

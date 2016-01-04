@@ -1,7 +1,7 @@
 #' Empirical Cumulative Percent
 #' 
-#' The empirical cumulative percent or percent exceedence of observed data is
-#' computed for specific values.\cr
+#' Computes the empirical cumulative percent or percent exceedance of observed data
+#' for specific values.\cr
 #' 
 #' 
 #' @aliases percentile percentile.default

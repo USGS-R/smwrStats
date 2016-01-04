@@ -308,7 +308,7 @@ plot.ancovaReg <- function(x, which='All', set.up=TRUE, span=0.8, ...) {
 										Plot=list(what="points", size=0.05),
 										xtitle=paste("Partial Fitted: ", x$factor.var, " dropped",
 																 sep=""),
-										ytitle="Response")
+										ytitle="Actual")
 		Colors <- setColor(Levels) # The default for colorPlot
 		for(i in seq(along=Levels)) {
 			Par <- lm(Act ~ Par.fits, subset=xpred[[x$factor.var]] == Levels[i])
@@ -321,16 +321,26 @@ plot.ancovaReg <- function(x, which='All', set.up=TRUE, span=0.8, ...) {
 		Eqn <- x$object$coef
 		names(Eqn)[1L] <- ""
 		Eqn <- paste(as.character(round(Eqn, 3)), names(Eqn), sep=' ')
-		Eqn <- paste(Eqn, collapse=' + ')
-		Resp <- as.expression(substitute(hat(R), 
-																		 list(R=as.name(deparse(x$object$call$formula[[2L]])))))
-		Model <- expression()
+		# Try to wrap if too wide
+		Eqnwid <- strwidth(Eqn, units="inch")
+		if(sum(Eqnwid) > par("pin")[1L] - 2) {
+			EqnGrp <- (cumsum(Eqnwid+.25)+1.5) %/% (par("pin")[1L] - .5)
+			Eqn1 <- paste(Eqn[EqnGrp == 0], collapse=" + ")
+			Eqn2 <- character(0)
+			for(i in unique(EqnGrp)[-1L]) {
+				Eqn2 <- c(Eqn2, paste(c("   ", Eqn[EqnGrp == i]), collapse=" + "))
+			}
+		} else {
+			Eqn1 <- paste(Eqn, collapse=" + ")
+			Eqn2 <- NULL
+		}
 		RSE <- signif(RSE, 3)
 		legend("topleft", legend=c(
-			as.expression(substitute(hat(R) == EQN, 
-															 list(R=as.name(deparse(x$object$call$formula[[2L]])),
-															 		 EQN=Eqn))),
-			paste("Residual Standard Error: ", RSE, sep='')), bty='n')
+			as.expression(substitute(widehat(R) == EQN, 
+															 list(R=as.name(deparse(x$object$call$formula[[2]])),
+															 		 EQN=Eqn1))),
+			Eqn2,
+			paste("Residual Standard Error: ", RSE, sep="")), bty="n")
 	}
 	invisible(x)
 }
@@ -715,8 +725,8 @@ plot.multReg <- function(x, which='All', set.up=TRUE, span=1.0, ...) {
 		doPlot[-5L] <- FALSE
 		doPlot[5L] <- TRUE
 	}
+    xpred <- x$x # needed for 8 and 4
 	if(doPlot[8L]) {
-		xpred <- x$x
 		if(!do8) # get all explanatory variable names
 			xnames <- dimnames(xpred)[[2L]]
 		## Residual dependence plots
@@ -849,7 +859,7 @@ plot.multReg <- function(x, which='All', set.up=TRUE, span=1.0, ...) {
 		xyPlot(Fits, Act,
 					 Plot=list(what="points", size=0.05),
 					 xtitle=paste("Fitted:", Mod, sep=" "),
-					 ytitle="Response")
+					 ytitle="Actual")
 		if(span > 0) {
 			smo <- loess.smooth(Fits, Act, span=span)
 			addXY(smo$x, smo$y)
@@ -859,15 +869,25 @@ plot.multReg <- function(x, which='All', set.up=TRUE, span=1.0, ...) {
 		Eqn <- x$object$coef
 		names(Eqn)[1L] <- ""
 		Eqn <- paste(as.character(round(Eqn, 3)), names(Eqn), sep=" ")
-		Eqn <- paste(Eqn, collapse=" + ")
-		Resp <- as.expression(substitute(hat(R), 
-																		 list(R=as.name(deparse(x$object$call$formula[[2]])))))
-		Model <- expression()
+		# Try to wrap if too wide
+		Eqnwid <- strwidth(Eqn, units="inch")
+		if(sum(Eqnwid) > par("pin")[1L] - 2) {
+			EqnGrp <- (cumsum(Eqnwid+.25)+1.5) %/% (par("pin")[1L] - .5)
+			Eqn1 <- paste(Eqn[EqnGrp == 0], collapse=" + ")
+			Eqn2 <- character(0)
+			for(i in unique(EqnGrp)[-1L]) {
+				Eqn2 <- c(Eqn2, paste(c("   ", Eqn[EqnGrp == i]), collapse=" + "))
+			}
+		} else {
+			Eqn1 <- paste(Eqn, collapse=" + ")
+			Eqn2 <- NULL
+		}
 		RSE <- signif(RSE, 3)
 		legend("topleft", legend=c(
-			as.expression(substitute(hat(R) == EQN, 
+			as.expression(substitute(widehat(R) == EQN, 
 															 list(R=as.name(deparse(x$object$call$formula[[2]])),
-															 		 EQN=Eqn))),
+															 		 EQN=Eqn1))),
+			Eqn2,
 			paste("Residual Standard Error: ", RSE, sep="")), bty="n")
 	}
 	invisible(x)

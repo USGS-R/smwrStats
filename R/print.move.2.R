@@ -1,6 +1,6 @@
 #' Print Objects
 #' 
-#' Print the results of a MOVE.2 analysis (\code{move.2}).
+#' Prints the results of a MOVE.2 analysis (\code{move.2}).
 #' 
 #' 
 #' @param x an object of class "move.2" from \code{move.2}.

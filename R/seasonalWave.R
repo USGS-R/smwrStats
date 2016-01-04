@@ -1,6 +1,6 @@
 #' Seasonal Wave
 #' 
-#' Compute a seasonal wave model to describe the variation of a constituent
+#' Computes a seasonal wave model to describe the variation of a constituent
 #' over the course of a year. This model is particularly well suited to
 #' describe the concentration of pesticides.
 #' 
@@ -81,7 +81,7 @@ seasonalWave <- function(x, cmax, loading, hlife, second.peak=NULL) {
   ##
   phi <- 12/hlife # compute directly rather than look up
   ## Construct the weighting (wtx) and peak timing of the loading model
-  loading <- min(as.integer(loading), 9L)
+  loading <- min(as.integer(loading), 10L)
   pkt <- loading/12
   ## The .wtx function computes the loading vector
   wtx <- seasonalWave.wt(loading, second.peak)

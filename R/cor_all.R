@@ -1,6 +1,6 @@
 #' Compute Cross Correlations
 #' 
-#' Compute correlations among numeric data
+#' Computes correlations among numeric data.
 #' 
 #' The null hypothesis is that the data are not correlated with one another.
 #' The alternate hypothesis is that they are correlated with one another. This
@@ -64,12 +64,12 @@
 #' 4, chap. A3, 522 p.
 #' @keywords htest nonparametric
 #' @examples
-#' 
+#' \dontrun{
 #' library(smwrData)
 #' data(TNLoads)
 #' cor.all(TNLoads[, 1:5])
 #' cor.all(TNLoads, method="spearman")
-#' 
+#' }
 #' @export cor.all
 cor.all <- function(data, method="pearson", na.method="pairwise",
                     distribution="normal") {

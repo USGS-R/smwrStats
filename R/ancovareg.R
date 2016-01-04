@@ -90,7 +90,7 @@ ancovaReg <- function(object, find.best=TRUE, trace=FALSE) {
   p <- ncol(x)+1
   n <- nrow(x)
   cvlev <- 3*p/n
-  cvdfit <- 2*sqrt(p/n)
+  cvdfit <- qgrubbs(0.01, n)*sqrt(p/n)
   cvcook <- qf(.5,p+1,n-p)
   pck <- c(lev>cvlev | cooksd>cvcook | abs(dfits)>cvdfit)
   ##  Combine the diagnostic stats into a single data set, round it to 3

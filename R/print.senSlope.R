@@ -1,6 +1,6 @@
 #' Print Objects
 #' 
-#' Print the results of a Sen slope analysis (\code{senSlope}).
+#' Prints the results of a Sen slope analysis (\code{senSlope}).
 #' 
 #' 
 #' @param x an object of class "senSlope" from \code{senSlope}.
@@ -28,7 +28,7 @@ print.senSlope <- function(x, digits=4, ...) {
   coef <- x$coefficients
   names(coef) <- c("(Intercept)", x$var.name[2L])
   print(coef, digits=digits, ...)
-  cat("Confidence intervals for the Sen slope:\n")
+  cat("Confidence interval for the Sen slope:\n")
   print(x$slope.CI)
   if(!is.null(x$na.action)) {
     n.na <- length(x$na.action)

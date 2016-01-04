@@ -1,7 +1,7 @@
 #' The Grubbs Distribution
 #' 
-#' The one-sided critical value and the attained signicance level for the
-#' Grubbs test for an outlier in a sample from Normal distribution.
+#' Computes the cumulative probability and quantiles for the Grubbs distribution 
+#'describing an outlier in a sample from Normal distribution.
 #' 
 #' 
 #' @aliases Grubbs pgrubbs qgrubbs

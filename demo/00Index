@@ -1,1 +1,3 @@
-SeasonalWave	A seasonal wave analysis. 
+SeasonalWave	A seasonal wave analysis.
+SummaryMonthYear	Compute summary statistics by month and year.
+TestMove1	Monte Carlo simulations of move.1 predictions.

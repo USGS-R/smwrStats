@@ -1,6 +1,6 @@
 #' Basis for Piecewise Linear Trends
 #' 
-#' Generate a basis matrix for piecewise linear modeling of trends.
+#' Generates a basis matrix for piecewise linear modeling of trends.
 #' 
 #' 
 #' @param x a vector of dates/times, assumed to be in dectime format. Missing

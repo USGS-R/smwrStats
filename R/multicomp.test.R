@@ -1,25 +1,27 @@
 #' Multiple Comparisons
 #' 
-#' Perform mutliple comparison tests among groups of data. the tests may be
-#' either parametric, nonparametric, or Dunn's nonparametric (Glantz, 2005).
+#' Performs multiple comparison tests among groups of data. The tests may be
+#'either parametric (Yandell, 1997), nonparametric (Higgins, 2004), or Dunn's 
+#'nonparametric (Glantz, 2005).
 #' 
-#' If the method is "parametric," then the comparisons are based on the means
-#' and variances of the raw data.  The valid choices for \code{critical.value}
-#' are "tukey" (default), "bonferroni," or "lsd."\cr Otherwise, the comparisons
-#' are based on the ranks of the data. Valid choices for \code{critical.value}
-#' are "tukey" (default), "bonferroni," or "lsd" when \code{method} is
-#' "nonparametric" and "sidak" (default) or "bonferroni" when \code{method} is
-#' "dunn."\cr The basic diffference between the default nonparametric method
-#' and Dunn's nonparametric method is the handling of ties.
+#' @details The choices for \code{method} are "parametric," "nonparametric," and 
+#'"dunn." If the \code{method} is "parametric," then the comparisons are based on 
+#'the means and variances of the raw data and the valid choices for 
+#'\code{critical.value} are "tukey" (default), "bonferroni," or "lsd." Otherwise, 
+#'the comparisons are based on the ranks of the data. Valid choices for 
+#'\code{critical.value} are "tukey" (default), "bonferroni," or "lsd" when 
+#'\code{method} is "nonparametric" and "sidak" (default) or "bonferroni" 
+#'when \code{method} is "dunn." The basic diffference between the default 
+#'nonparametric method and Dunn's nonparametric method is in the handling of ties.
 #' 
 #' @param x the numeric vector of observations. Missing values (NAs) are
-#' allowed and removed before the test is performed.
+#'allowed and removed before the test is performed.
 #' @param g any group vector for the observations. Missing values (NAs) are
-#' allowed and removed before the test is performed.
+#'allowed and removed before the test is performed.
 #' @param method a character string describing the test. Only the first
-#' character is necessary. See \bold{Details}.
+#'character is necessary. See \bold{Details}.
 #' @param critical.value a character string describing the method to use for
-#' determining the critical value. Only the first character is necessary. See
+#'determining the critical value. Only the first character is necessary. See
 #' \bold{Details}.
 #' @param alpha the significance level of the test. See \bold{Note}.
 #' @return An object of class MCT containing the following components:
@@ -40,12 +42,13 @@
 #' small numbers of ties, it may be preferable to use Dunn's nonparametric
 #' method \code{method} = "dunn."
 #' @references Glantz, S.A., 2005, Primer of biostatistics: McGraw Hill, New
-#' York, 520 p.\cr Helsel, D.R., and Hirsch, R.M., 2002, Statistical methods in
-#' water resources: U.S. Geological Survey Techniques of Water-Resources
-#' Investigations, book 4, chap. A3, 522 p.  Higgins, J.J., 2004, Introduction
-#' to modern nonparametric statistics: Pacific Grove, Calif., Brooks/Cole, 384
-#' p.\cr Yandell, B.S., 1997, Practical data analysis for designed experiments:
-#' London, United Kingdom, Chapman & Hall, 437 p.\cr
+#' York, 520 p.
+#' 
+#' Higgins, J.J., 2004, Introduction to modern nonparametric statistics: 
+#'Pacific Grove, Calif., Brooks/Cole, 384 p.
+#'
+#' Yandell, B.S., 1997, Practical data analysis for designed experiments:
+#'London, United Kingdom, Chapman & Hall, 437 p.
 #' @keywords nonparametric htest
 #' @export multicomp.test
 multicomp.test <- function(x, g, method="parametric", critical.value="", alpha=0.05) {
@@ -96,7 +99,7 @@ multicomp.test <- function(x, g, method="parametric", critical.value="", alpha=0
     if(any(duplicated(x))) # Correction as described in Higgins
       overvar <- var(r)
     else
-      overvar <- N*(N-1)/12
+      overvar <- N*(N+1)/12
     groupVar <- overvar/groupNum
     ## Set the critical value
     if(critical.value == "")

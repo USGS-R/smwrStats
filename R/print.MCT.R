@@ -1,6 +1,6 @@
 #' Print Objects
 #' 
-#' Print the results of a multiple comparison test (\code{multicomp.test}).
+#' Prints the results of a multiple comparison test (\code{multicomp.test}).
 #' 
 #' 
 #' @param x an object of class "MCT" from \code{multicomp.test}.

@@ -1,11 +1,11 @@
 ### R code from vignette source 'Regression.Rnw'
 
 ###################################################
-### code chunk number 1: Regression.Rnw:22-48
+### code chunk number 1: Regression.Rnw:28-54
 ###################################################
 # Load the smwrStats package
 library(smwrStats)
-# Create the Hann dataset
+# Create the Haan dataset
 Haan1977 <- data.frame(
 ROFF=c(17.38, 14.62, 15.48, 14.72, 18.37, 17.01, 18.2, 18.95, 13.94, 18.64,
  17.25, 17.48, 13.16),
@@ -32,19 +32,19 @@ data(CuyahogaTDS)
 
 
 ###################################################
-### code chunk number 2: Regression.Rnw:58-65
+### code chunk number 2: Regression.Rnw:64-71
 ###################################################
 # Create the allReg output dataset
 HaanSub <- with(Haan1977, allReg(cbind(PCIP, AREA, SLOPE, LEN, PERIM, 
-		DI, Rs, FREQ, Rr), ROFF))
+		DI, Rs, FREQ, Rr), ROFF, lin.dep=1))
 # An alternative call, note the use of the drop argument
-HaanSub <- allReg(Haan1977[, -1], Haan1977[, 1, drop=FALSE])
+#HaanSub <- allReg(Haan1977[, -1], Haan1977[, 1, drop=FALSE], lin.dep=1)
 # What are the "best" 5 models by Cp
 head(HaanSub[order(HaanSub$Cp),])
 
 
 ###################################################
-### code chunk number 3: Regression.Rnw:83-88
+### code chunk number 3: Regression.Rnw:89-94
 ###################################################
 # Create the regression model
 Haan.lm <- lm(ROFF ~ PCIP + PERIM + Rr, data=Haan1977)
@@ -54,7 +54,7 @@ print(Haan.reg)
 
 
 ###################################################
-### code chunk number 4: Regression.Rnw:100-108
+### code chunk number 4: Regression.Rnw:106-114
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -67,14 +67,14 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 5: Regression.Rnw:110-112
+### code chunk number 5: Regression.Rnw:116-118
 ###################################################
 cat("\\includegraphics{regplot01.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 6: Regression.Rnw:123-130
+### code chunk number 6: Regression.Rnw:129-136
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -86,14 +86,14 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 7: Regression.Rnw:132-134
+### code chunk number 7: Regression.Rnw:138-140
 ###################################################
 cat("\\includegraphics{regplot02.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 8: Regression.Rnw:144-151
+### code chunk number 8: Regression.Rnw:150-157
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -105,14 +105,14 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 9: Regression.Rnw:153-155
+### code chunk number 9: Regression.Rnw:159-161
 ###################################################
 cat("\\includegraphics{regplot03.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 10: Regression.Rnw:165-172
+### code chunk number 10: Regression.Rnw:171-178
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -124,14 +124,14 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 11: Regression.Rnw:174-176
+### code chunk number 11: Regression.Rnw:180-182
 ###################################################
 cat("\\includegraphics{regplot04.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 12: Regression.Rnw:186-193
+### code chunk number 12: Regression.Rnw:192-199
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -143,21 +143,21 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 13: Regression.Rnw:195-197
+### code chunk number 13: Regression.Rnw:201-203
 ###################################################
 cat("\\includegraphics{regplot05.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 14: Regression.Rnw:207-209
+### code chunk number 14: Regression.Rnw:213-215
 ###################################################
 # Compute the PRESS statistic
 press(Haan.lm)
 
 
 ###################################################
-### code chunk number 15: Regression.Rnw:214-218
+### code chunk number 15: Regression.Rnw:220-224
 ###################################################
 # The resdidual standard error is computed by the summary function.
 summary(Haan.lm)
@@ -166,14 +166,14 @@ rmse(Haan.lm)
 
 
 ###################################################
-### code chunk number 16: Regression.Rnw:223-225
+### code chunk number 16: Regression.Rnw:229-231
 ###################################################
 # The variance inflation factors:
 vif(Haan.lm)
 
 
 ###################################################
-### code chunk number 17: Regression.Rnw:233-238
+### code chunk number 17: Regression.Rnw:239-244
 ###################################################
 # Create the correlation structure, and print it:
 Haan.cor <- cor.all(Haan1977)
@@ -183,7 +183,7 @@ summary(Haan.cor, variable="ROFF")
 
 
 ###################################################
-### code chunk number 18: Regression.Rnw:248-259
+### code chunk number 18: Regression.Rnw:254-265
 ###################################################
 # Create the regression model and print it:
 TDS.lm <- lm(log(TDS) ~ log(Q) + fourier(TIME), data=CuyahogaTDS)

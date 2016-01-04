@@ -1,6 +1,6 @@
 #' Time-Weighted Mean
 #' 
-#' Compute the mean weighted by the duration between values.
+#' Computes the mean weighted by the duration between values.
 #' 
 #' The values of \code{time} are expected to be in decimal format, where the
 #' integer part indicates the period and the fractional part linearly

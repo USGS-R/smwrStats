@@ -1,7 +1,7 @@
 ### R code from vignette source 'RecordExtension.Rnw'
 
 ###################################################
-### code chunk number 1: RecordExtension.Rnw:21-31
+### code chunk number 1: RecordExtension.Rnw:29-39
 ###################################################
 # Load the smwrStats and dataRetrieval packages
 library(smwrStats)
@@ -16,7 +16,7 @@ YB <- renameNWISColumns(YB)
 
 
 ###################################################
-### code chunk number 2: RecordExtension.Rnw:41-46
+### code chunk number 2: RecordExtension.Rnw:49-54
 ###################################################
 # Merge the data
 YBM <- merge(NFYB, YB, by="Date", all=TRUE, suffixes=c(".NFYB", ".YB"))
@@ -26,7 +26,7 @@ print(YBM.m2ln)
 
 
 ###################################################
-### code chunk number 3: RecordExtension.Rnw:51-58
+### code chunk number 3: RecordExtension.Rnw:59-66
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -38,7 +38,7 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 4: RecordExtension.Rnw:68-75
+### code chunk number 4: RecordExtension.Rnw:76-83
 ###################################################
 # Predict all values
 YBM$Pred.ln <- predict(YBM.m2ln)
@@ -50,7 +50,7 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 5: RecordExtension.Rnw:90-103
+### code chunk number 5: RecordExtension.Rnw:98-111
 ###################################################
 # Construct and print the power transforms for multivariate normality
 YBM.bc <- optimBoxCox(YBM[c("Flow.YB", "Flow.NFYB")])

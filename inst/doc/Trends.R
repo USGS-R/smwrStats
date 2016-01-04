@@ -1,7 +1,7 @@
 ### R code from vignette source 'Trends.Rnw'
 
 ###################################################
-### code chunk number 1: Trends.Rnw:21-28
+### code chunk number 1: Trends.Rnw:30-37
 ###################################################
 # Load the stats, smwrData, and smwrStats packages
 library(stats)
@@ -13,7 +13,7 @@ data(KlamathTP)
 
 
 ###################################################
-### code chunk number 2: Trends.Rnw:36-41
+### code chunk number 2: Trends.Rnw:45-50
 ###################################################
 setSweave("trend01", 5, 5)
 with(ConecuhFlows, timePlot(Year, Flow, Plot=list(what="both")))
@@ -23,16 +23,23 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 3: Trends.Rnw:56-60
+### code chunk number 3: Trends.Rnw:61-63
 ###################################################
-# The default method, Wilcosxon rank-sum serial test
+# The Mann-Kendall trend test
+with(ConecuhFlows, kensen.test(Flow, Year, 25))
+
+
+###################################################
+### code chunk number 4: Trends.Rnw:70-74
+###################################################
+# The default method, Wilcoxon rank-sum serial test
 with(ConecuhFlows, serial.test(Flow))
 # The runs test method
 with(ConecuhFlows, serial.test(Flow, method="runs"))
 
 
 ###################################################
-### code chunk number 4: Trends.Rnw:68-75
+### code chunk number 5: Trends.Rnw:82-89
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -44,7 +51,7 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 5: Trends.Rnw:84-88
+### code chunk number 6: Trends.Rnw:98-102
 ###################################################
 setSweave("trend03", 5, 5)
 with(KlamathTP, xyPlot(Flow, TP_ss))
@@ -53,7 +60,7 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 6: Trends.Rnw:103-109
+### code chunk number 7: Trends.Rnw:117-123
 ###################################################
 # Construct the regular series: 96 monthly observations
 KlamathTP.RS <- with(KlamathTP, regularSeries(TP_ss, sample_dt,
@@ -64,7 +71,7 @@ with(KlamathTP.RS, seaken(Value, 12))
 
 
 ###################################################
-### code chunk number 7: Trends.Rnw:116-127
+### code chunk number 8: Trends.Rnw:130-141
 ###################################################
 # Compute the flow-adjusted concentrations. Figure 2 serves as justification
 # for the linear fit for these data.
@@ -80,7 +87,7 @@ print(KTP)
 
 
 ###################################################
-### code chunk number 8: Trends.Rnw:142-150
+### code chunk number 9: Trends.Rnw:156-164
 ###################################################
 # Simple substitution for one left-censored value
 KlamathTP <- transform(KlamathTP, TP_ss2 = ifelse(TP_rmk == "<", TP/2, TP),
@@ -90,5 +97,27 @@ KlamathTP <- transform(KlamathTP, TP_ss2 = ifelse(TP_rmk == "<", TP/2, TP),
 KTP.lm <- lm(log(TP_ss2) ~ Dectime + quadratic(log(Flow)) + fourier(Dectime),
 						 data=KlamathTP)
 summary(KTP.lm)
+
+
+###################################################
+### code chunk number 10: Trends.Rnw:174-184
+###################################################
+# Get the data from the downloads folder for the report
+RK3b <- read.delim("http://pubs.usgs.gov/sir/2005/5275/downloads/RK3b.txt",
+  header=FALSE, skip=1)
+names(RK3b) <- c("Year", "Site", "NH4")
+# Reformat to a wide data frame group2row is in smwrBase and make the matrix
+RK3b <- group2row(RK3b, "Year", "Site", "NH4")
+RK3b.mat <- data.matrix(RK3b[, -1]) # column 1 is Year
+# Preform the trend test
+regken(RK3b.mat)
+regken(RK3b.mat, correct=FALSE)
+
+
+###################################################
+### code chunk number 11: Trends.Rnw:189-191
+###################################################
+# Pretty print the Spearman correlation
+printCor(cor(RK3b.mat, method="spearman", use="pair"), 0.5)
 
 

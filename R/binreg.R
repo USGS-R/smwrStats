@@ -1,6 +1,6 @@
 #' Diagnostics for Logistic Regression
 #' 
-#' Computes diagnostic statistics for logistic regression
+#' Computes diagnostic statistics for logistic regression.
 #' 
 #' Because the le Cessie test is very slow to compute for many observations,
 #' the test is not performed if there are more than \code{lc.max} observations.

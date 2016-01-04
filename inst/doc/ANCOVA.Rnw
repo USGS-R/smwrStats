@@ -1,8 +1,7 @@
 \documentclass{article}
-\parskip 3pt
-\parindent 30pt
-\leftskip=-0.5in
-\rightskip=-0.5in
+\parskip 6pt
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
 %\VignetteIndexEntry{ANCOVA}
 %\VignetteDepends{smwrStats}
 %\VignetteDepends{smwrData}
@@ -10,7 +9,6 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 \raggedright
-\parindent 30pt
 
 \title{ANCOVA Example}
 
@@ -18,8 +16,16 @@
 
 \maketitle
 
-This examples demonstrates the \texttt{ancovaReg} function in the \texttt{smwrStats} package. The example uses the UraniumTDS dataset C16 from Helsel and Hirsch (2002). The dataset is available from the \texttt{smwrData} pacakge.
+\begin{abstract}
+This examples demonstrates the \texttt{ancovaReg} function in the \texttt{smwrStats} package. The example uses the UraniumTDS dataset C16 from Helsel and Hirsch (2002). The dataset is available from the \texttt{smwrData} package.
+\end{abstract}
 
+\tableofcontents
+
+\eject
+\section{Introduction}
+
+These examples use data from the smwrData package. The data are retrieved in the following code.
 <<echo=TRUE>>=
 # Load the smwrStats and smwrData packages
 library(smwrStats)

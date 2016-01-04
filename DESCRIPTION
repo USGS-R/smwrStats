@@ -1,6 +1,6 @@
 Package: smwrStats
-Version: 0.7.2
-Date: 2015-04-30
+Version: 0.7.4
+Date: 2015-10-27
 Title: R functions to support statistical methods in water resources
 Author: Dave Lorenz <lorenz@usgs.gov>.
 Maintainer: Dave Lorenz <lorenz@usgs.gov>
@@ -14,7 +14,8 @@ Suggests:
 Imports:
     car,
     leaps,
-    stats
+    stats,
+    randtests
 Description: Useful tools for the analysis of hydrologic data,
     not inlcuding censored water-quality data.
 License: CC0
@@ -31,6 +32,7 @@ Collate:
     'grubbs.R'
     'grubbs.test.R'
     'hosmerlemeshow.R'
+    'jackknifeMove.1.R'
     'kensen.test.R'
     'lecessie.R'
     'makepredictcall.R'
@@ -62,8 +64,10 @@ Collate:
     'print.roc.R'
     'print.seasonalPeak.R'
     'print.senSlope.R'
+    'printCor.R'
     'qtiles.CI.R'
     'quantile.numeric.R'
+    'regken.R'
     'rmse.R'
     'roc.R'
     'seaken.R'

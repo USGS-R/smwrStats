@@ -1,6 +1,6 @@
 #' Seasonal Peak Timing
 #' 
-#' Compute the timing of the seasonal peak value. The timing of the seasonal
+#' Computes the timing of the seasonal peak value. The timing of the seasonal
 #' peak is needed for the seasonalWave model (Vecchia and others, 2008).
 #' 
 #' The timing of the peak of the data is computed by identifying the largest

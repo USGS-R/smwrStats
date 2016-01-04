@@ -1,6 +1,6 @@
 #' Print Object
 #' 
-#' PRint the results of a receiver operator characteristics (ROC) for a logistic
+#' Prints the results of a receiver operator characteristics (ROC) for a logistic
 #' regression model.
 #' 
 #' @param x an object of class "roc" from \code{roc}.

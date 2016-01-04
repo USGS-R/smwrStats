@@ -1,6 +1,6 @@
 #' Curvi-Linear Trends
 #' 
-#' Generate a matrix for curvi-linear modeling of trends.
+#' Generates a matrix for curvi-linear modeling of trends.
 #' 
 #' Curvi-linear trends are described in Appendix 1 (equations 1--9 through
 #' 1--11) in Vecchia (2005). The original form of the trend was described in

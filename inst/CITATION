@@ -1,7 +1,7 @@
 citHeader("Suggested citation for smwrStats:")
 
 citEntry(entry = "TechReport",
-  title        = "smwrStats--An R package for the analysis of hydrologic data, Version 0.7.2",
+  title        = "smwrStats--An R package for the analysis of hydrologic data, Version 0.7.4",
   author       = personList(as.person("Dave Lorenz")),
   institution  = "U.S. Geological Survey",
   series       = "Open File Report",
@@ -9,7 +9,7 @@ citEntry(entry = "TechReport",
 
   textVersion  =
   paste("Lorenz, D.L., in preparation, ",
-        "smwrStats--An R package for the analysis of hydrologic data, Version 0.7.2: ",
+        "smwrStats--An R package for the analysis of hydrologic data, Version 0.7.4: ",
         "U.S. Geological Survey Open File Report",
         sep="")
 )

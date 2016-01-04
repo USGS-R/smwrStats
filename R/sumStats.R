@@ -1,6 +1,6 @@
 #' Compute Summary Statistics
 #' 
-#' Create a dataset of specified summary statistics from a collection of data.
+#' Creates a dataset of specified summary statistics from a collection of data.
 #' 
 #' 
 #' @param \dots any number of arguments, which can be of many different forms:

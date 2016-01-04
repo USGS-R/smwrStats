@@ -1,6 +1,6 @@
 #' Bias Corrected Predictions
 #' 
-#' Predict bias-corrected expected mean response values from a log-transformed
+#' Predicts bias-corrected expected mean response values from a log-transformed
 #' regression model, using either the minimum variance unbiased estimate(MVUE),
 #' Duan's smoothing estimate, or Ferguson's maximum likelihood estimate.
 #' 
@@ -16,17 +16,17 @@
 #' @seealso \code{\link{lm}}
 #' @references Bradu, D. and Mundlak, Y., 1970, Estimation in the lognormal
 #' linear models: Journal of the American Statistical Association, v. 65, no.
-#' 329, p. 198--211.\cr
+#' 329, p. 198--211.
 #' 
 #' Duan, N., 1983, Smearing estimate: a nonparametric retransformation method:
-#' Journal of the American Statistical Association, v. 78, p. 159--178.\cr
+#' Journal of the American Statistical Association, v. 78, p. 159--178.
 #' 
 #' Ferguson, R.I. 1986, River loads underestimated by rating curves: Water
-#' Resources Research, v. 22, p 74--76.\cr
+#' Resources Research, v. 22, p 74--76.
 #' 
 #' Helsel, D.R. and Hirsch, R.M., 2002, Statistical methods in water resources:
 #' U.S. Geological Survey Techniques of Water-Resources Investigations, book 4,
-#' chap. A3, 522 p.\cr
+#' chap. A3, 522 p.
 #' @keywords models regression
 #' @examples
 #' 

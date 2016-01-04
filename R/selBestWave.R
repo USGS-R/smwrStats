@@ -1,6 +1,6 @@
 #' Select the "Best" Seasonal Wave
 #' 
-#' Select the "best" parameters for a seasonal wave fit.
+#' Selects the "best" parameters for a seasonal wave fit.
 #' 
 #' For logistic regression, use \code{Regression}=\code{glm},
 #' \code{Test}=\code{deviance}, \code{family=binomial(link="logit")}.

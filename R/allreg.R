@@ -1,16 +1,22 @@
 #' All Subsets Regression
 #' 
-#' Create a table of the best subsets of explantory variables for a response
-#' variable.
+#' Creates a table of the best subsets of explanatory variables for a response
+#'variable.
 #' 
 #' @include smwrStats-package.R
-#' @param x matrix of candidate exmplanatory variables.
+#' @param x matrix of candidate explanatory variables.
 #' @param y the response variable.
 #' @param wt the weight variable if needed.
 #' @param nmax the maximum number of explanatory variables to include in the
 #' largest model.
 #' @param nbst the number of best models to determine for each subset size.
-#' @param na.rm.x should missing values in x should be removed?
+#' @param na.rm.x logical, if \code{TRUE}, then rows with missing values in 
+#'\code{x} and the corresponding elements in \code{y} will be removed prior 
+#'to analysis. If \code{FALSE}, then missing values are not removed and the
+#'analysis will fail if there are missing values in \code{x}.
+#' @param lin.dep a value to protect against linear dependencies; the number of 
+#'the number of observations must be greater than the number of columns in 
+#'\code{x} plus \code{lin.dep}.
 #' @return A data frame containing these columns: \item{model.formula}{the
 #' subset model formula} \item{nvars}{the size (number of variables in the
 #' subset model} \item{stderr}{the standard error of the subsbet model}
@@ -41,7 +47,7 @@
 #' @importFrom leaps regsubsets
 #' @export allReg
 allReg <- function(x, y, wt=rep(1,nrow(x)), nmax=ncol(x), nbst=3,
-                   na.rm.x=TRUE) {
+                   na.rm.x=TRUE, lin.dep=10) {
 	# Coding history:
 	#    ????????? AVecchia Original coding
 	#    2007Mar29 DLLorenz Modify argmuents for USGS library
@@ -68,13 +74,19 @@ allReg <- function(x, y, wt=rep(1,nrow(x)), nmax=ncol(x), nbst=3,
   xnames <- dimnames(x)[[2]]
   n <- nrow(x)
   p <- ncol(x)
+  if(n < p + lin.dep) {
+    stop("Potential linear dependencies; too many variables for the number of observations")
+  }
+  # More checks
   if(any(is.na(c(x, wt)))) {
     missings <- apply(x, 2, FUN= function(xx) sum(is.na(xx)))
     missings <- c(missings, sum(is.na(wt)))
     return(data.frame(vars=c(xnames, "wt"), number.missing=missings))
   }
+  r.b <- p > 49L # check for really.big option
   ##  Run regsubsets to select the best models:
-  stepout <- summary(regsubsets(x, y, wt, method='exhaustive', nvmax=nmax, nbest=nbst))
+  stepout <- summary(regsubsets(x, y, wt, method='exhaustive', nvmax=nmax, nbest=nbst, 
+    really.big=r.b))
   ##  Compute PRESS statistics
   which <- stepout$which[,-1] # drop intercept term
   size <- rowSums(which)

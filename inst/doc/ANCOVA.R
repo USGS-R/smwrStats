@@ -1,7 +1,7 @@
 ### R code from vignette source 'ANCOVA.Rnw'
 
 ###################################################
-### code chunk number 1: ANCOVA.Rnw:23-29
+### code chunk number 1: ANCOVA.Rnw:29-35
 ###################################################
 # Load the smwrStats and smwrData packages
 library(smwrStats)
@@ -12,7 +12,7 @@ head(UraniumTDS)
 
 
 ###################################################
-### code chunk number 2: ANCOVA.Rnw:39-44
+### code chunk number 2: ANCOVA.Rnw:45-50
 ###################################################
 # Create the ANCOVA model
 UTDS.anc <- lm(log(Uranium) ~ HCO3*log(TDS), data=UraniumTDS)
@@ -22,14 +22,14 @@ UTDS.best <- ancovaReg(UTDS.anc, trace=TRUE)
 
 
 ###################################################
-### code chunk number 3: ANCOVA.Rnw:54-56
+### code chunk number 3: ANCOVA.Rnw:60-62
 ###################################################
 # Print the final ANCOVA model
 print(UTDS.best)
 
 
 ###################################################
-### code chunk number 4: ANCOVA.Rnw:68-76
+### code chunk number 4: ANCOVA.Rnw:74-82
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -42,14 +42,14 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 5: ANCOVA.Rnw:78-80
+### code chunk number 5: ANCOVA.Rnw:84-86
 ###################################################
 cat("\\includegraphics{ancplot01.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 6: ANCOVA.Rnw:85-93
+### code chunk number 6: ANCOVA.Rnw:91-99
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -62,14 +62,14 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 7: ANCOVA.Rnw:95-97
+### code chunk number 7: ANCOVA.Rnw:101-103
 ###################################################
 cat("\\includegraphics{ancplot02.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 8: ANCOVA.Rnw:108-115
+### code chunk number 8: ANCOVA.Rnw:114-121
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -81,14 +81,14 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 9: ANCOVA.Rnw:117-119
+### code chunk number 9: ANCOVA.Rnw:123-125
 ###################################################
 cat("\\includegraphics{ancplot03.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 10: ANCOVA.Rnw:129-136
+### code chunk number 10: ANCOVA.Rnw:135-142
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -100,14 +100,14 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 11: ANCOVA.Rnw:138-140
+### code chunk number 11: ANCOVA.Rnw:144-146
 ###################################################
 cat("\\includegraphics{ancplot04.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 12: ANCOVA.Rnw:150-157
+### code chunk number 12: ANCOVA.Rnw:156-163
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -119,7 +119,7 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 13: ANCOVA.Rnw:159-161
+### code chunk number 13: ANCOVA.Rnw:165-167
 ###################################################
 cat("\\includegraphics{ancplot05.pdf}\n")
 cat("\\paragraph{}\n")

@@ -1,6 +1,6 @@
 #' Diagnostics for Linear Regression
 #' 
-#' Computes diagnostics for linear regression
+#' Computes diagnostics for linear regression.
 #' 
 #' 
 #' @param object the linear regression model object
@@ -16,16 +16,21 @@
 #' \item{flagobs}{ a logical vector indicating which observations exceeded at
 #' least one of the critical values. } \item{object}{ the \code{lm} object. }
 #' \item{x}{ the model matrix of explanatory variables. }
+#' 
 #' @note The type II sum of squares are calculated according to the principle
 #' of marginality, testing each term after all others, except ignoring the
 #' term's higher-order relatives. This type sum of squares is useful for
-#' assessing the overall marginal effect of each term in the model.\cr The
-#' critical values for the test criteria are computed as: leverage,
+#' assessing the overall marginal effect of each term in the model.\cr
+#' 
+#' The critical values for the test criteria are computed as: leverage,
 #' \emph{3p/n}; Cook's D, median quantile for the \emph{F} distribution with
-#' \emph{p+1} and \emph{n-p} degrees of freedonm; and dfits, the .01 quantile
-#' of the \emph{grubbs} distribution for \emph{n} observations, where \emph{p}
-#' is the number of parameters estiamted in the regression and \emph{n} is the
-#' number of observations.\cr Objects of class "multReg" have \code{print} and
+#' \emph{p+1} and \emph{n-p} degrees of freedom; and dfits, the .01 quantile
+#' of the \emph{grubbs} distribution for \emph{n} observations time the square
+#' root of (p/n), where \emph{p}
+#' is the number of parameters estimated in the regression and \emph{n} is the
+#' number of observations.
+#' 
+#' Objects of class "multReg" have \code{print} and
 #' \code{plot} methods.
 #' @seealso \code{\link{lm}}, \code{\link{plot.multReg}},
 #' @references Draper, N.R. and Smith, H., 1998, Applied Regression Analysis,

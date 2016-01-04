@@ -1,7 +1,7 @@
 \documentclass{article}
 \parskip 6pt
-\leftskip=-0.5in
-\rightskip=-0.5in
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
 %\VignetteIndexEntry{RecordExtension}
 %\VignetteDepends{smwrStats}
 %\VignetteDepends{dataRetrieval}
@@ -16,8 +16,16 @@
 
 \maketitle
 
+\begin{abstract}
 This example demonstrates the \texttt{move.2} and related functions in the \texttt{smwrStats} package. The example retrieves data from NWISweb using functions in the \texttt{dataRetrieval} package. The Data are from the North Fork Yellow Bank River near Odessa, Minn. (USGS station identifier 05292704) and the Yellow Bank River near Odessa, Minn. (USGS station identifier 05293000).
+\end{abstract}
 
+\tableofcontents
+
+\eject
+\section{Introduction}
+
+These examples use data from NWISWeb. The data are retrieved in the following code.
 <<echo=TRUE>>=
 # Load the smwrStats and dataRetrieval packages
 library(smwrStats)

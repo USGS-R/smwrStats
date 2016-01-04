@@ -1,7 +1,7 @@
 ### R code from vignette source 'Logistic.Rnw'
 
 ###################################################
-### code chunk number 1: Logistic.Rnw:23-29
+### code chunk number 1: Logistic.Rnw:29-35
 ###################################################
 # Load the smwrStats and smwrData packages
 library(smwrStats)
@@ -12,7 +12,7 @@ head(PugetNitrate)
 
 
 ###################################################
-### code chunk number 2: Logistic.Rnw:40-45
+### code chunk number 2: Logistic.Rnw:46-51
 ###################################################
 # Create the logistic regression model
 PSNO3.1 <- glm(formula = nitrate >= 3 ~ wellmet, family = binomial, 
@@ -22,7 +22,7 @@ print(summary(PSNO3.1))
 
 
 ###################################################
-### code chunk number 3: Logistic.Rnw:52-73
+### code chunk number 3: Logistic.Rnw:58-79
 ###################################################
 # Run the H-L test
 PSNO3.1.hl <- hosmerLemeshow.test(PSNO3.1)
@@ -48,28 +48,28 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 4: Logistic.Rnw:75-77
+### code chunk number 4: Logistic.Rnw:81-83
 ###################################################
 cat("\\includegraphics{binplot01.pdf}\n")
 cat("\\paragraph{}\n")
 
 
 ###################################################
-### code chunk number 5: Logistic.Rnw:84-86
+### code chunk number 5: Logistic.Rnw:90-92
 ###################################################
 # Run the H-L test with 12 groups
 hosmerLemeshow.test(PSNO3.1, 12)
 
 
 ###################################################
-### code chunk number 6: Logistic.Rnw:91-93
+### code chunk number 6: Logistic.Rnw:97-99
 ###################################################
 # Compute the area under the ROC
 roc(PSNO3.1)
 
 
 ###################################################
-### code chunk number 7: Logistic.Rnw:102-109
+### code chunk number 7: Logistic.Rnw:108-115
 ###################################################
 # Create the logistic regression model
 PSNO3.3 <- glm(formula = nitrate >= 3 ~ wellmet + l20 + l10, 

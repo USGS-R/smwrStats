@@ -1,6 +1,6 @@
 #' Utility Function for Safe Prediction
 #' 
-#' A utility to help \code{\link{model.frame.default}} create the right matrices 
+#' Creates the right matrices for \code{\link{model.frame.default}} 
 #'when predicting from models with \code{trends} terms. Used only internally.
 #' 
 #' @rdname makepredictcall

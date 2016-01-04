@@ -1,8 +1,7 @@
 \documentclass{article}
-\parskip 3pt
-\parindent 30pt
-\leftskip=-0.5in
-\rightskip=-0.5in
+\parskip 6pt
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
 %\VignetteIndexEntry{CompareGroups}
 %\VignetteDepends{smwrStats}
 %\VignetteDepends{smwrData}
@@ -10,7 +9,6 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 \raggedright
-\parindent 30pt
 
 \title{Comparing Groups Example}
 
@@ -18,8 +16,16 @@
 
 \maketitle
 
+\begin{abstract}
 This example demonstrates some functions in the \texttt{smwrStats} package that facilitate comparing multiple groups. The example uses the subset of Knopman (1990) dataset C7 from Helsel and Hirsch (2002) to complement the analysis done in sections 7.1 and 7.4 in their book. All section references in this example are from Helsel and Hirsch (2002). The critical alpha value for all tests is 0.05.
+\end{abstract}
 
+\tableofcontents
+
+\eject
+\section{Introduction}
+
+These examples use data from the smwrData package. The data are retrieved in the following code.
 <<echo=TRUE>>=
 # Load the stats, smwrData, and smwrStats packages
 library(stats)

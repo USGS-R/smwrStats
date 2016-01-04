@@ -1,17 +1,20 @@
 #' Test for Serial Correlation
 #' 
-#' Perform either of two nonparametric tests (Wilcoxon Rank-Sum test or runs
-#' test) for serial correlation.
+#' Performs either of two nonparametric tests (Wilcoxon Rank-Sum test or runs
+#' test) for serial correlation. Both tests compute Z, which is the product of
+#' sequential values of \code{x} after removing any trend and normalizing so that the 
+#' median of Z values is 0.
 #' 
 #' If the method is "wilcoxon," then the Wilcoxon Rank-Sum test (Wilcoxon,
 #' 1945) is performed to compare the distribution of positive Z values to the
-#' distribution of negative Z values.\cr
+#' distribution of negative Z values. Excessive numbers of positive Z
+#' values suggests positive serial correlation and excessive negative Z
+#' values suggests negative serial correlation.
 #' 
 #' If the method is "runs," then the runs test (Wald and Wolfowitz, 1940) is
-#' performed on sequences of positive and negative values of Z.\cr
-#' 
-#' Z is the product of sequential values of x after removing any trend and
-#' normalizing so that the median of Z values is 0.
+#' performed on sequences of positive and negative values of Z. If there is a
+#' larger than expected number of runs, then that suggest negative serial correlation
+#' and if fewer than the expected number of runs, then positive serial correlation.
 #' 
 #' @param x the numeric vector of observations. Missing values (NAs) are not
 #' allowed.
@@ -25,15 +28,16 @@
 #' containing the actual name of the input data.  }
 #' @note The null hypothesis is that the data are uncorrelated.
 #' @references Dufour, J.M., 1981, Rank test for serial dependence: Journal of
-#' the Time Series Analysis, v. 2, no. 3, p. 117--128.\cr
+#' the Time Series Analysis, v. 2, no. 3, p. 117--128.
 #' 
 #' Wald, A., and Wolfowitz, J., 1940, On a test whether two samples are from
 #' the same population: Annals of Mathematical Statistics, v. 11, p.
-#' 147--162.\cr
+#' 147--162.
 #' 
 #' Wilcoxon, F., 1945, Individual comparisons by ranking methods: Biometrics,
-#' v. 1, p. 80--83.\cr
+#' v. 1, p. 80--83.
 #' @keywords nonparametric htest
+#' @importFrom randtests runs.test
 #' @export serial.test
 serial.test <- function(x, method = "wilcoxon") {
 	# Coding history:
@@ -62,30 +66,19 @@ serial.test <- function(x, method = "wilcoxon") {
   Z <- Z[-1]
   if(method == "wilcoxon") {
     method <- "Wilcoxon" # Fix case for output
-    R <- rank(abs(Z))
-    S <- sum((Z >= 0) * R)
-    m <- sum(Z >= 0)
-    ## Number >= 0
-    n <- N - m - 1
-    ## Continuity adjustment
-    if(max(m, n) < 50 && min(m, n) > 0)
-      p.value <- pwilcox(S - 1, m, n)
-    else {
-      ## Use large-sample approximation
-      varS <- sum(R^2)/4
-      ES <- sum(R)*m/(m + n)
-      p.value <- pnorm((S - ES)/sqrt(varS))
-    }
+    # Use the wilcox.test
+    exact <- length(Z) < 50 && !any(duplicated(Z))
+    tmp <- wilcox.test(Z[Z >= 0], -Z[Z < 0], exact=exact)
+    S <- tmp$statistic
+    p.value <- tmp$p.value
   } # end of wilcoxon
   else {
     method <- "Runs" # Fix case for output
     ## Test the number of times sequential values of x have the same sign
-    S <- sum(Z >= 0)
-    p.value <- pbinom(N - S, N, 0.5)
+    tmp <- runs.test(as.numeric(Z >= 0), threshold=0.5) # coded as 1,0
+    S <- c(Runs=tmp$runs)
+    p.value <- tmp$p.value
   }
-  ## Correct p-value for two-sided test and build the components
-  p.value <- 1 - abs(p.value - 0.5) * 2
-  names(S) <- "S"
   zero <- 0
   names(zero) <- "lag-1 serial dependence"
   ## Return the htest

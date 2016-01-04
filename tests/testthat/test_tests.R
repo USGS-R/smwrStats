@@ -15,27 +15,27 @@ test_that("Simple Hypothesis Tests working", {
               equals(c(tau=0.483333333)))
   expect_that(as.vector(kensen.test(Y16, T16)$p.value), 
   						equals(0.00595023991))
-#   expect_that(as.vector(kensen.test(Y15, T15)$estimate[5L]), 
-#   						equals(19.8096079))
+   expect_that(as.vector(kensen.test(Y16, T16)$estimate[5L]), 
+   						equals(18.37966092))
   # PPCC test
   expect_that(ppcc.test(X9)$statistic, 
   						equals(c(r=0.962735488)))
   expect_that(as.vector(ppcc.test(X9)$p.value), 
   						equals(0.403664504))
   # Seasonal Kendall test
-  expect_that(sprintf("%.5f", seaken(Y16, 2)$statistic), 
-              equals("0.42857"))
-  expect_that(sprintf("%.5f", seaken(Y16, 2)$p.value), 
-  						equals("0.04421"))
-  # Serial test
+  expect_that(seaken(Y16, 2)$statistic, 
+              equals(c(tau=0.4285714328)))
+  expect_that(round(seaken(Y16, 2)$p.value, 6), 
+  						equals(0.044212))
+  # Serial test, updated 05/19/2015
   expect_that(serial.test(Y16)$statistic,
-  						equals(c(S=44.5)))
+  						equals(c(W=29.5)))
   expect_that(serial.test(Y16)$p.value,
-  						equals(0.0193140193))
+  						equals(0.623585511368))
   expect_that(serial.test(Y16, method="runs")$statistic,
-  						equals(c(S=5)))
-  expect_that(serial.test(Y16, method="runs")$p.value,
-  						equals(0.0768127441))
+  						equals(c(Runs=10)))
+  expect_that(as.vector(serial.test(Y16, method="runs")$p.value),
+  						equals(0.1554799047))
 })
 
 test_that("Correlation/Regression Tests working", {

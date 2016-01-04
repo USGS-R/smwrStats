@@ -1,6 +1,6 @@
 #' Multivariate Unconditional Box-Cox Transformations
 #'
-#' Compute Box-Cox transformations that maximimize the log likelihood
+#' Computes Box-Cox transformations that maximimize the log likelihood
 #'of the transformations.
 #'
 #' @param X a data frame or matrix of the data to find the optimized Box-Cox

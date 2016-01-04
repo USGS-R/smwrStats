@@ -1,6 +1,6 @@
 #' The Hosmer-Lemeshow Test
 #' 
-#' Perform the Hosmer-Lemeshow test for goodness-of-fit for a logistic
+#' Performs the Hosmer-Lemeshow test for goodness-of-fit for a logistic
 #' regression model.
 #' 
 #' 

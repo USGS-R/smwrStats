@@ -1,6 +1,6 @@
 #' Quantiles with Confidence Limits
 #' 
-#' Compute sample quantiles and confidence limts for specified probabilities.
+#' Computes sample quantiles and confidence limts for specified probabilities.
 #' 
 #' 
 #' @param x numeric vector to compute the sample quantiles.

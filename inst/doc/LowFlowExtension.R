@@ -1,7 +1,7 @@
 ### R code from vignette source 'LowFlowExtension.Rnw'
 
 ###################################################
-### code chunk number 1: LowFlowExtension.Rnw:21-35
+### code chunk number 1: LowFlowExtension.Rnw:29-43
 ###################################################
 # Load the smwrStats and dataRetrieval packages
 library(smwrStats)
@@ -20,7 +20,7 @@ Passaic.PR <- transform(Passaic.PR, Date=as.Date(measurement_dt))
 
 
 ###################################################
-### code chunk number 2: LowFlowExtension.Rnw:45-60
+### code chunk number 2: LowFlowExtension.Rnw:53-68
 ###################################################
 # Compute the condition of the flow
 Passaic.Ref <- transform(Passaic.Ref, Flow_cond=hysteresis(Flow))
@@ -40,7 +40,7 @@ Whippany.Mrg <- subset(Whippany.Mrg, Base)
 
 
 ###################################################
-### code chunk number 3: LowFlowExtension.Rnw:63-83
+### code chunk number 3: LowFlowExtension.Rnw:71-91
 ###################################################
 # setSweave is a specialized function that sets up the graphics page for
 # Sweave scripts. For interactive use, it should be removed and the
@@ -65,7 +65,7 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 4: LowFlowExtension.Rnw:98-105
+### code chunk number 4: LowFlowExtension.Rnw:106-113
 ###################################################
 # Construct the and print the first model
 Passaic1.mv1 <- move.1(discharge_va ~ Flow, data=Passaic.Mrg, distribution = "lognormal")
@@ -77,7 +77,7 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 5: LowFlowExtension.Rnw:115-122
+### code chunk number 5: LowFlowExtension.Rnw:123-130
 ###################################################
 # Construct the and print the second model
 Passaic2.mv1 <- move.1(discharge_va ~ Flow, data=Whippany.Mrg, distribution = "lognormal")
@@ -89,7 +89,7 @@ graphics.off()
 
 
 ###################################################
-### code chunk number 6: LowFlowExtension.Rnw:132-136
+### code chunk number 6: LowFlowExtension.Rnw:140-144
 ###################################################
 # Compute the 10th percentile of flow
 Whippany.10 <- quantile(Whippany.Ref$Flow, probs=0.1, na.rm=TRUE)
