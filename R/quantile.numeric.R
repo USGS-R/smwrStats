@@ -1,10 +1,10 @@
 #' Sample Quantiles
 #' 
-#' Computes sample quantiles corresponding to the given probabilities. The
-#' smallest observation corresponds to a probability of 0 and the largest to a
-#' probability of 1. This method function is a simple wrapper for the default
-#' function that sets the default \code{type} to 2.
-#' 
+#' Computes sample quantiles corresponding to the given probabilities: 
+#'method for "numeric" data. The smallest observation corresponds to a probability 
+#'of 0 and the largest to a probability of 1. This method function is a simple 
+#'wrapper for the default function that sets the default \code{type} to 2 for
+#'numeric data.
 #' 
 #' @param x numeric vector whose sample quantiles are wanted.
 #' @param probs numeric vector of probabilities with values in the range from 0

@@ -1,7 +1,6 @@
 #' Summarize Correlations
 #' 
-#' Extracts a data frame that summarizes the correlations computed by
-#' \code{cor.all}.
+#' Summarizes the correlations: method for "cor.all" object.
 #' 
 #' 
 #' @param object an object created by the \code{cor.all} function.

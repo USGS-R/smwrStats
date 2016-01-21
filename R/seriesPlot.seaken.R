@@ -1,7 +1,7 @@
 #' Series Plot
 #' 
 #' Produces a plot of time-series data by season that shows seasonal and overall
-#' trends.
+#' trends: method for "seaken" object.
 #' 
 #' The argument \code{what} for \code{SeasonLine} must be either "lines" or
 #' "vertical."  See \code{\link{monthplot}} for more information.\cr The

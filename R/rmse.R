@@ -82,7 +82,7 @@ rmse.lm <- function(x, ...) {
 #' @export rpd
 rpd <- function(x, y, plotit=FALSE) {
   xname <- deparse(substitute(x))
-  yname <- deparse(substitute(x))
+  yname <- deparse(substitute(y))
   dif <- x - y
   summ <- x + y
   if(plotit){ # Create the Bland-Altman (Tukey m-d) plot

@@ -1,6 +1,6 @@
 Package: smwrStats
-Version: 0.7.4
-Date: 2015-10-27
+Version: 0.7.5
+Date: 2016-01-21
 Title: R functions to support statistical methods in water resources
 Author: Dave Lorenz <lorenz@usgs.gov>.
 Maintainer: Dave Lorenz <lorenz@usgs.gov>

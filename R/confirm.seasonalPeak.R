@@ -1,7 +1,6 @@
 #' Confirm Seasonal Peak
 #' 
-#' This function processes the output of function seasonalPeak and requires the
-#' user to accept or change the timing of the peak or peaks.
+#' Reviews/accepts the results of an analysis: method for "seasonalPeak" object.
 #' 
 #' 
 #' @param x a seasonalPeak object.

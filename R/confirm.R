@@ -1,6 +1,6 @@
 #' Confirm an Analysis
 #' 
-#' Reviews/accepts the results of an analysis.
+#' Reviews/accepts the results of an analysis: method for "default" data.
 #' 
 #' 
 #' @aliases confirm confirm.default

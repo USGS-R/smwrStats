@@ -6,8 +6,8 @@
 #' \tabular{ll}{ 
 #'Package: \tab smwrStats\cr 
 #'Type: \tab Package\cr 
-#'Version: \tab 0.7.4\cr 
-#'Date: \tab 2015-10-27\cr 
+#'Version: \tab 0.7.5\cr 
+#'Date: \tab 2016-01-21\cr 
 #'License: \tab CC0\cr 
 #'}
 #' Regression applications:\cr allReg\cr binaryReg\cr hosmerLemeshow.test\cr
@@ -38,7 +38,7 @@
 #' Investigations, book 4, chap. A3, 522 p.\cr
 #' 
 #' Lorenz, D.L., in preparation. smwrStats---an R package for the analysis of
-#' hydrologic data, version 0.7.4.
+#' hydrologic data, version 0.7.5.
 #' @keywords package
 #' @import smwrBase
 #' @import smwrGraphs
