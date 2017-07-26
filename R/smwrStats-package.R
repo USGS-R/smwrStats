@@ -6,8 +6,6 @@
 #' \tabular{ll}{ 
 #'Package: \tab smwrStats\cr 
 #'Type: \tab Package\cr 
-#'Version: \tab 0.7.5\cr 
-#'Date: \tab 2016-01-21\cr 
 #'License: \tab CC0\cr 
 #'}
 #' Regression applications:\cr allReg\cr binaryReg\cr hosmerLemeshow.test\cr
@@ -30,9 +28,8 @@
 #' @name smwrStats-package
 #' @aliases smwrStats-package smwrStats
 #' @docType package
-#' @author Dave Lorenz <lorenz@@usgs.gov>\cr
+#' @author Dave Lorenz \cr
 #' 
-#' Maintainer: Dave Lorenz <lorenz@@usgs.gov>
 #' @references Helsel, D.R. and Hirsch, R.M., 2002, Statistical methods in
 #' water resources: U.S. Geological Survey Techniques of Water-Resources
 #' Investigations, book 4, chap. A3, 522 p.\cr
@@ -44,7 +41,18 @@
 #' @import smwrGraphs
 NULL
 .onAttach <- function(libname, pkgname) {
-	packageStartupMessage("Although this software program has been used by the U.S. Geological Survey (USGS), no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.")
+  packageStartupMessage("This information is preliminary or provisional and
+is subject to revision. It is being provided to meet
+the need for timely best science. The information
+has not received final approval by the U.S. Geological
+Survey (USGS) and is provided on the condition that
+neither the USGS nor the U.S. Government shall be held
+liable for any damages resulting from the authorized
+or unauthorized use of the information.
+
+****Orphaned Package****
+This package is looking for a new maintainer. For more information, 
+see: https://owi.usgs.gov/R/packages.html#orphan")
 }
 
 

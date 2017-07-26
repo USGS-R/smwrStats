@@ -1,9 +1,9 @@
 Package: smwrStats
-Version: 0.7.5
-Date: 2016-01-21
+Version: 0.7.6
+Date: 2017-07-27
 Title: R functions to support statistical methods in water resources
-Author: Dave Lorenz <lorenz@usgs.gov>.
-Maintainer: Dave Lorenz <lorenz@usgs.gov>
+Authors@R: c( person("Dave", "Lorenz", role = "cre", email = "gs-w_r_admin@usgs.gov"),
+              person("Laura", "De Cicco", role = "ctb"))
 Depends:
     smwrBase (>= 1.0),
     smwrGraphs (>= 1.0)
@@ -20,6 +20,7 @@ Description: Useful tools for the analysis of hydrologic data,
     not inlcuding censored water-quality data.
 License: CC0
 LazyLoad: yes
+BugReports: https://github.com/USGS-R/smwrStats/issues
 Collate:
     'smwrStats-package.R'
     'allreg.R'
