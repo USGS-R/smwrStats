@@ -103,7 +103,7 @@ summary(KTP.lm)
 ### code chunk number 10: Trends.Rnw:174-184
 ###################################################
 # Get the data from the downloads folder for the report
-RK3b <- read.delim("http://pubs.usgs.gov/sir/2005/5275/downloads/RK3b.txt",
+RK3b <- read.delim("https://pubs.usgs.gov/sir/2005/5275/downloads/RK3b.txt",
   header=FALSE, skip=1)
 names(RK3b) <- c("Year", "Site", "NH4")
 # Reformat to a wide data frame group2row is in smwrBase and make the matrix
