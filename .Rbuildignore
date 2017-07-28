@@ -2,3 +2,5 @@
 vignettes/figure
 ^.*\.Rproj$
 ^\.Rproj\.user$
+CONDUCT.md
+images

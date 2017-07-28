@@ -27,7 +27,7 @@
 #' desgin for streams in the Red River fo the North basin, Minnesota, Norht
 #' Dakota, and South Dakota, 1970--2001: U.S. Geolgical Survey Scientific
 #' Investigations Report 2005--5224, 54 p. Available on line at
-#' \url{http://pubs.usgs.gov/sir/2005/5224/}.
+#' \url{https://pubs.usgs.gov/sir/2005/5224/}.
 #' @keywords model
 #' @examples
 #' 
