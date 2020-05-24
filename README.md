@@ -34,7 +34,7 @@ Follow `@USGS_R` on Twitter for updates on USGS R packages:
 We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/USGS-R/smwrStats/blob/master/CONDUCT.md) for more information.
 
 ## Package Installation
-To install the `smwrStats` package,, first install the "remotes" package. Then, using the remotes package, install "smwrData", "smwrBase", and  "smwrGraphs":
+To install the `smwrStats` package, first install the "remotes" package. Then, using the remotes package, install "smwrData", "smwrBase", and  "smwrGraphs":
 
 ```r
 remotes::install_github("USGS-R/smwrData")
